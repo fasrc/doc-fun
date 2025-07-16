@@ -1,0 +1,33 @@
+# Few-shot prompting for HTML documentation generation
+# Task: Generate HTML documentation pages with consistent naming
+# Format: Natural language input → lowercase HTML filename output
+
+terms:
+  FASRC: "Faculty Arts and Sciences Research Computing"
+
+documentation_structure:
+  - Description
+  - Installation  
+  - Usage
+  - Examples
+  - References
+
+examples: |
+  INPUT: Create a reference page for MATLAB documentation in HTML format.
+  OUTPUT: matlab.html
+
+  INPUT: Create a reference page for OpenMP documentation in HTML format.
+  OUTPUT: openmp.html
+
+  INPUT: Create a reference page for MPI documentation in HTML format.
+  OUTPUT: mpi.html
+
+  INPUT: Create a reference page for MPI IO documentation in HTML format.
+  OUTPUT: mpi-io.html
+
+notes:
+  - Output filenames should be lowercase
+  - Use hyphens for multi-word topics
+  - Each page should follow the documentation structure outlined above
+  - Focus on FASRC-relevant technical documentation
+

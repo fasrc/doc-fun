@@ -1,0 +1,73 @@
+<html><body><div><div id="eckb-article-content-body"><h3 id="introduction"><span id="Introduction">Introduction</span></h3>
+<p><a href="https://www.mathworks.com/products/matlab.html" rel="nofollow">MATLAB</a>, short for Matrix Laboratory, is a high-performance language and interactive environment for numerical computation, visualization, and programming. Developed by MathWorks, MATLAB integrates computation, visualization, and programming in an easy-to-use environment where problems and solutions are expressed in familiar mathematical notation. It is widely used in academia and industry for data analysis, algorithm development, and modeling and simulation. One of MATLAB’s key strengths is its extensive library of built-in functions and toolboxes, which cover a wide range of scientific and engineering applications, including signal processing, control systems, neural networks, and machine learning.</p>
+<p>In addition to its robust built-in capabilities, MATLAB offers a user-friendly interface that simplifies the process of writing and debugging code. The platform supports both procedural and object-oriented programming, providing flexibility in how users approach problem-solving. MATLAB’s powerful plotting functions make it easy to visualize data and results, which is crucial for interpreting complex numerical information. Furthermore, MATLAB supports integration with other programming languages like C, C++, Java, and Python, allowing for versatile application development. Its widespread adoption in various fields, from finance and biotechnology to automotive and aerospace engineering, underscores its versatility and effectiveness as a tool for both research and practical problem-solving.</p>
+<h2 dir="auto" tabindex="-1"><span id="Installation">Installation</span></h2>
+<h3 class="heading-element" dir="auto" tabindex="-1"><span id="MATLAB_Licenses">MATLAB Licenses</span></h3>
+<p>Research Computing has licensed MATLAB from Mathworks for use on desktops, laptops, and on the FASRC cluster. If you wish to run MATLAB on your desktop/laptop, please follow the instructions on the <a href="http://downloads.fas.harvard.edu/download?platform=all" target="_blank" rel="noopener noreferrer">FAS downloads page</a> (downloads for all platforms are available from Mathworks). Running MATLAB on the cluster can be done through a GUI using VDI, at the command line interactive, or through batch jobs.<br>
+<strong>NOTE! These instructions discuss the single-core (process) implementation.</strong> If you wish to run MATLAB as a multi-core/process job, please see our <a href="/kb/software/parallel-matlab-pct-dcs/">companion document</a>.</p>
+<h2><span id="Examples">Examples</span></h2>
+<h3 id="matlab-gui-on-odyssey"><span id="MATLAB_GUI_on_the_FASRC_cluster">MATLAB GUI on the FASRC cluster</span></h3>
+<p>The MATLAB GUI can be run using the power of the compute nodes of the cluster by initiating your session via our graphical login, and starting an interactive MATLAB session. This is almost like running MATLAB on your desktop/laptop, except all the computation is done on the cluster. There two ways of using the MATLAB GUI on the cluster:</p>
+<h4 class="heading-element" dir="auto" tabindex="-1"><span id="MATLAB_VDI_APP">MATLAB VDI APP</span></h4>
+<ul dir="auto">
+<li>Log on to the cluster via <a href="https://vdi.rc.fas.harvard.edu/">vdi.rc.fas.harvard.edu</a>. For more details on Open OnDemand (VDI) go <a href="https://docs.rc.fas.harvard.edu/kb/virtual-desktop/" rel="nofollow">here</a>.</li>
+<li>From the dashboard select the <code>Matlab</code> app.</li>
+<li>Specify the resources for your job (e.g., partition, total memory, number of cores, Matlab version, etc.)</li>
+<li>Launch the job.</li>
+</ul>
+<p class="markdown-heading" dir="auto">
+<h4 class="heading-element" dir="auto" tabindex="-1"><span id="MATLAB_software_module">MATLAB software module</span></h4>
+</p>
+<ul dir="auto">
+<li>Log on to the cluster via <a href="https://vdi.rc.fas.harvard.edu/">vdi.rc.fas.harvard.edu</a>.</li>
+<li>From the dashboard select the <code>Remote Desktop</code> app.</li>
+<li>Specify the resources for your job and launch it.</li>
+<li>Once the job start, open a <code>terminal</code> in the remote desktop.</li>
+<li>In the terminal, load the MATLAB module</li>
+</ul>
+<div class="highlight highlight-source-shell notranslate position-relative overflow-auto" dir="auto">
+<pre>module load matlab <span class="pl-c"># This will load the default (latest MATLAB version)</span></pre>
+</div>
+<ul dir="auto">
+<li>Start the MATLAB GUI. In the terminal type in</li>
+</ul>
+
+<p class="markdown-heading" dir="auto">
+<h3 class="heading-element" dir="auto" tabindex="-1"><span id="MATLAB_on_the_command_line_interactive_terminal_session">MATLAB on the command line (interactive terminal session)</span></h3>
+</p>
+<p dir="auto">MATLAB can also be run on the command line in an interactive terminal session. Since there is no GUI, you must include additional parameters (<code>-nojvm -nosplash -nodesktop</code>), and you can optionally specify an M file (e.g., <code>script.m</code> or <code>function.m</code>) to run, including any script or function parameters as required:</p>
+<ul dir="auto">
+<li>Login to the cluster as explained <a href="https://docs.rc.fas.harvard.edu/kb/access-and-login/" rel="nofollow">here</a>.</li>
+<li>Once logged in, get an interactive session as described <a href="https://docs.rc.fas.harvard.edu/kb/running-jobs/#Interactive_jobs_and_srun" rel="nofollow">here</a>, e.g.,</li>
+</ul>
+<div class="highlight highlight-source-shell notranslate position-relative overflow-auto" dir="auto">
+<pre>salloc --mem=4G -t 60 -c 1 -N 1 -p <span class="pl-c1">test</span></pre>
+</div>
+<ul dir="auto">
+<li>Load a Matlab module, e.g,</li>
+</ul>
+<div class="highlight highlight-source-shell notranslate position-relative overflow-auto" dir="auto">
+<pre>module load matlab/R2022b-fasrc01</pre>
+</div>
+<ul dir="auto">
+<li>Start MATLAB interactively without a GUI</li>
+</ul>
+<pre>matlab</pre>
+<p class="highlight highlight-source-shell notranslate position-relative overflow-auto" dir="auto"></p>
+<div class="highlight highlight-source-shell notranslate position-relative overflow-auto" dir="auto">
+<h3><span id="Examples-2">Examples</span></h3>
+<p dir="auto">To get started with Matlab on the FAS cluster you can try the below examples:</p>
+<ul dir="auto">
+<li><a href="https://github.com/fasrc/User_Codes/tree/master/Languages/MATLAB/Example1">Example1</a>: Monte-Carlo computation of PI</li>
+<li><a href="https://github.com/fasrc/User_Codes/tree/master/Languages/MATLAB/Example2">Example2</a>: Sums up integers from 1 to N</li>
+<li><a href="https://github.com/fasrc/User_Codes/tree/master/Languages/MATLAB/Example3">Example3</a>: Generates a multi-figure on a 3 X 3 grid</li>
+<li><a href="https://github.com/fasrc/User_Codes/tree/master/Languages/MATLAB/Example4">Example4</a>: Illustration of job arrays and parameter sweeps</li>
+<li><a href="https://github.com/fasrc/User_Codes/tree/master/Languages/MATLAB/Example5">Example5</a>: Random vectors and job arrays</li>
+</ul>
+<p class="markdown-heading" dir="auto">
+<h3 class="heading-element" dir="auto" tabindex="-1"><span id="References">References:</span></h3>
+</p>
+
+</div>
+
+</div></div></body></html>

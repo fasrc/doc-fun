@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>OpenMP Reference Page</title>
+</head>
+<body>
+  <h1>OpenMP Reference</h1>
+  <h2>1. Description</h2>
+  <p>OpenMP (Open Multi-Processing) is an API that supports multi-platform shared-memory parallel programming in C, C++, and Fortran. It provides a simple and flexible interface for developing parallel applications by using compiler directives, library routines, and environment variables.</p>
+  <h2>2. Installation</h2>
+  <p>Most modern compilers include OpenMP support by default. To enable OpenMP:</p>
+  <ul>
+    <li><strong>GCC (C/C++):</strong> Compile with <code>-fopenmp</code></li>
+    <li><strong>Clang (C/C++):</strong> Compile with <code>-fopenmp</code> and link against <code>libomp</code></li>
+    <li><strong>Intel Compiler (icc/ifort):</strong> Compile with <code>-qopenmp</code></li>
+  </ul>
+  <h2>3. Usage</h2>
+  <p>Use compiler directives (pragmas) to parallelize loops and regions:</p>
+  <pre><code>#pragma omp parallel for
+for (int i = 0; i &lt; n; ++i) {
+    // parallel work
+}
+  </code></pre>
+  <p>Key directives and routines:</p>
+  <ul>
+    <li><code>#pragma omp parallel</code> – Creates a parallel region</li>
+    <li><code>#pragma omp for</code> – Distributes loop iterations across threads</li>
+    <li><code>omp_get_thread_num()</code> – Returns the thread ID</li>
+    <li><code>omp_get_num_threads()</code> – Returns the number of threads</li>
+  </ul>
+  <h2>4. References</h2>
+  <ul>
+    <li><a href="https://www.openmp.org" target="_blank">Official OpenMP Website</a></li>
+    <li><a href="https://www.openmp.org/specifications" target="_blank">OpenMP Specifications</a></li>
+    <li><a href="https://en.wikipedia.org/wiki/OpenMP" target="_blank">OpenMP - Wikipedia</a></li>
+  </ul>
+</body>
+</html>

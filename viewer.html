@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation Comparison Viewer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #f5f5f5;
+        }
+        
+        .header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        
+        .controls {
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .control-group label {
+            font-size: 12px;
+            color: #666;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .control-group input,
+        .control-group select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            background-color: white;
+        }
+        
+        .control-group button {
+            padding: 8px 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+        
+        .control-group button:hover {
+            background-color: #2980b9;
+        }
+        
+        .container {
+            display: flex;
+            height: calc(100vh - 180px);
+            gap: 2px;
+            background-color: #ddd;
+            padding: 2px;
+        }
+        
+        .column {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: white;
+            min-width: 0;
+        }
+        
+        .column-header {
+            background-color: #34495e;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .column iframe {
+            flex: 1;
+            width: 100%;
+            border: none;
+            background-color: white;
+        }
+        
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #999;
+            font-style: italic;
+        }
+        
+        .error {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #e74c3c;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 1200px) {
+            .container {
+                flex-direction: column;
+                height: auto;
+            }
+            
+            .column {
+                height: 600px;
+                margin-bottom: 10px;
+            }
+        }
+        
+        .info {
+            background-color: #ecf0f1;
+            padding: 15px;
+            margin: 20px;
+            border-radius: 4px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .info code {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Documentation Comparison Viewer</h1>
+        <p>Compare multiple versions of generated documentation side by side</p>
+    </div>
+    
+    <div class="controls">
+        <div class="control-group">
+            <label>Topic</label>
+            <input type="text" id="topic" value="pytorch" placeholder="e.g., pytorch">
+        </div>
+        
+        <div class="control-group">
+            <label>Model</label>
+            <select id="model">
+                <option value="gpt4">gpt-4</option>
+                <option value="gpt4omini">gpt-4o-mini</option>
+                <option value="gpt35turbo">gpt-3.5-turbo</option>
+            </select>
+        </div>
+        
+        <div class="control-group">
+            <label>Temperature</label>
+            <input type="text" id="temperature" value="07" placeholder="e.g., 07 for 0.7">
+        </div>
+        
+        <div class="control-group">
+            <label>Number of Versions</label>
+            <input type="number" id="versions" value="5" min="1" max="10">
+        </div>
+        
+        <div class="control-group">
+            <label>&nbsp;</label>
+            <button onclick="loadFiles()">Load Files</button>
+        </div>
+    </div>
+    
+    <div id="info-panel" class="info">
+        <strong>Instructions:</strong> Enter the topic, model, and temperature settings that match your generated files. 
+        The viewer will load files matching the pattern: <code>output/[topic]_[model]_temp[temperature]_v[1-5].html</code>
+    </div>
+    
+    <div id="container" class="container"></div>
+    
+    <script>
+        function loadFiles() {
+            const topic = document.getElementById('topic').value.toLowerCase();
+            const model = document.getElementById('model').value;
+            const temperature = document.getElementById('temperature').value;
+            const versions = parseInt(document.getElementById('versions').value);
+            
+            const container = document.getElementById('container');
+            container.innerHTML = '';
+            
+            // Hide info panel after loading
+            document.getElementById('info-panel').style.display = 'none';
+            
+            for (let i = 1; i <= versions; i++) {
+                const column = document.createElement('div');
+                column.className = 'column';
+                
+                const header = document.createElement('div');
+                header.className = 'column-header';
+                header.textContent = `Version ${i}`;
+                column.appendChild(header);
+                
+                const iframe = document.createElement('iframe');
+                iframe.id = `frame-${i}`;
+                
+                // Construct filename based on pattern
+                let filename;
+                if (versions === 1) {
+                    filename = `output/${topic}_${model}_temp${temperature}.html`;
+                } else {
+                    filename = `output/${topic}_${model}_temp${temperature}_v${i}.html`;
+                }
+                
+                // Create loading indicator
+                const loadingDiv = document.createElement('div');
+                loadingDiv.className = 'loading';
+                loadingDiv.textContent = 'Loading...';
+                column.appendChild(loadingDiv);
+                
+                // Set up iframe
+                iframe.style.display = 'none';
+                iframe.onload = function() {
+                    loadingDiv.style.display = 'none';
+                    iframe.style.display = 'block';
+                    header.textContent = `Version ${i} - ${filename}`;
+                };
+                
+                iframe.onerror = function() {
+                    loadingDiv.className = 'error';
+                    loadingDiv.innerHTML = `<div>Failed to load:<br>${filename}<br><br>Make sure the file exists in the output/ directory</div>`;
+                };
+                
+                // Attempt to load the file
+                iframe.src = filename;
+                column.appendChild(iframe);
+                
+                container.appendChild(column);
+            }
+        }
+        
+        // Auto-load if all fields have values on page load
+        window.onload = function() {
+            if (document.getElementById('topic').value && 
+                document.getElementById('model').value && 
+                document.getElementById('temperature').value) {
+                // Uncomment the next line to auto-load on page load
+                // loadFiles();
+            }
+        };
+        
+        // Allow Enter key to trigger load
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                loadFiles();
+            }
+        });
+    </script>
+</body>
+</html>

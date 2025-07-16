@@ -1,0 +1,27 @@
+<h2>Introduction</h2>
+MPI IO is a component of the Message Passing Interface standard that enables parallel input/output operations in distributed computing applications. It allows multiple processes to collectively access shared files, optimizing disk operations through features like collective I/O and file views that reorganize data access patterns. This capability is crucial for high-performance computing applications working with large datasets across multiple nodes, as it extends parallel processing efficiency to the I/O subsystem.
+<h2>Installation</h2>
+Utilizing MPI IO in your program depends on your programming language. Check your programming language's documentation for details.
+<h2>Using MPI I/O</h2>
+Your programming language of choice should have an implementation for these basic functions from <a href="https://docs.open-mpi.org/en/v5.0.x/man-openmpi/man3/index.html">the complete list of functions</a>. Each of the functions has a C and Fortran usage example in the docs, as well as some parameter information and common errors.
+<ul>
+ 	<li><a href="https://docs.open-mpi.org/en/v5.0.x/man-openmpi/man3/MPI_Init.3.html" target="_blank" rel="noopener"><code>MPI_Init()</code></a>: Initialize the MPI environment</li>
+ 	<li><a href="https://docs.open-mpi.org/en/v5.0.x/man-openmpi/man3/MPI_File_open.3.html" target="_blank" rel="noopener"><code>MPI_File_open()</code></a>: Create file handles for parallel access</li>
+ 	<li><code><a href="https://docs.open-mpi.org/en/v5.0.x/man-openmpi/man3/MPI_File_set_view.3.html" target="_blank" rel="noopener">MPI_File_set_view</a>()</code>: Define which file portions each process accesses</li>
+ 	<li><code><a href="https://docs.open-mpi.org/en/v5.0.x/man-openmpi/man3/MPI_File_read_all.3.html">MPI_File_read_all</a>()</code>/<code><a href="https://docs.open-mpi.org/en/v5.0.x/man-openmpi/man3/MPI_File_write_all.3.html" target="_blank" rel="noopener">MPI_File_write_all</a>()</code>: Perform collective I/O operations</li>
+ 	<li><code><a href="https://docs.open-mpi.org/en/v5.0.x/man-openmpi/man3/MPI_File_read.3.html">MPI_File_read</a>()</code>/<code><a href="https://docs.open-mpi.org/en/v5.0.x/man-openmpi/man3/MPI_File_write.3.html" target="_blank" rel="noopener">MPI_File_write</a>()</code>: Perform independent I/O operations</li>
+ 	<li><code><a href="https://docs.open-mpi.org/en/v5.0.x/man-openmpi/man3/MPI_File_close.3.html" target="_blank" rel="noopener">MPI_File_close</a>()</code>: Close file handles</li>
+ 	<li><code><a href="https://docs.open-mpi.org/en/v5.0.x/man-openmpi/man3/MPI_Finalize.3.html">MPI_Finalize</a>()</code>: Clean up MPI environment</li>
+</ul>
+<h2>Best Practices</h2>
+On Cannon &lt;insert storage best practices for high IO jobs &gt;.
+
+Slurm &lt; insert best practices for CPU and GPU &gt;.
+<h2>Examples</h2>
+<p dir="auto">For associated MPI IO examples, head over to  <a href="https://github.com/fasrc/User_Codes/tree/master/Parallel_Computing/MPI_IO" target="_blank" rel="noopener">User_Codes/Parallel_Computing/MPI_IO</a>.</p>
+
+<h2 dir="auto">Resources</h2>
+<ul>
+ 	<li><a href="https://docs.open-mpi.org/en/v5.0.6/index.html">Open-MPI.org documentation site</a></li>
+ 	<li><a href="https://docs.open-mpi.org/en/v5.0.6/tuning-apps/mpi-io/ompio.html">OpenMPI MPI IO ( "MPIO" )</a></li>
+</ul>
