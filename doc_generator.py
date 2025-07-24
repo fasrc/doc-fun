@@ -14,6 +14,7 @@ import yaml
 import argparse
 import subprocess
 import sys
+import hashlib
 from pathlib import Path
 from dotenv import load_dotenv
 from openai import OpenAI
@@ -41,11 +42,13 @@ def install_dependencies():
 class DocumentationGenerator:
     """Main class for generating documentation using OpenAI GPT models."""
     
-    def __init__(self, prompt_yaml_path: str = 'prompt.yaml', examples_dir: str = 'examples/'):
+    def __init__(self, prompt_yaml_path: str = 'prompt.yaml', examples_dir: str = 'examples/',
+                 terminology_path: str = 'terminology.yaml'):
         """Initialize the documentation generator with configuration."""
         self.client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
         self.examples_dir = Path(examples_dir)
         self.prompt_config = self._load_prompt_config(prompt_yaml_path)
+        self.terminology = self._load_terminology(terminology_path)
         self.examples = self._load_examples()
         
     def _load_prompt_config(self, path: str) -> dict:
@@ -59,6 +62,15 @@ class DocumentationGenerator:
                 'system_prompt': 'You are a technical documentation expert.',
                 'documentation_structure': ['Description', 'Installation', 'Usage', 'Examples', 'References']
             }
+    
+    def _load_terminology(self, path: str) -> dict:
+        """Load terminology configuration from YAML file."""
+        try:
+            with open(path, 'r') as f:
+                return yaml.safe_load(f)
+        except FileNotFoundError:
+            print(f"Warning: {path} not found. No terminology loaded.")
+            return {}
     
     def _load_examples(self) -> List[Dict[str, str]]:
         """Load few-shot examples from YAML files."""
@@ -120,8 +132,113 @@ class DocumentationGenerator:
         
         return 'documentation'
     
-    def _build_system_prompt(self) -> str:
-        """Build the system prompt from configuration."""
+    def _extract_topic_keywords(self, topic: str) -> List[str]:
+        """Extract meaningful keywords from the topic for module matching."""
+        import re
+        
+        # Convert to lowercase and extract words
+        words = re.findall(r'\b\w+\b', topic.lower())
+        
+        # Filter out common stop words that aren't useful for module matching
+        stop_words = {
+            'and', 'or', 'the', 'a', 'an', 'in', 'on', 'at', 'to', 'for', 'of', 'with',
+            'using', 'how', 'what', 'when', 'where', 'why', 'computing', 'cluster',
+            'fasrc', 'cannon', 'hpc', 'high', 'performance'
+        }
+        
+        # Keep words that are 2+ characters and not stop words
+        keywords = [word for word in words if len(word) >= 2 and word not in stop_words]
+        
+        return keywords
+    
+    def _find_relevant_modules(self, topic_keywords: List[str]) -> List[Dict]:
+        """Find modules relevant to the topic keywords."""
+        if not self.terminology.get('hpc_modules') or not topic_keywords:
+            return []
+        
+        relevant_modules = []
+        
+        for module in self.terminology['hpc_modules']:
+            score = 0
+            
+            # Check for keyword matches in module name
+            module_name_lower = module['name'].lower()
+            for keyword in topic_keywords:
+                if keyword in module_name_lower:
+                    score += 3  # High weight for name matches
+            
+            # Check for keyword matches in module description
+            module_desc_lower = module['description'].lower()
+            for keyword in topic_keywords:
+                if keyword in module_desc_lower:
+                    score += 2  # Medium weight for description matches
+            
+            # Check for keyword matches in category
+            module_category_lower = module['category'].lower()
+            for keyword in topic_keywords:
+                if keyword in module_category_lower:
+                    score += 1  # Lower weight for category matches
+            
+            if score > 0:
+                module_with_score = module.copy()
+                module_with_score['relevance_score'] = score
+                relevant_modules.append(module_with_score)
+        
+        # Sort by relevance score (highest first) and limit results
+        relevant_modules.sort(key=lambda x: x['relevance_score'], reverse=True)
+        return relevant_modules[:15]  # Limit to top 15 to avoid token overflow
+    
+    def _build_terminology_context(self, topic: str) -> str:
+        """Build context-aware terminology based on the topic."""
+        if not self.terminology:
+            return ""
+        
+        context_parts = []
+        topic_keywords = self._extract_topic_keywords(topic)
+        
+        # Find relevant modules based on topic keywords
+        relevant_modules = self._find_relevant_modules(topic_keywords)
+        
+        if relevant_modules:
+            context_parts.append("Available HPC Modules (relevant to this topic):")
+            for module in relevant_modules:
+                context_parts.append(f"- {module['name']}: {module['description']}")
+        else:
+            # Fallback: include some essential modules if no matches found
+            if 'hpc_modules' in self.terminology:
+                essential_modules = [m for m in self.terminology['hpc_modules'] 
+                                   if m['category'] in ['programming', 'compiler']][:8]
+                if essential_modules:
+                    context_parts.append("Available HPC Modules (essential):")
+                    for module in essential_modules:
+                        context_parts.append(f"- {module['name']}: {module['description']}")
+        
+        # Include cluster commands for most topics
+        if 'cluster_commands' in self.terminology:
+            context_parts.append("\nCommon SLURM Commands:")
+            for cmd in self.terminology['cluster_commands'][:6]:  # Limit to most important
+                context_parts.append(f"- {cmd['name']}: {cmd['description']}")
+                if 'usage' in cmd:
+                    context_parts.append(f"  Usage: {cmd['usage']}")
+        
+        # Include relevant filesystems
+        if 'filesystems' in self.terminology:
+            context_parts.append("\nFASRC Filesystems:")
+            for fs in self.terminology['filesystems']:
+                context_parts.append(f"- {fs['name']}: {fs['description']}")
+        
+        # Include partition information for GPU/parallel topics
+        if 'partitions' in self.terminology:
+            gpu_parallel_keywords = ['gpu', 'parallel', 'mpi', 'cuda', 'computing']
+            if any(keyword in topic_keywords for keyword in gpu_parallel_keywords):
+                context_parts.append("\nCluster Partitions:")
+                for partition in self.terminology['partitions']:
+                    context_parts.append(f"- {partition['name']}: {partition['description']}")
+        
+        return "\n".join(context_parts)
+    
+    def _build_system_prompt(self, topic: str = "") -> str:
+        """Build the system prompt with terminology context."""
         base_prompt = self.prompt_config.get('system_prompt', 
             'You are a technical documentation expert creating HTML knowledge base articles.')
         
@@ -131,9 +248,15 @@ class DocumentationGenerator:
             base_prompt += f"\n\nEach article should follow this structure:\n"
             base_prompt += "\n".join(f"- {section}" for section in structure)
         
-        # Add any terms/definitions
+        # Add terminology context
+        terminology_context = self._build_terminology_context(topic)
+        if terminology_context:
+            base_prompt += f"\n\nRelevant HPC Environment Information:\n{terminology_context}"
+            base_prompt += "\n\nWhen writing documentation, reference these specific modules, commands, and resources where appropriate. Use exact module names as listed above."
+        
+        # Add any terms/definitions from prompt config
         if 'terms' in self.prompt_config:
-            base_prompt += "\n\nKey terms:\n"
+            base_prompt += "\n\nAdditional Key Terms:\n"
             for term, definition in self.prompt_config['terms'].items():
                 base_prompt += f"- {term}: {definition}\n"
         
@@ -147,10 +270,13 @@ class DocumentationGenerator:
         if topic_filename is None:
             topic_filename = self._extract_topic_from_query(query)
         
+        # Extract topic for terminology context
+        topic = self._extract_topic_from_query(query).replace('_', ' ')
+        
         generated_files = []
         
-        # Build messages
-        system_prompt = self._build_system_prompt()
+        # Build messages with topic-aware system prompt
+        system_prompt = self._build_system_prompt(topic)
         
         for i in range(runs):
             try:
@@ -661,6 +787,9 @@ def main():
     parser.add_argument('--compare', action='store_true', help='Compare generated versions')
     parser.add_argument('--install-deps', action='store_true', help='Install required dependencies')
     parser.add_argument('--skip-generation', action='store_true', help='Skip generation and only run analysis')
+    parser.add_argument('--terminology', default='terminology.yaml', help='Path to terminology configuration file')
+    parser.add_argument('--scan-code-examples', metavar='PATH', help='Scan filesystem path for code examples and update terminology file')
+    parser.add_argument('--update-code-examples', action='store_true', help='Update existing code examples in terminology file')
     
     args = parser.parse_args()
     
@@ -690,7 +819,8 @@ def main():
         try:
             generator = DocumentationGenerator(
                 prompt_yaml_path='prompt.yaml',
-                examples_dir='examples/'
+                examples_dir='examples/',
+                terminology_path=args.terminology
             )
             print("✅ Generator initialized successfully")
             print(f"📁 Found {len(generator.examples)} examples")

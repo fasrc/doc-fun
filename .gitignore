@@ -1,4 +1,5 @@
 .env
+src/
 *.html
 *.md
 .DS_Store
