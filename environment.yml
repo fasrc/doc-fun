@@ -1,0 +1,17 @@
+name: doc-fun
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.10
+  - pip
+  - jupyter
+  - notebook
+  - ipykernel
+  - pip:
+    - openai>=1.0.0
+    - pyyaml
+    - python-dotenv
+    - beautifulsoup4
+    - pandas
+    - tabulate
