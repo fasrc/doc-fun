@@ -8,10 +8,13 @@ dependencies:
   - jupyter
   - notebook
   - ipykernel
+  - pyyaml
+  - python-dotenv
+  - beautifulsoup4
+  - pandas
+  - tabulate
+  - pytest
+  - pytest-mock
+  - pygments
   - pip:
     - openai>=1.0.0
-    - pyyaml
-    - python-dotenv
-    - beautifulsoup4
-    - pandas
-    - tabulate

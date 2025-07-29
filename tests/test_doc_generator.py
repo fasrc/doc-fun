@@ -1,0 +1,380 @@
+import pytest
+import yaml
+import tempfile
+from pathlib import Path
+from unittest.mock import Mock, patch, mock_open
+import sys
+import os
+
+# Add the parent directory to the path so we can import doc_generator
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from doc_generator import DocumentationGenerator, DocumentAnalyzer, GPTQualityEvaluator, CodeExampleScanner
+
+
+class TestDocumentationGenerator:
+    """Test cases for DocumentationGenerator class."""
+
+    def test_init_with_defaults(self, temp_dir, sample_yaml_config, sample_terminology):
+        """Test initialization with default parameters."""
+        # Create temporary config files
+        prompt_file = temp_dir / "prompt.yaml"
+        terminology_file = temp_dir / "terminology.yaml"
+        examples_dir = temp_dir / "examples"
+        examples_dir.mkdir()
+        
+        with open(prompt_file, 'w') as f:
+            yaml.dump(sample_yaml_config, f)
+        with open(terminology_file, 'w') as f:
+            yaml.dump(sample_terminology, f)
+
+        with patch.dict(os.environ, {'OPENAI_API_KEY': 'test-key'}):
+            with patch('doc_generator.OpenAI') as mock_openai:
+                generator = DocumentationGenerator(
+                    prompt_yaml_path=str(prompt_file),
+                    examples_dir=str(examples_dir),
+                    terminology_path=str(terminology_file)
+                )
+                
+                assert generator.prompt_config == sample_yaml_config
+                assert generator.terminology == sample_terminology
+                mock_openai.assert_called_once_with(api_key='test-key')
+
+    def test_load_examples_from_directory(self, temp_dir, sample_yaml_config, sample_terminology):
+        """Test loading examples from directory."""
+        prompt_file = temp_dir / "prompt.yaml"
+        terminology_file = temp_dir / "terminology.yaml"
+        examples_dir = temp_dir / "examples"
+        examples_dir.mkdir()
+        
+        # Create sample YAML files (the class loads YAML, not HTML)
+        (examples_dir / "example1.yaml").write_text("- example: content1")
+        (examples_dir / "example2.yaml").write_text("- example: content2")
+        
+        with open(prompt_file, 'w') as f:
+            yaml.dump(sample_yaml_config, f)
+        with open(terminology_file, 'w') as f:
+            yaml.dump(sample_terminology, f)
+
+        with patch.dict(os.environ, {'OPENAI_API_KEY': 'test-key'}):
+            with patch('doc_generator.OpenAI'):
+                generator = DocumentationGenerator(
+                    prompt_yaml_path=str(prompt_file),
+                    examples_dir=str(examples_dir),
+                    terminology_path=str(terminology_file)
+                )
+                
+                assert len(generator.examples) == 2
+
+    def test_generate_documentation(self, temp_dir, sample_yaml_config, sample_terminology, mock_openai_client):
+        """Test documentation generation."""
+        prompt_file = temp_dir / "prompt.yaml"
+        terminology_file = temp_dir / "terminology.yaml"
+        examples_dir = temp_dir / "examples"
+        examples_dir.mkdir()
+        output_dir = temp_dir / "output"
+        output_dir.mkdir()
+        
+        with open(prompt_file, 'w') as f:
+            yaml.dump(sample_yaml_config, f)
+        with open(terminology_file, 'w') as f:
+            yaml.dump(sample_terminology, f)
+
+        with patch.dict(os.environ, {'OPENAI_API_KEY': 'test-key'}):
+            with patch('doc_generator.Path.cwd', return_value=temp_dir):
+                generator = DocumentationGenerator(
+                    prompt_yaml_path=str(prompt_file),
+                    examples_dir=str(examples_dir),
+                    terminology_path=str(terminology_file)
+                )
+                generator.client = mock_openai_client
+                
+                result = generator.generate_documentation("Python programming", runs=1)
+                
+                assert isinstance(result, list)
+                assert len(result) == 1
+                mock_openai_client.chat.completions.create.assert_called()
+
+    def test_prompt_config_loading(self, temp_dir, sample_yaml_config, sample_terminology):
+        """Test that prompt configuration is loaded correctly."""
+        prompt_file = temp_dir / "prompt.yaml"
+        terminology_file = temp_dir / "terminology.yaml"
+        examples_dir = temp_dir / "examples"
+        examples_dir.mkdir()
+        
+        with open(prompt_file, 'w') as f:
+            yaml.dump(sample_yaml_config, f)
+        with open(terminology_file, 'w') as f:
+            yaml.dump(sample_terminology, f)
+
+        with patch.dict(os.environ, {'OPENAI_API_KEY': 'test-key'}):
+            with patch('doc_generator.OpenAI'):
+                generator = DocumentationGenerator(
+                    prompt_yaml_path=str(prompt_file),
+                    examples_dir=str(examples_dir),
+                    terminology_path=str(terminology_file)
+                )
+                
+                assert 'terms' in generator.prompt_config
+                assert generator.prompt_config['terms']['FASRC'] == 'Faculty Arts and Sciences Research Computing'
+
+
+class TestDocumentAnalyzer:
+    """Test cases for DocumentAnalyzer class."""
+
+    def test_init(self):
+        """Test analyzer initialization."""
+        analyzer = DocumentAnalyzer()
+        expected_sections = ['Description', 'Installation', 'Usage', 'Examples', 'References']
+        assert analyzer.section_headers == expected_sections
+
+    def test_extract_sections(self):
+        """Test HTML section extraction."""
+        html_content = '''
+        <html>
+        <body>
+            <h1>Description</h1>
+            <p>This is the description section.</p>
+            <h1>Installation</h1>
+            <p>Installation instructions here.</p>
+            <h1>Usage</h1>
+            <p>Usage information.</p>
+        </body>
+        </html>
+        '''
+        
+        analyzer = DocumentAnalyzer()
+        sections = analyzer.extract_sections(html_content)
+        
+        assert 'Description' in sections
+        assert 'Installation' in sections
+        assert 'Usage' in sections
+        assert 'This is the description section.' in sections['Description']
+
+    def test_calculate_section_score(self):
+        """Test section scoring algorithm."""
+        analyzer = DocumentAnalyzer()
+        
+        # Test with good content (realistic expectations)
+        good_content = "This is a detailed section with multiple sentences. " * 10 + \
+                      "<pre><code>sample code</code></pre>" + \
+                      '<a href="http://example.com">link</a>'
+        
+        score = analyzer.calculate_section_score(good_content, 'Description')
+        assert score > 10  # Should get some score for good content
+        
+        # Test with minimal content
+        minimal_content = "Short."
+        score = analyzer.calculate_section_score(minimal_content, 'Description')
+        assert score >= 0  # Should get a low but non-negative score
+
+    def test_analyze_document(self):
+        """Test full document analysis."""
+        html_content = '''
+        <html>
+        <body>
+            <h1>Description</h1>
+            <p>This is a comprehensive description with multiple sentences. It provides detailed information about the topic and covers various aspects thoroughly.</p>
+            
+            <h1>Installation</h1>
+            <p>Installation instructions with code examples.</p>
+            <pre><code>pip install example</code></pre>
+            
+            <h1>Usage</h1>
+            <p>Usage information with helpful <a href="http://example.com">links</a>.</p>
+        </body>
+        </html>
+        '''
+        
+        analyzer = DocumentAnalyzer()
+        sections = analyzer.extract_sections(html_content)
+        
+        assert 'Description' in sections
+        assert 'Installation' in sections
+        assert 'Usage' in sections
+        assert len(sections) > 0
+
+
+class TestGPTQualityEvaluator:
+    """Test cases for GPTQualityEvaluator class."""
+
+    def test_init_with_config(self, temp_dir):
+        """Test evaluator initialization with config file."""
+        config = {
+            'analysis_prompts': {
+                'technical_accuracy': 'Test prompt for {section_name} about {topic}: {content}'
+            }
+        }
+        config_file = temp_dir / "analysis_config.yaml"
+        with open(config_file, 'w') as f:
+            yaml.dump(config, f)
+        
+        mock_client = Mock()
+        evaluator = GPTQualityEvaluator(mock_client, analysis_prompt_path=str(config_file))
+        
+        assert evaluator.analysis_config == config
+
+    def test_create_evaluation_prompt(self, temp_dir):
+        """Test prompt creation."""
+        config = {
+            'analysis_prompts': {
+                'technical_accuracy': 'Evaluate {section_name} about {topic}: {content}'
+            }
+        }
+        config_file = temp_dir / "analysis_config.yaml"
+        with open(config_file, 'w') as f:
+            yaml.dump(config, f)
+        
+        mock_client = Mock()
+        evaluator = GPTQualityEvaluator(mock_client, analysis_prompt_path=str(config_file))
+        
+        prompt = evaluator.create_evaluation_prompt("test content", "Description", "Python", "technical_accuracy")
+        
+        assert "Evaluate Description about Python: test content" == prompt
+
+    def test_parse_gpt_response(self, temp_dir):
+        """Test GPT response parsing."""
+        config = {'analysis_prompts': {'test': 'test'}}
+        config_file = temp_dir / "analysis_config.yaml"
+        with open(config_file, 'w') as f:
+            yaml.dump(config, f)
+        
+        mock_client = Mock()
+        evaluator = GPTQualityEvaluator(mock_client, analysis_prompt_path=str(config_file))
+        
+        # Test valid JSON response
+        response = '{"score": 85, "explanation": "Good quality"}'
+        score, explanation = evaluator.parse_gpt_response(response)
+        assert score == 85.0
+        assert explanation == "Good quality"
+        
+        # Test invalid response (fallback behavior returns 50.0)
+        response = "Invalid response"
+        score, explanation = evaluator.parse_gpt_response(response)
+        assert score == 50.0
+        assert explanation == "Invalid response"
+
+
+class TestCodeExampleScanner:
+    """Test cases for CodeExampleScanner class."""
+
+    def test_init(self):
+        """Test scanner initialization."""
+        scanner = CodeExampleScanner()
+        assert hasattr(scanner, 'has_pygments')
+
+    def test_detect_language_by_extension(self, temp_dir):
+        """Test language detection by file extension."""
+        scanner = CodeExampleScanner()
+        
+        python_file = temp_dir / "test.py"
+        python_file.write_text("print('hello')")
+        
+        language = scanner._detect_language(python_file)
+        assert language == 'python'
+        
+        cpp_file = temp_dir / "test.cpp"
+        cpp_file.write_text("#include <iostream>")
+        
+        language = scanner._detect_language(cpp_file)
+        assert language == 'cpp'
+
+    def test_detect_comment_style(self):
+        """Test comment style detection."""
+        scanner = CodeExampleScanner()
+        
+        # Python-style comments
+        python_content = "# This is a Python comment\nprint('hello')"
+        assert scanner._detect_comment_style(python_content) == '#'
+        
+        # C-style comments
+        c_content = "// This is a C comment\nint main() {}"
+        assert scanner._detect_comment_style(c_content) == '//'
+
+    def test_extract_description(self):
+        """Test description extraction from comments."""
+        scanner = CodeExampleScanner()
+        
+        content = '''# This is a comprehensive description of the code
+# It explains what the program does in detail
+import sys
+'''
+        description = scanner._extract_description(content)
+        assert "comprehensive description" in description
+        assert len(description) > 10
+
+    def test_extract_file_info(self, temp_dir):
+        """Test file information extraction."""
+        scanner = CodeExampleScanner()
+        
+        # Create a test Python file
+        test_file = temp_dir / "example.py"
+        test_file.write_text('''#!/usr/bin/env python3
+# This is a sample Python script for demonstration
+# It shows how to calculate mathematical constants
+
+import math
+
+def calculate_pi():
+    """Calculate pi approximation."""
+    return 3.14159
+
+if __name__ == "__main__":
+    print(f"Pi is approximately {calculate_pi()}")
+''')
+        
+        file_info = scanner._extract_file_info(test_file)
+        
+        assert file_info is not None
+        assert file_info['language'] == 'python'
+        assert file_info['name'] == 'Example'
+        assert 'sample Python script' in file_info['description']
+        assert file_info['file_size'] > 0
+
+    def test_scan_directory(self, temp_dir):
+        """Test directory scanning."""
+        scanner = CodeExampleScanner()
+        
+        # Create test files
+        (temp_dir / "script.py").write_text("# Python script\nprint('hello')")
+        (temp_dir / "program.cpp").write_text("// C++ program\n#include <iostream>")
+        (temp_dir / "readme.txt").write_text("This is not code")
+        
+        results = scanner.scan_directory(str(temp_dir), max_files=10)
+        
+        # Should find at least 2 code files (may include txt file depending on pygments)
+        assert len(results) >= 2
+        languages = [r['language'] for r in results]
+        assert 'python' in languages
+        assert 'cpp' in languages
+
+    def test_update_terminology_file(self, temp_dir):
+        """Test terminology file updates."""
+        scanner = CodeExampleScanner()
+        terminology_file = temp_dir / "terminology.yaml"
+        
+        # Create initial terminology
+        initial_terminology = {'existing_key': 'existing_value'}
+        with open(terminology_file, 'w') as f:
+            yaml.dump(initial_terminology, f)
+        
+        # Sample code examples
+        code_examples = [
+            {
+                'name': 'Test Script',
+                'language': 'python',
+                'description': 'A test Python script',
+                'file_path': 'test.py'
+            }
+        ]
+        
+        scanner.update_terminology_file(str(terminology_file), code_examples)
+        
+        # Load updated terminology
+        with open(terminology_file, 'r') as f:
+            updated_terminology = yaml.safe_load(f)
+        
+        assert 'existing_key' in updated_terminology
+        assert 'code_examples' in updated_terminology
+        assert 'python' in updated_terminology['code_examples']
+        assert len(updated_terminology['code_examples']['python']) == 1
