@@ -42,7 +42,7 @@ def install_dependencies():
 class DocumentationGenerator:
     """Main class for generating documentation using OpenAI GPT models."""
     
-    def __init__(self, prompt_yaml_path: str = 'prompt.yaml', examples_dir: str = 'examples/',
+    def __init__(self, prompt_yaml_path: str = './prompts/generator/default.yaml', examples_dir: str = 'examples/',
                  terminology_path: str = 'terminology.yaml'):
         """Initialize the documentation generator with configuration."""
         self.client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
@@ -418,62 +418,38 @@ class DocumentAnalyzer:
 class GPTQualityEvaluator:
     """Evaluate documentation quality using GPT for subjective metrics."""
     
-    def __init__(self, client, model='gpt-4'):
+    def __init__(self, client, model='gpt-4', analysis_prompt_path='./prompts/analysis/default.yaml'):
         self.client = client
         self.model = model
+        self.analysis_prompt_path = analysis_prompt_path
+        self.analysis_config = self._load_analysis_config(analysis_prompt_path)
+        
+    def _load_analysis_config(self, path: str) -> dict:
+        """Load analysis prompt configuration from YAML file."""
+        try:
+            with open(path, 'r') as f:
+                return yaml.safe_load(f)
+        except FileNotFoundError:
+            print(f"Warning: Analysis config file not found at {path}")
+            return {}
         
     def create_evaluation_prompt(self, section_content: str, section_name: str, 
                                topic: str, criteria: str) -> str:
         """Create a prompt for evaluating specific quality criteria."""
         
-        prompts = {
-            "technical_accuracy": f"""
-Evaluate the technical accuracy of this {section_name} section about {topic}.
-Consider:
-- Are the commands, code examples, and technical details correct?
-- Are version numbers, dependencies, and requirements accurate?
-- Are there any outdated or incorrect technical statements?
-- Would following these instructions actually work?
-
-Section content:
-{section_content}
-
-Provide a score from 0-100 and a brief explanation (2-3 sentences).
-Format: {{"score": NUMBER, "explanation": "..."}}
-""",
-            
-            "writing_style": f"""
-Evaluate the writing style and tone of this {section_name} section for academic/research computing documentation.
-Consider:
-- Is the tone appropriately professional and academic?
-- Is it clear and accessible for graduate-level users?
-- Does it avoid being too casual or too dense?
-- Is the language consistent and well-structured?
-
-Section content:
-{section_content}
-
-Provide a score from 0-100 and a brief explanation (2-3 sentences).
-Format: {{"score": NUMBER, "explanation": "..."}}
-""",
-            
-            "completeness": f"""
-Evaluate the completeness of this {section_name} section about {topic}.
-Consider:
-- Does it cover all essential information for this section type?
-- Are there important details or steps missing?
-- For {section_name}, what key elements should be present?
-- Does it answer the questions users would typically have?
-
-Section content:
-{section_content}
-
-Provide a score from 0-100 and a brief explanation (2-3 sentences).
-Format: {{"score": NUMBER, "explanation": "..."}}
-"""
-        }
+        # Only use configured prompts from YAML file
+        if not self.analysis_config or 'analysis_prompts' not in self.analysis_config:
+            raise ValueError(f"Analysis configuration not found. Please ensure {self.analysis_prompt_path} exists and contains 'analysis_prompts' section.")
         
-        return prompts.get(criteria, "")
+        template = self.analysis_config['analysis_prompts'].get(criteria)
+        if not template:
+            raise ValueError(f"Analysis prompt for criteria '{criteria}' not found in configuration.")
+        
+        return template.format(
+            section_name=section_name,
+            topic=topic,
+            content=section_content
+        )
     
     def parse_gpt_response(self, response: str) -> Tuple[float, str]:
         """Parse the GPT response to extract score and explanation."""
@@ -540,6 +516,280 @@ Format: {{"score": NUMBER, "explanation": "..."}}
             time.sleep(0.5)
         
         return results
+
+
+class CodeExampleScanner:
+    """Scan filesystem for code examples and manage terminology metadata."""
+    
+    def __init__(self):
+        # Try to import pygments for language detection
+        try:
+            from pygments.lexers import get_lexer_for_filename
+            from pygments.util import ClassNotFound
+            self.get_lexer_for_filename = get_lexer_for_filename
+            self.ClassNotFound = ClassNotFound
+            self.has_pygments = True
+        except ImportError:
+            print("Warning: pygments not found. Install with: pip install pygments")
+            self.has_pygments = False
+    
+    def _detect_language(self, file_path: Path) -> str:
+        """Detect language using pygments or fallback to extension mapping."""
+        if self.has_pygments:
+            try:
+                lexer = self.get_lexer_for_filename(str(file_path))
+                # Map pygments names to our preferred names
+                name_mapping = {
+                    'python': 'python',
+                    'julia': 'julia',
+                    'matlab': 'matlab',
+                    'fortran': 'fortran',
+                    'c': 'c',
+                    'c++': 'cpp',
+                    'cpp': 'cpp',
+                    'cuda': 'cuda',
+                    'r': 'r',
+                    'bash': 'bash',
+                    'shell': 'bash',
+                    'perl': 'perl',
+                    'idl': 'idl'
+                }
+                detected_name = lexer.name.lower()
+                return name_mapping.get(detected_name, detected_name)
+            except self.ClassNotFound:
+                pass
+        
+        # Fallback to extension mapping
+        extension_mapping = {
+            '.py': 'python',
+            '.pyw': 'python',
+            '.jl': 'julia',
+            '.m': 'matlab',
+            '.f90': 'fortran',
+            '.f95': 'fortran',
+            '.f': 'fortran',
+            '.for': 'fortran',
+            '.c': 'c',
+            '.h': 'c',
+            '.cpp': 'cpp',
+            '.cxx': 'cpp',
+            '.cc': 'cpp',
+            '.hpp': 'cpp',
+            '.cu': 'cuda',
+            '.cuh': 'cuda',
+            '.cuf': 'cuda-fortran',
+            '.R': 'r',
+            '.r': 'r',
+            '.sh': 'bash',
+            '.bash': 'bash',
+            '.pl': 'perl',
+            '.pro': 'idl',
+            '.do': 'stata'
+        }
+        
+        return extension_mapping.get(file_path.suffix.lower(), 'unknown')
+    
+    def _detect_comment_style(self, content: str) -> str:
+        """Detect comment style from file content."""
+        lines = content.split('\n')[:10]
+        
+        for line in lines:
+            line = line.strip()
+            if line.startswith('#'):
+                return '#'
+            elif line.startswith('//'):
+                return '//'
+            elif line.startswith('!'):
+                return '!'
+            elif line.startswith('%'):
+                return '%'
+            elif line.startswith(';'):
+                return ';'
+            elif '/*' in line:
+                return '/* */'
+        
+        return '#'  # Default fallback
+    
+    def _extract_description(self, content: str) -> str:
+        """Extract description using detected comment style."""
+        comment_char = self._detect_comment_style(content)
+        lines = content.split('\n')[:20]
+        
+        descriptions = []
+        for line in lines:
+            line = line.strip()
+            if comment_char == '/* */' and ('/*' in line or '*' in line):
+                # Handle C-style comments
+                if '/*' in line:
+                    desc = line.split('/*')[1].split('*/')[0].strip()
+                elif line.startswith('*') and not line.startswith('*/'):
+                    desc = line[1:].strip()
+                else:
+                    continue
+            elif line.startswith(comment_char) and len(line) > len(comment_char) + 2:
+                desc = line[len(comment_char):].strip()
+            else:
+                continue
+            
+            # Skip decorative lines and very short descriptions
+            if desc and not desc.startswith(('=', '-', '*', '+', '#')) and len(desc) > 10:
+                descriptions.append(desc)
+                if len(descriptions) >= 2:
+                    break
+        
+        return ' '.join(descriptions)[:200] if descriptions else "Code example"
+    
+    def _calculate_file_hash(self, file_path: Path) -> str:
+        """Calculate SHA-256 hash of file contents."""
+        try:
+            return hashlib.sha256(file_path.read_bytes()).hexdigest()
+        except Exception:
+            return ""
+    
+    def _find_slurm_files(self, file_path: Path) -> List[str]:
+        """Find associated SLURM batch files."""
+        directory = file_path.parent
+        slurm_patterns = ['*.sbatch', '*.slurm', 'run.*']
+        
+        slurm_files = []
+        for pattern in slurm_patterns:
+            matches = list(directory.glob(pattern))
+            slurm_files.extend(str(f) for f in matches if f.is_file())
+        
+        return list(set(slurm_files))  # Remove duplicates
+    
+    def _extract_file_info(self, file_path: Path) -> Optional[Dict]:
+        """Extract metadata from a code file."""
+        if not file_path.is_file():
+            return None
+        
+        try:
+            # Read file content for description extraction
+            with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
+                content = f.read(1000)  # First 1000 chars
+            
+            # Detect language using pygments
+            language = self._detect_language(file_path)
+            
+            if language == 'unknown':
+                return None  # Skip unknown file types
+            
+            # Extract description from comments
+            description = self._extract_description(content)
+            
+            # Find associated SLURM files
+            slurm_files = self._find_slurm_files(file_path)
+            
+            file_info = {
+                'name': file_path.stem.replace('_', ' ').title(),
+                'file_path': str(file_path.relative_to(Path.cwd()) if file_path.is_relative_to(Path.cwd()) else file_path),
+                'language': language,
+                'description': description,
+                'file_hash': self._calculate_file_hash(file_path),
+                'last_modified': file_path.stat().st_mtime,
+                'file_size': file_path.stat().st_size,
+                'directory': file_path.parent.name,
+                'scanned_at': datetime.now().isoformat()
+            }
+            
+            if slurm_files:
+                file_info['slurm_files'] = slurm_files
+            
+            return file_info
+            
+        except Exception as e:
+            print(f"Error processing {file_path}: {e}")
+            return None
+    
+    def scan_directory(self, scan_path: str, max_files: int = 100) -> List[Dict]:
+        """Scan directory for code examples."""
+        scan_path = Path(scan_path).resolve()
+        
+        if not scan_path.exists():
+            raise ValueError(f"Path does not exist: {scan_path}")
+        
+        print(f"🔍 Scanning {scan_path} for code examples...")
+        
+        code_examples = []
+        file_count = 0
+        
+        # Walk through directory tree
+        for file_path in scan_path.rglob('*'):
+            if file_count >= max_files:
+                print(f"⚠️  Reached maximum file limit ({max_files})")
+                break
+                
+            if file_path.is_file():
+                file_info = self._extract_file_info(file_path)
+                if file_info:
+                    code_examples.append(file_info)
+                    file_count += 1
+                    if file_count % 10 == 0:
+                        print(f"   Processed {file_count} files...")
+        
+        print(f"✅ Found {len(code_examples)} code examples")
+        return code_examples
+    
+    def update_terminology_file(self, terminology_path: str, code_examples: List[Dict]) -> None:
+        """Update terminology file with code examples."""
+        try:
+            with open(terminology_path, 'r') as f:
+                terminology = yaml.safe_load(f) or {}
+        except FileNotFoundError:
+            terminology = {}
+        
+        # Organize examples by language
+        examples_by_language = {}
+        for example in code_examples:
+            language = example['language']
+            if language not in examples_by_language:
+                examples_by_language[language] = []
+            examples_by_language[language].append(example)
+        
+        # Update terminology with code examples
+        if 'code_examples' not in terminology:
+            terminology['code_examples'] = {}
+        
+        for language, examples in examples_by_language.items():
+            terminology['code_examples'][language] = examples
+        
+        # Add metadata about the scan
+        terminology['code_examples_metadata'] = {
+            'last_scan': datetime.now().isoformat(),
+            'total_examples': len(code_examples),
+            'languages': list(examples_by_language.keys()),
+            'scan_summary': {lang: len(examples) for lang, examples in examples_by_language.items()}
+        }
+        
+        # Write updated terminology
+        with open(terminology_path, 'w') as f:
+            yaml.dump(terminology, f, default_flow_style=False, sort_keys=False, indent=2)
+        
+        print(f"✅ Updated {terminology_path} with {len(code_examples)} code examples")
+        print(f"   Languages found: {', '.join(examples_by_language.keys())}")
+    
+    def check_for_updates(self, terminology_path: str) -> List[str]:
+        """Check if any code examples have been updated since last scan."""
+        try:
+            with open(terminology_path, 'r') as f:
+                terminology = yaml.safe_load(f) or {}
+        except FileNotFoundError:
+            return []
+        
+        code_examples = terminology.get('code_examples', {})
+        updated_files = []
+        
+        for language, examples in code_examples.items():
+            for example in examples:
+                file_path = Path(example['file_path'])
+                if file_path.exists():
+                    current_hash = self._calculate_file_hash(file_path)
+                    stored_hash = example.get('file_hash', '')
+                    
+                    if current_hash != stored_hash:
+                        updated_files.append(str(file_path))
+        
+        return updated_files
 
 
 def load_and_analyze_versions(topic_filename: str, model: str, temperature: str, num_versions: int = 5):
@@ -790,6 +1040,8 @@ def main():
     parser.add_argument('--terminology', default='terminology.yaml', help='Path to terminology configuration file')
     parser.add_argument('--scan-code-examples', metavar='PATH', help='Scan filesystem path for code examples and update terminology file')
     parser.add_argument('--update-code-examples', action='store_true', help='Update existing code examples in terminology file')
+    parser.add_argument('--generator-prompt', default='./prompts/generator/default.yaml', help='Path to generator prompt configuration file')
+    parser.add_argument('--analysis-prompt', default='./prompts/analysis/default.yaml', help='Path to analysis prompt configuration file')
     
     args = parser.parse_args()
     
@@ -808,6 +1060,48 @@ def main():
         print("   Please create a .env file with: OPENAI_API_KEY=your-key-here")
         return 1
     
+    # Handle code example scanning
+    if args.scan_code_examples:
+        print(f"🔍 Scanning code examples from: {args.scan_code_examples}")
+        scanner = CodeExampleScanner()
+        try:
+            code_examples = scanner.scan_directory(args.scan_code_examples)
+            scanner.update_terminology_file(args.terminology, code_examples)
+            print("✅ Code example scanning complete")
+            return 0
+        except Exception as e:
+            print(f"❌ Error scanning code examples: {e}")
+            return 1
+    
+    # Handle code example updates
+    if args.update_code_examples:
+        print(f"🔄 Checking for code example updates...")
+        scanner = CodeExampleScanner()
+        try:
+            updated_files = scanner.check_for_updates(args.terminology)
+            if updated_files:
+                print(f"📝 Found {len(updated_files)} updated files:")
+                for file_path in updated_files:
+                    print(f"   - {file_path}")
+                
+                # Ask user if they want to rescan
+                response = input("Rescan updated files? [y/N]: ").lower()
+                if response == 'y':
+                    # Rescan only the directories containing updated files
+                    scan_dirs = set(Path(f).parent for f in updated_files)
+                    all_examples = []
+                    for scan_dir in scan_dirs:
+                        examples = scanner.scan_directory(str(scan_dir))
+                        all_examples.extend(examples)
+                    scanner.update_terminology_file(args.terminology, all_examples)
+                    print("✅ Code examples updated")
+            else:
+                print("✅ All code examples are up to date")
+            return 0
+        except Exception as e:
+            print(f"❌ Error checking code example updates: {e}")
+            return 1
+    
     # Generate topic filename
     topic_filename = args.topic.lower().replace(' ', '_')
     
@@ -818,7 +1112,7 @@ def main():
         print("🔧 Initializing documentation generator...")
         try:
             generator = DocumentationGenerator(
-                prompt_yaml_path='prompt.yaml',
+                prompt_yaml_path=args.generator_prompt,
                 examples_dir='examples/',
                 terminology_path=args.terminology
             )

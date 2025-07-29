@@ -1,0 +1,76 @@
+analysis_prompts:
+  technical_accuracy: |
+    Evaluate the technical accuracy of this {section_name} section about {topic}.
+    
+    Rate from 1-10 based on:
+    - Correctness of technical information
+    - Appropriate commands and syntax
+    - Accurate module names and versions
+    - Proper SLURM directives
+    - Valid file paths and examples
+    
+    Provide a score and brief explanation.
+    
+    Content to evaluate:
+    {content}
+
+  writing_style: |
+    Evaluate the writing style and clarity of this {section_name} section about {topic}.
+    
+    Rate from 1-10 based on:
+    - Clear and professional language
+    - Appropriate academic tone
+    - Good organization and flow
+    - Consistent terminology
+    - Proper grammar and formatting
+    
+    Provide a score and brief explanation.
+    
+    Content to evaluate:
+    {content}
+
+  completeness: |
+    Evaluate the completeness of this {section_name} section about {topic}.
+    
+    Rate from 1-10 based on:
+    - Covers all necessary information for the section
+    - Includes practical examples where appropriate
+    - Addresses common use cases
+    - Provides sufficient detail for implementation
+    - Links to relevant resources
+    
+    Provide a score and brief explanation.
+    
+    Content to evaluate:
+    {content}
+
+section_criteria:
+  Description:
+    - "Clear explanation of what the technology/tool is"
+    - "Mentions relevance to HPC/cluster computing"
+    - "Identifies key features and capabilities"
+    
+  Installation:
+    - "Provides module loading commands"
+    - "Lists dependencies and prerequisites"
+    - "Includes version-specific instructions"
+    
+  Usage:
+    - "Shows basic command syntax and options"
+    - "Includes SLURM job submission examples"
+    - "Demonstrates typical workflows"
+    
+  Examples:
+    - "Provides working code examples"
+    - "Includes complete job scripts"
+    - "Shows expected outputs"
+    
+  References:
+    - "Links to official documentation"
+    - "Cites relevant resources"
+    - "Provides additional learning materials"
+
+quality_weights:
+  technical_accuracy: 0.4
+  writing_style: 0.3
+  completeness: 0.3
