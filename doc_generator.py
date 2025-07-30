@@ -1,10 +1,22 @@
 #!/usr/bin/env python3
 """
 Documentation Generator - Standalone Script
-Converted from Jupyter notebook to generate HTML documentation using OpenAI GPT models.
+Version 1.1.0
+
+Advanced documentation generation with intelligent HPC module recommendations,
+code examples integration, and enhanced prompt templating system.
+
+Features:
+- ModuleRecommender system for accurate HPC module suggestions
+- Parameterized prompt templates with runtime customization
+- Automatic code examples integration based on topic relevance
+- Enhanced analysis pipeline with improved section detection
+- Support for multiple output formats (HTML/Markdown)
 
 This script provides comprehensive documentation generation with analysis and evaluation capabilities.
 """
+
+__version__ = "1.1.0"
 
 import os
 import re
@@ -151,6 +163,84 @@ class DocumentationGenerator:
         
         return keywords
     
+    def _extract_target_language(self, topic_keywords: List[str]) -> Optional[str]:
+        """Extract target programming language from topic keywords."""
+        language_mapping = {
+            'python': 'python',
+            'c': 'c', 
+            'fortran': 'fortran',
+            'mpi': 'c',  # MPI often associated with C
+            'openmp': 'c'  # OpenMP often associated with C
+        }
+        
+        for keyword in topic_keywords:
+            if keyword.lower() in language_mapping:
+                return language_mapping[keyword.lower()]
+        return None
+    
+    def _calculate_example_relevance(self, example: Dict, topic_keywords: List[str]) -> float:
+        """Calculate relevance score for a code example based on topic keywords."""
+        score = 0.0
+        
+        # Convert strings to lowercase for matching
+        file_path_lower = example.get('file_path', '').lower()
+        description_lower = example.get('description', '').lower()
+        name_lower = example.get('name', '').lower()
+        
+        for keyword in topic_keywords:
+            keyword_lower = keyword.lower()
+            
+            # Directory keywords (high weight - indicates topic area)
+            if keyword_lower in file_path_lower:
+                score += 5.0
+            
+            # Description keywords (medium weight - indicates content relevance)
+            if keyword_lower in description_lower:
+                score += 3.0
+            
+            # File name keywords (lower weight - may be coincidental)
+            if keyword_lower in name_lower:
+                score += 2.0
+        
+        return score
+    
+    def _find_relevant_code_examples(self, topic_keywords: List[str]) -> List[Dict]:
+        """Find code examples relevant to topic keywords."""
+        if 'code_examples' not in self.terminology:
+            return []
+        
+        relevant_examples = []
+        code_examples = self.terminology['code_examples']
+        
+        # Extract primary language from topic keywords
+        target_language = self._extract_target_language(topic_keywords)
+        
+        # Search through all languages, prioritizing target language
+        for language, examples in code_examples.items():
+            if target_language and language != target_language:
+                continue  # Skip if we have a target language and this isn't it
+                
+            for example in examples:
+                relevance_score = self._calculate_example_relevance(example, topic_keywords)
+                if relevance_score > 0:
+                    example_copy = example.copy()
+                    example_copy['relevance_score'] = relevance_score
+                    relevant_examples.append(example_copy)
+        
+        # If no target language specified, include examples from all languages
+        if not target_language:
+            for language, examples in code_examples.items():
+                for example in examples:
+                    relevance_score = self._calculate_example_relevance(example, topic_keywords)
+                    if relevance_score > 0:
+                        example_copy = example.copy()
+                        example_copy['relevance_score'] = relevance_score
+                        relevant_examples.append(example_copy)
+        
+        # Sort by relevance and return top results
+        relevant_examples.sort(key=lambda x: x['relevance_score'], reverse=True)
+        return relevant_examples[:8]
+    
     def _find_relevant_modules(self, topic_keywords: List[str]) -> List[Dict]:
         """Find modules relevant to the topic keywords."""
         if not self.terminology.get('hpc_modules') or not topic_keywords:
@@ -196,22 +286,21 @@ class DocumentationGenerator:
         context_parts = []
         topic_keywords = self._extract_topic_keywords(topic)
         
-        # Find relevant modules based on topic keywords
-        relevant_modules = self._find_relevant_modules(topic_keywords)
-        
-        if relevant_modules:
-            context_parts.append("Available HPC Modules (relevant to this topic):")
-            for module in relevant_modules:
-                context_parts.append(f"- {module['name']}: {module['description']}")
-        else:
-            # Fallback: include some essential modules if no matches found
-            if 'hpc_modules' in self.terminology:
+        # Get recommended modules using ModuleRecommender
+        if 'hpc_modules' in self.terminology:
+            module_recommender = ModuleRecommender(self.terminology['hpc_modules'])
+            module_recommendations = module_recommender.get_formatted_recommendations(topic)
+            if module_recommendations:
+                context_parts.append(module_recommendations)
+            else:
+                # Fallback: include some essential modules if no matches found
                 essential_modules = [m for m in self.terminology['hpc_modules'] 
-                                   if m['category'] in ['programming', 'compiler']][:8]
+                                   if m.get('category') in ['programming', 'compiler']][:5]
                 if essential_modules:
-                    context_parts.append("Available HPC Modules (essential):")
+                    context_parts.append("Essential HPC Modules:")
                     for module in essential_modules:
-                        context_parts.append(f"- {module['name']}: {module['description']}")
+                        context_parts.append(f"- module load {module['name']}")
+                        context_parts.append(f"  Description: {module['description']}")
         
         # Include cluster commands for most topics
         if 'cluster_commands' in self.terminology:
@@ -235,37 +324,63 @@ class DocumentationGenerator:
                 for partition in self.terminology['partitions']:
                     context_parts.append(f"- {partition['name']}: {partition['description']}")
         
+        # Add relevant code examples section
+        relevant_examples = self._find_relevant_code_examples(topic_keywords)
+        if relevant_examples:
+            context_parts.append("\nRelevant Code Examples:")
+            for example in relevant_examples:
+                context_parts.append(f"- {example['name']} ({example['language']})")
+                context_parts.append(f"  Path: {example['file_path']}")
+                context_parts.append(f"  Description: {example['description']}")
+        
         return "\n".join(context_parts)
     
-    def _build_system_prompt(self, topic: str = "") -> str:
-        """Build the system prompt with terminology context."""
-        base_prompt = self.prompt_config.get('system_prompt', 
+    def _build_system_prompt(self, topic: str = "", **kwargs) -> str:
+        """Build the system prompt with topic and parameter substitution."""
+        system_template = self.prompt_config.get('system_prompt', 
             'You are a technical documentation expert creating HTML knowledge base articles.')
         
-        # Add structure information if available
-        if 'documentation_structure' in self.prompt_config:
-            structure = self.prompt_config['documentation_structure']
-            base_prompt += f"\n\nEach article should follow this structure:\n"
-            base_prompt += "\n".join(f"- {section}" for section in structure)
+        # Build placeholders dictionary
+        placeholders = {
+            'topic': topic,
+            'organization': 'FASRC',
+            'cluster_name': 'FASRC cluster',
+            'audience': 'graduate-level researchers'
+        }
+        
+        # Add config-defined placeholders
+        if 'placeholders' in self.prompt_config:
+            placeholders.update(self.prompt_config['placeholders'])
+        
+        # Override with any passed kwargs
+        placeholders.update(kwargs)
+        
+        # Format the system prompt template
+        try:
+            formatted_prompt = system_template.format(**placeholders)
+        except KeyError as e:
+            print(f"Warning: Missing placeholder {e} in system prompt template")
+            formatted_prompt = system_template
         
         # Add terminology context
         terminology_context = self._build_terminology_context(topic)
         if terminology_context:
-            base_prompt += f"\n\nRelevant HPC Environment Information:\n{terminology_context}"
-            base_prompt += "\n\nWhen writing documentation, reference these specific modules, commands, and resources where appropriate. Use exact module names as listed above."
+            formatted_prompt += f"\n\nRelevant HPC Environment Information:\n{terminology_context}"
+            formatted_prompt += "\n\nWhen writing documentation, reference these specific modules, commands, and resources where appropriate. Use exact module names as listed above."
         
         # Add any terms/definitions from prompt config
         if 'terms' in self.prompt_config:
-            base_prompt += "\n\nAdditional Key Terms:\n"
+            formatted_prompt += "\n\nAdditional Key Terms:\n"
             for term, definition in self.prompt_config['terms'].items():
-                base_prompt += f"- {term}: {definition}\n"
+                formatted_prompt += f"- {term}: {definition}\n"
         
-        return base_prompt
+        return formatted_prompt
     
     def generate_documentation(self, query: str, runs: int = 5, 
                              model: str = 'gpt-4', 
                              temperature: float = 0.7,
-                             topic_filename: str = None) -> List[str]:
+                             topic_filename: str = None,
+                             output_dir: str = 'output') -> List[str]:
         """Generate multiple documentation pages based on the query."""
         if topic_filename is None:
             topic_filename = self._extract_topic_from_query(query)
@@ -314,10 +429,10 @@ class DocumentationGenerator:
                 else:
                     filename = f'{topic_filename}_{model_name}_temp{temp_str}_v{i+1}.html'                
                 # Save the response
-                output_dir = Path('output')
-                output_dir.mkdir(exist_ok=True)
+                output_path = Path(output_dir)
+                output_path.mkdir(exist_ok=True)
                 
-                filepath = output_dir / filename
+                filepath = output_path / filename
                 with open(filepath, 'w', encoding='utf-8') as f:
                     f.write(content)
                 
@@ -328,6 +443,137 @@ class DocumentationGenerator:
                 print(f"✗ Error generating documentation (run {i+1}): {e}")
         
         return generated_files
+
+
+class ModuleRecommender:
+    """Recommends HPC modules based on topic analysis."""
+    
+    def __init__(self, hpc_modules: List[Dict]):
+        self.hpc_modules = hpc_modules
+        
+        # Define keyword mappings for different topics
+        self.keyword_mappings = {
+            'python': ['python', 'py', 'jupyter', 'anaconda', 'conda', 'numpy', 'scipy', 'pandas'],
+            'r': ['statistics', 'statistical', 'rstudio', 'bioconductor'],
+            'matlab': ['matlab'],
+            'mathematica': ['mathematica', 'wolfram'],
+            'julia': ['julia'],
+            'gcc': ['c', 'cpp', 'c++', 'gnu', 'gcc', 'fortran', 'programming'],
+            'intel': ['intel', 'icc', 'ifort', 'mkl'],
+            'cuda': ['cuda', 'gpu', 'nvidia'],
+            'mpi': ['mpi', 'parallel', 'distributed'],
+            'java': ['java', 'jvm'],
+            'perl': ['perl'],
+            'ruby': ['ruby']
+        }
+        
+        # Define priority levels for different module types
+        self.priority_categories = {
+            'latest': ['fasrc02', 'fasrc01'],  # Prefer newer FASRC builds
+            'stable': ['fasrc01'],             # Prefer stable builds
+            'essential': ['programming', 'compiler', 'mpi'],  # Essential categories
+        }
+    
+    def get_modules_for_topic(self, topic: str, max_modules: int = 3) -> List[Dict]:
+        """Get recommended modules for a given topic."""
+        topic_keywords = self._extract_keywords_from_topic(topic)
+        
+        # Find matching modules
+        matching_modules = []
+        
+        for module in self.hpc_modules:
+            relevance_score = self._calculate_module_relevance(module, topic_keywords)
+            if relevance_score > 0:
+                module_copy = module.copy()
+                module_copy['relevance_score'] = relevance_score
+                module_copy['load_command'] = f"module load {module['name']}"
+                matching_modules.append(module_copy)
+        
+        # Sort by relevance score and priority
+        matching_modules.sort(key=lambda x: (x['relevance_score'], self._get_priority_score(x)), reverse=True)
+        
+        return matching_modules[:max_modules]
+    
+    def _extract_keywords_from_topic(self, topic: str) -> List[str]:
+        """Extract keywords from topic for module matching."""
+        import re
+        words = re.findall(r'\b\w+\b', topic.lower())
+        
+        # Filter out stop words
+        stop_words = {
+            'and', 'or', 'the', 'a', 'an', 'in', 'on', 'at', 'to', 'for', 'of', 'with',
+            'using', 'how', 'what', 'when', 'where', 'why', 'computing', 'cluster',
+            'fasrc', 'cannon', 'hpc', 'high', 'performance', 'tutorial', 'guide'
+        }
+        
+        return [word for word in words if len(word) >= 2 and word not in stop_words]
+    
+    def _calculate_module_relevance(self, module: Dict, topic_keywords: List[str]) -> float:
+        """Calculate how relevant a module is to the topic keywords."""
+        score = 0.0
+        module_name_lower = module['name'].lower()
+        module_desc_lower = module.get('description', '').lower()
+        
+        # Special case for R - check if module name starts with "r/"
+        if any(keyword in ['statistics', 'statistical'] for keyword in topic_keywords):
+            if module['name'].lower().startswith('r/'):
+                score += 15.0
+        
+        for topic_keyword in topic_keywords:
+            # Check direct keyword mapping
+            for module_type, keywords in self.keyword_mappings.items():
+                if topic_keyword in keywords:
+                    # High score for direct module type match in name
+                    if module_type in module_name_lower:
+                        score += 10.0
+                    # Medium score for related keywords in name
+                    for keyword in keywords:
+                        if keyword in module_name_lower:
+                            score += 5.0
+                        if keyword in module_desc_lower:
+                            score += 2.0
+            
+            # Direct keyword match in module name (fallback)
+            if topic_keyword in module_name_lower:
+                score += 7.0
+            
+            # Keyword match in description
+            if topic_keyword in module_desc_lower:
+                score += 3.0
+        
+        return score
+    
+    def _get_priority_score(self, module: Dict) -> float:
+        """Get priority score based on module version and category."""
+        score = 0.0
+        module_name = module['name'].lower()
+        
+        # Prefer newer FASRC builds
+        if 'fasrc02' in module_name:
+            score += 2.0
+        elif 'fasrc01' in module_name:
+            score += 1.0
+        
+        # Prefer essential categories
+        category = module.get('category', '')
+        if category in self.priority_categories['essential']:
+            score += 1.0
+        
+        return score
+    
+    def get_formatted_recommendations(self, topic: str) -> str:
+        """Get formatted module recommendations for inclusion in documentation context."""
+        recommended_modules = self.get_modules_for_topic(topic)
+        
+        if not recommended_modules:
+            return ""
+        
+        lines = ["Recommended Modules:"]
+        for module in recommended_modules:
+            lines.append(f"- {module['load_command']}")
+            lines.append(f"  Description: {module['description']}")
+        
+        return "\n".join(lines)
 
 
 class DocumentAnalyzer:
@@ -792,10 +1038,10 @@ class CodeExampleScanner:
         return updated_files
 
 
-def load_and_analyze_versions(topic_filename: str, model: str, temperature: str, num_versions: int = 5):
+def load_and_analyze_versions(topic_filename: str, model: str, temperature: str, num_versions: int = 5, output_dir: str = 'output'):
     """Load all versions and extract their sections."""
     analyzer = DocumentAnalyzer()
-    output_dir = Path('output')
+    output_path = Path(output_dir)
     all_sections = {}
     
     for version in range(1, num_versions + 1):
@@ -805,7 +1051,7 @@ def load_and_analyze_versions(topic_filename: str, model: str, temperature: str,
         else:
             filename = f'{topic_filename}_{model}_temp{temperature}_v{version}.html'
         
-        filepath = output_dir / filename
+        filepath = output_path / filename
         
         if not filepath.exists():
             print(f"⚠️  File not found: {filepath}")
@@ -985,9 +1231,9 @@ def generate_analysis_report(topic: str, model: str, temperature: float,
     return '\n'.join(report)
 
 
-def compare_versions(topic_filename: str, model: str, temperature: str, runs: int):
+def compare_versions(topic_filename: str, model: str, temperature: str, runs: int, output_dir: str = 'output'):
     """Compare key differences between generated versions."""
-    output_dir = Path('output')
+    output_path = Path(output_dir)
     
     # Build filename pattern
     model_clean = model.replace('-', '').replace('.', '')
@@ -995,10 +1241,10 @@ def compare_versions(topic_filename: str, model: str, temperature: str, runs: in
     
     if runs == 1:
         pattern = f'{topic_filename}_{model_clean}_temp{temp_str}.html'
-        files = [output_dir / pattern] if (output_dir / pattern).exists() else []
+        files = [output_path / pattern] if (output_path / pattern).exists() else []
     else:
-        files = [output_dir / f'{topic_filename}_{model_clean}_temp{temp_str}_v{i}.html' 
-                for i in range(1, runs + 1) if (output_dir / f'{topic_filename}_{model_clean}_temp{temp_str}_v{i}.html').exists()]
+        files = [output_path / f'{topic_filename}_{model_clean}_temp{temp_str}_v{i}.html' 
+                for i in range(1, runs + 1) if (output_path / f'{topic_filename}_{model_clean}_temp{temp_str}_v{i}.html').exists()]
     
     if len(files) < 2:
         print("Need at least 2 versions to compare")
@@ -1042,6 +1288,7 @@ def main():
     parser.add_argument('--update-code-examples', action='store_true', help='Update existing code examples in terminology file')
     parser.add_argument('--generator-prompt', default='./prompts/generator/default.yaml', help='Path to generator prompt configuration file')
     parser.add_argument('--analysis-prompt', default='./prompts/analysis/default.yaml', help='Path to analysis prompt configuration file')
+    parser.add_argument('--output-dir', default='output', help='Output directory for generated files (default: output)')
     
     args = parser.parse_args()
     
@@ -1140,7 +1387,8 @@ def main():
             runs=args.runs,
             model=args.model,
             temperature=args.temperature,
-            topic_filename=topic_filename
+            topic_filename=topic_filename,
+            output_dir=args.output_dir
         )
         
         # Calculate elapsed time
@@ -1157,7 +1405,7 @@ def main():
     # Run comparison if requested
     if args.compare:
         print(f"\n📊 Running comparison...")
-        compare_versions(topic_filename, args.model, args.temperature, args.runs)
+        compare_versions(topic_filename, args.model, args.temperature, args.runs, args.output_dir)
     
     # Run analysis if requested
     if args.analyze:
@@ -1171,7 +1419,8 @@ def main():
             topic_filename=topic_filename,
             model=model_clean,
             temperature=temp_str,
-            num_versions=args.runs
+            num_versions=args.runs,
+            output_dir=args.output_dir
         )
         
         if not all_sections:
@@ -1207,7 +1456,7 @@ def main():
         )
         
         # Save the best compilation
-        best_output_path = Path('output') / f'{topic_filename}_best_compilation.html'
+        best_output_path = Path(args.output_dir) / f'{topic_filename}_best_compilation.html'
         with open(best_output_path, 'w', encoding='utf-8') as f:
             f.write(best_document_html)
         
@@ -1215,7 +1464,7 @@ def main():
         report_content = generate_analysis_report(
             args.topic, args.model, args.temperature, all_sections, scores_data
         )
-        report_path = Path('output') / f'{topic_filename}_analysis_report.md'
+        report_path = Path(args.output_dir) / f'{topic_filename}_analysis_report.md'
         with open(report_path, 'w', encoding='utf-8') as f:
             f.write(report_content)
         

@@ -1,0 +1,57 @@
+# Markdown-focused prompt template for documentation generation
+# Demonstrates output format control via prompts
+
+system_prompt: |
+  You are a technical documentation expert creating {format} knowledge base articles for {organization}.
+  
+  Generate comprehensive documentation for {topic} that follows academic computing standards.
+  Generate clean, well-structured {format}.
+  
+  Focus on:
+  - {topic} usage in HPC environments
+  - Best practices for {topic} on cluster systems  
+  - Practical examples relevant to {topic}
+  - Integration with {organization} infrastructure
+
+  Each article should follow this structure:
+  - Description (overview of {topic})
+  - Installation (how to install/access {topic})
+  - Usage (how to use {topic} effectively)
+  - Examples (practical {topic} examples)
+  - References (links and resources for {topic})
+
+user_prompt: |
+  Create a detailed {format} knowledge base article about using {topic} on the {cluster_name}.
+  
+  The article should be written for {audience} and include:
+  - Comprehensive overview of {topic}
+  - Step-by-step installation instructions for {topic}
+  - Usage examples specific to {topic} on HPC systems
+  - Common troubleshooting scenarios for {topic}
+  - Performance considerations for {topic}
+  
+  Generate clean, well-structured {format}. Make it comprehensive but accessible.
+  
+  Query: {query}
+
+placeholders:
+  format: "Markdown"
+  organization: "Faculty Arts and Sciences Research Computing (FASRC)"
+  cluster_name: "FASRC cluster"
+  audience: "graduate-level researchers and academic staff"
+
+terms:
+  FASRC: "Faculty Arts and Sciences Research Computing"
+
+documentation_structure:
+  - Description
+  - Installation  
+  - Usage
+  - Examples
+  - References
+
+notes:
+  - Output should be in Markdown format (.md)
+  - Use proper Markdown syntax throughout
+  - Focus on {organization} relevant technical documentation
+  - Include code examples in appropriate language blocks

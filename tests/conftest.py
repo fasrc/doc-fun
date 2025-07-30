@@ -39,6 +39,49 @@ def sample_terminology():
                 'name': 'python/3.12.8-fasrc01',
                 'description': 'Python 3.12 with Anaconda distribution',
                 'category': 'programming'
+            },
+            {
+                'name': 'python/3.10.13-fasrc01',
+                'description': 'Python 3.10 with Anaconda distribution',
+                'category': 'programming'
+            },
+            {
+                'name': 'gcc/14.2.0-fasrc01',
+                'description': 'GNU Compiler Collection (latest)',
+                'category': 'compiler'
+            },
+            {
+                'name': 'R/4.4.3-fasrc01',
+                'description': 'R statistical computing environment',
+                'category': 'programming'
+            },
+            {
+                'name': 'cuda/12.9.1-fasrc01',
+                'description': 'CUDA toolkit for GPU computing',
+                'category': 'gpu'
+            },
+            {
+                'name': 'matlab/R2024b-fasrc01',
+                'description': 'MATLAB technical computing platform',
+                'category': 'programming'
+            }
+        ],
+        'code_examples': {
+            'python': [
+                {
+                    'name': 'Test Script',
+                    'file_path': 'src/test.py',
+                    'language': 'python',
+                    'description': 'A sample Python script for testing',
+                    'relevance_score': 10.0
+                }
+            ]
+        },
+        'cluster_commands': [
+            {
+                'name': 'sbatch',
+                'description': 'Submit a batch job',
+                'usage': 'sbatch script.sh'
             }
         ]
     }

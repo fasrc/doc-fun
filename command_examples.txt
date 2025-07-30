@@ -1,0 +1,49 @@
+# Documentation Generator Command Examples
+
+## Basic Documentation Generation
+python doc_generator.py --topic "Python Programming" --runs 3
+python doc_generator.py --topic "MPI Parallel Computing" --runs 1 --temperature 0.7
+python doc_generator.py --topic "GPU Computing with CUDA" --model gpt-4 --runs 2
+
+## Output Format Control
+python doc_generator.py --topic "Getting Started Guide" --prompt-params format="Markdown"
+python doc_generator.py --topic "API Documentation" --prompt-params format="HTML"
+
+## Custom Output Directory
+python doc_generator.py --topic "User Manual" --output-dir /path/to/docs --runs 1
+
+## Code Examples Management
+python doc_generator.py --topic test --scan-code-examples src/User_Codes --skip-generation
+python doc_generator.py --topic test --scan-code-examples src/User_Codes/Languages/Python --skip-generation
+python doc_generator.py --topic test --update-code-examples --skip-generation
+
+## Analysis and Evaluation
+python doc_generator.py --topic "Machine Learning" --runs 3 --analyze
+python doc_generator.py --topic "Data Processing" --compare --runs 2
+
+## Custom Prompts and Templates
+python doc_generator.py --topic "README Documentation" --generator-prompt ./prompts/generator/user_docs_topic_readme.yaml
+python doc_generator.py --topic "Technical Guide" --generator-prompt ./prompts/generator/markdown.yaml
+
+## Advanced Parameter Customization
+python doc_generator.py --topic "HPC Tutorial" --prompt-params audience="beginners" organization="Research Computing"
+python doc_generator.py --topic "Advanced Computing" --prompt-params format="HTML" audience="expert users"
+
+## Skip Generation (for testing/scanning only)
+python doc_generator.py --topic "Test Run" --skip-generation --scan-code-examples src/
+python doc_generator.py --topic "Parallel Python" --skip-generation  # Test terminology context
+
+## Dependency Management
+python doc_generator.py --topic "Setup Guide" --install-deps --runs 1
+
+## Multiple Topics Example Workflow
+# 1. Scan code examples first
+python doc_generator.py --topic temp --scan-code-examples src/User_Codes --skip-generation
+
+# 2. Generate documentation with examples integrated
+python doc_generator.py --topic "Parallel Python" --runs 2 --analyze
+python doc_generator.py --topic "C Programming" --runs 1 --output-dir docs/c
+python doc_generator.py --topic "Fortran HPC" --runs 1 --output-dir docs/fortran
+
+# 3. Generate README with directory structure
+python doc_generator.py --topic "Parallel_Computing" --generator-prompt ./prompts/generator/user_docs_topic_readme.yaml --output-dir docs/
