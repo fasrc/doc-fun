@@ -1,6 +1,6 @@
 .env
 src/
 *.html
-*.md
 .DS_Store
 __pycache__/
+output/
