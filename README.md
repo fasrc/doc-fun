@@ -283,7 +283,15 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📊 Version History
 
-### v1.1.0 (Current)
+### v2.0.0 (Current)
+- ✅ **Professional Documentation**: Comprehensive MkDocs site with Material theme
+- ✅ **Auto-Generated API Docs**: mkdocstrings integration with source code
+- ✅ **GitHub Pages Deployment**: Automated documentation hosting
+- ✅ **Complete User Guides**: Installation, getting started, testing, plugins, contributing
+- ✅ **Advanced Examples**: Basic usage, workflows, plugin development, troubleshooting
+- ✅ **Plugin Architecture**: Extensible recommendation engine system
+
+### v1.1.0
 - ✅ **Plugin Architecture**: Extensible recommendation engine system
 - ✅ **CLI Interface**: Professional command-line tool
 - ✅ **Enhanced Testing**: 57 comprehensive test cases
