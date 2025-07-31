@@ -4,13 +4,13 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "doc-generator"
-version = "1.1.0"
+version = "2.0.0"
 description = "AI-powered documentation generator for FASRC with plugin-based recommendations"
 authors = [
     {name = "FASRC Research Computing", email = "rchelp@fas.harvard.edu"}
 ]
 readme = "README.md"
-license = {text = "MIT"}
+license = {file = "LICENSE"}
 keywords = ["documentation", "ai", "hpc", "research-computing", "openai"]
 classifiers = [
     "Development Status :: 4 - Beta",
