@@ -2,6 +2,9 @@
 
 This page demonstrates sophisticated usage patterns, automation, and integration examples for doc-generator.
 
+!!! warning "Example Plugins Notice"
+    Some examples in this guide reference **DatasetRecommender** and **WorkflowRecommender** plugins. These are **conceptual examples (TBD)** for illustration purposes and are not currently implemented.
+
 ## 🔄 Batch Processing
 
 ### Processing Multiple Topics
@@ -283,7 +286,7 @@ from typing import List, Dict, Optional
 from doc_generator.plugins.base import RecommendationEngine
 
 class AdvancedDatasetRecommender(RecommendationEngine):
-    """Advanced dataset recommender with multiple APIs and caching."""
+    """Advanced dataset recommender with multiple APIs and caching. (TBD - Conceptual Example)"""
     
     def __init__(self, terminology: Optional[Dict] = None, **kwargs):
         super().__init__(terminology, **kwargs)

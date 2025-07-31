@@ -2,6 +2,9 @@
 
 This comprehensive guide covers how to run tests, understand test results, write new tests, and maintain test quality for doc-generator.
 
+!!! info "Testing Examples Notice"
+    This guide includes examples of testing **DatasetRecommender** and **WorkflowRecommender** plugins. These are **conceptual examples (TBD)** used to demonstrate testing patterns and are not currently implemented plugins.
+
 ## 🧪 Running Tests
 
 ### Quick Test Commands

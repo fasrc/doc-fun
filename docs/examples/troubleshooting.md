@@ -541,7 +541,7 @@ Before seeking help, try this checklist:
 ### Support Resources
 
 1. **GitHub Issues**: [Report bugs and get help](https://github.com/fasrc/doc-fun/issues)
-2. **Documentation**: [Read all guides](../guides/)
+2. **Documentation**: [Read all guides](../guides/getting-started.md)
 3. **Examples**: [Check usage examples](basic.md)
 4. **FASRC Support**: Contact the original development team
 

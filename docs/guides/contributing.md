@@ -388,7 +388,7 @@ Use conventional commit format:
 ```bash
 # Feature commits
 git commit -m "feat: add LaTeX output format support"
-git commit -m "feat(plugins): add DatasetRecommender plugin"
+git commit -m "feat(plugins): add DatasetRecommender plugin (TBD - conceptual example)"
 
 # Bug fix commits  
 git commit -m "fix: handle empty topic input gracefully"

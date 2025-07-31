@@ -146,8 +146,8 @@ The heart of doc-generator is its extensible plugin architecture:
 graph TB
     A[DocumentationGenerator] --> B[PluginManager]
     B --> C[ModuleRecommender]
-    B --> D[DatasetRecommender]
-    B --> E[WorkflowRecommender]
+    B --> D[DatasetRecommender (TBD)]
+    B --> E[WorkflowRecommender (TBD)]
     B --> F[CustomPlugin]
     
     C --> G[HPC Modules]
@@ -183,9 +183,9 @@ src/doc_generator/
 | Plugin | Purpose | Status |
 |--------|---------|--------|
 | **ModuleRecommender** | HPC module suggestions | ✅ Available |
-| **DatasetRecommender** | Research dataset discovery | 🚧 Community |
-| **WorkflowRecommender** | SLURM job templates | 🚧 Community |
-| **CodeTemplateRecommender** | Boilerplate code | 🚧 Community |
+| **DatasetRecommender (TBD)** | Research dataset discovery | 🚧 Community |
+| **WorkflowRecommender (TBD)** | SLURM job templates | 🚧 Community |
+| **CodeTemplateRecommender (TBD)** | Boilerplate code | 🚧 Community |
 
 ### Create Your Own Plugin
 

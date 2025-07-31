@@ -2,6 +2,9 @@
 
 This comprehensive guide shows you how to create powerful plugins for doc-generator, from simple recommendation engines to complex third-party packages.
 
+!!! info "Example Plugins Used in This Guide"
+    This guide uses **DatasetRecommender** and **WorkflowRecommender** as detailed examples to illustrate plugin development concepts. These are **conceptual examples (TBD)** and not currently implemented. The only built-in plugin is **ModuleRecommender**.
+
 ## 🔌 Plugin Architecture Overview
 
 ### What are Plugins?
