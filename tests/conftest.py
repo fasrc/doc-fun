@@ -4,7 +4,8 @@ import shutil
 from pathlib import Path
 import yaml
 import os
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
+from tests.fixtures.mock_plugins import MockDatasetRecommender, MockRecommendationEngine
 
 @pytest.fixture
 def temp_dir():
@@ -95,3 +96,29 @@ def mock_openai_client():
     response.choices[0].message.content = "Generated documentation content"
     client.chat.completions.create.return_value = response
     return client
+
+@pytest.fixture
+def mock_plugin_discovery():
+    """Mock the plugin discovery process for testing."""
+    def _mock_discovery(plugins_dict):
+        """
+        plugins_dict: {"plugin_name": PluginClass}
+        """
+        mock_entry_points = []
+        for name, plugin_class in plugins_dict.items():
+            mock_ep = Mock()
+            mock_ep.name = name
+            mock_ep.load.return_value = plugin_class
+            mock_entry_points.append(mock_ep)
+        
+        return patch('doc_generator.plugin_manager.entry_points', return_value=mock_entry_points)
+    
+    return _mock_discovery
+
+@pytest.fixture
+def sample_plugins():
+    """Sample plugins for testing."""
+    return {
+        "modules": MockRecommendationEngine,
+        "datasets": MockDatasetRecommender
+    }
