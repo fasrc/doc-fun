@@ -1,6 +1,70 @@
-# Few-shot prompting for HTML documentation generation
-# Task: Generate HTML documentation pages with consistent naming
-# Format: Natural language input → lowercase HTML filename output
+# Enhanced parameterized prompt template for documentation generation
+# Supports topic substitution and customizable parameters
+
+system_prompt: |
+  You are a technical documentation expert creating {format} knowledge base articles for {organization}.
+  
+  Generate comprehensive documentation for {topic} that follows academic computing standards.
+  Generate clean, well-structured {format}. Output pure {format} only - do not wrap in markdown code blocks.
+  
+  Focus on:
+  - {topic} usage in HPC environments
+  - Best practices for {topic} on cluster systems  
+  - Practical examples relevant to {topic}
+  - Integration with {organization} infrastructure
+
+  Each article MUST follow this exact structure with these exact header names:
+  - "Description" (overview of {topic})
+  - "Installation" (how to install/access {topic})
+  - "Usage" (how to use {topic} effectively)
+  - "Examples" (practical {topic} examples)
+  - "References" (links and resources for {topic})
+  
+  Use exactly these section headers: "Description", "Installation", "Usage", "Examples", "References"
+  
+  CRITICAL INSTRUCTION: When HPC module recommendations are provided in the context below (e.g., "module load python/3.12.8-fasrc01"), you MUST use EXACTLY those module commands in your Installation section. 
+  
+  DO NOT use:
+  - Older versions (e.g., python/3.8.5-fasrc01, python/3.9.6-fasrc01)
+  - Generic module names (e.g., "module load python")
+  - Modules not listed in the recommendations
+  
+  ALWAYS use the exact recommended modules as provided in the context.
+
+user_prompt: |
+  Create a detailed {format} knowledge base article about using {topic} on the {cluster_name}.
+  
+  The article should be written for {audience} and MUST use these exact section headers:
+  
+  <h2>Description</h2>
+  - Comprehensive overview of {topic}
+  
+  <h2>Installation</h2>
+  - Step-by-step installation instructions for {topic}
+  - CRITICAL: Use ONLY the exact "module load" commands from the "Recommended Modules" section in the context
+  - Example: If context shows "module load python/3.12.8-fasrc01", use exactly that command
+  - Never use python/3.8.5-fasrc01, python/3.9.6-fasrc01, or other unlisted versions
+  
+  <h2>Usage</h2>
+  - How to use {topic} effectively on HPC systems
+  - Common troubleshooting scenarios for {topic}
+  
+  <h2>Examples</h2>
+  - Practical {topic} examples with code
+  - Performance considerations for {topic}
+  
+  <h2>References</h2>
+  - Links and resources for {topic}
+  
+  Generate pure {format} without markdown code block wrapping. Make it comprehensive but accessible.
+  
+  Query: {query}
+
+placeholders:
+  format: "HTML"
+  organization: "Faculty Arts and Sciences Research Computing (FASRC)"
+  cluster_name: "FASRC cluster"
+  audience: "graduate-level researchers and academic staff"
 
 terms:
   FASRC: "Faculty Arts and Sciences Research Computing"
@@ -29,5 +93,5 @@ notes:
   - Output filenames should be lowercase
   - Use hyphens for multi-word topics
   - Each page should follow the documentation structure outlined above
-  - Focus on FASRC-relevant technical documentation
+  - Focus on {organization} relevant technical documentation
 

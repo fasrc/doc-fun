@@ -367,37 +367,794 @@ best_practices:
 code_examples:
   markdown:
   - name: Readme
-    file_path: src/User_Codes/Languages/Fortran/README.md
+    file_path: src/User_Codes/Parallel_Computing/README.md
     language: markdown
     description: Code example
-    file_hash: 21bdbcbec50a64025726d4c4df4574852aab6ea53e7f1575a868908763d81fed
-    last_modified: 1753385871.9233458
-    file_size: 1209
-    directory: Fortran
-    scanned_at: '2025-07-24T16:12:31.330807'
+    file_hash: 6849183ec7b2d3ee7a1d7fe83d8ec6ddbe6c4253cae6dd3123aee0fc281ab6ca
+    last_modified: 1753385872.216206
+    file_size: 82
+    directory: Parallel_Computing
+    scanned_at: '2025-07-29T19:11:54.821018'
   - name: Readme
-    file_path: src/User_Codes/Languages/Fortran/Example2/README.md
+    file_path: src/User_Codes/Parallel_Computing/ScaLAPACK/README.md
+    language: markdown
+    description: SBATCH -J scalapack_test SBATCH -o scalapack_test.out
+    file_hash: b7cb8e589fd819a83e4e9dbd7156e99753ad21cbc47840e1865364641cbee1f1
+    last_modified: 1753385872.2167878
+    file_size: 2489
+    directory: ScaLAPACK
+    scanned_at: '2025-07-29T19:11:54.833376'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/ScaLAPACK/run.sbatch
+  - name: Readme
+    file_path: src/User_Codes/Parallel_Computing/MPI/README.md
+    language: markdown
+    description: MPI Software on the FASRC cluster GCC + OpenMPI, e.g.,
+    file_hash: 6e84987fa4acf71bab50f047e71953d816667cf88631089d30d7ce236e0f1cb8
+    last_modified: 1753385872.111115
+    file_size: 9370
+    directory: MPI
+    scanned_at: '2025-07-29T19:11:54.868333'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/MPI/run.sbtach
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/MPI/run_intelmpi.sbatch
+  - name: Readme
+    file_path: src/User_Codes/Parallel_Computing/MPI/Example2/README.md
     language: markdown
     description: Code example
-    file_hash: 3246f39a172767f1573bc77203f49a7bad068aa07360374d0bf93b4792f82747
-    last_modified: 1753385871.9228692
-    file_size: 718
+    file_hash: 97ade59d9aafd89a024e452e1aeb911314ec71c855393906efb6ccf84abfc627
+    last_modified: 1753385872.109778
+    file_size: 2779
     directory: Example2
-    scanned_at: '2025-07-24T16:12:31.353953'
+    scanned_at: '2025-07-29T19:11:54.896601'
     slurm_files:
-    - /Users/swinney/Projects/doc-fun/src/User_Codes/Languages/Fortran/Example2/run.sbatch
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/MPI/Example2/run.sbatch
   - name: Readme
-    file_path: src/User_Codes/Languages/Fortran/Example1/README.md
+    file_path: src/User_Codes/Parallel_Computing/MPI/Example3/README.md
     language: markdown
     description: Code example
-    file_hash: 6d48b89a02030b14b847e15324bcb71c99bbfec1e18cf431eda6ffbeb3e81dca
-    last_modified: 1753385871.9223318
-    file_size: 41072
-    directory: Example1
-    scanned_at: '2025-07-24T16:12:31.367204'
+    file_hash: b6aa408c15752d688bb633c60aeff4eb8f8bff2c891bd750bf3562d2bdd4ad2d
+    last_modified: 1753385872.1102073
+    file_size: 20449
+    directory: Example3
+    scanned_at: '2025-07-29T19:11:54.915972'
     slurm_files:
-    - /Users/swinney/Projects/doc-fun/src/User_Codes/Languages/Fortran/Example1/run.sbatch
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/MPI/Example3/run.sbatch
+  - name: Readme
+    file_path: src/User_Codes/Parallel_Computing/MPI/Example1/README.md
+    language: markdown
+    description: Code example
+    file_hash: e86ba871c1a731282385ac2d02ebb1ec521673f6124c6076b37f3e0bc3005468
+    last_modified: 1753385872.109375
+    file_size: 3823
+    directory: Example1
+    scanned_at: '2025-07-29T19:11:54.932806'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/MPI/Example1/run.sbatch
+  - name: Readme
+    file_path: src/User_Codes/Parallel_Computing/Python/README.md
+    language: markdown
+    description: Code example
+    file_hash: 7bc26024bbc93010c585d83e8801a50bb2b3dfddd8a51c0c5aab97aa3e1eae85
+    last_modified: 1753385872.1555567
+    file_size: 59
+    directory: Python
+    scanned_at: '2025-07-29T19:11:54.939719'
+  - name: Readme
+    file_path: src/User_Codes/Parallel_Computing/Python/mpi4py/README.md
+    language: markdown
+    description: 'MPI in Python: mpi4py'
+    file_hash: e501c289f8420f18b45a6664bcc3903f40d365848d0af18d5e4a5a3f46080042
+    last_modified: 1753385872.156343
+    file_size: 2635
+    directory: mpi4py
+    scanned_at: '2025-07-29T19:11:54.943112'
+  - name: Readme
+    file_path: src/User_Codes/Parallel_Computing/Python/mpi4py/Example2/README.md
+    language: markdown
+    description: '!/usr/bin/env python3 Function to minimize'
+    file_hash: 07377551d412a7ab3c1cbae6ae6397c23bf4c8849fe9a31082f692c45b6b31b2
+    last_modified: 1753385872.1560812
+    file_size: 2740
+    directory: Example2
+    scanned_at: '2025-07-29T19:11:54.976442'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/Python/mpi4py/Example2/run_ompi.sbatch
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/Python/mpi4py/Example2/run.sbatch
+  - name: Readme
+    file_path: src/User_Codes/Parallel_Computing/Python/mpi4py/Example1/README.md
+    language: markdown
+    description: '!/usr/bin/env python3 Parallel Python test program: mpi4py'
+    file_hash: 91cd454b206b71418282c4a3a841d2615744997074c08ab9ddcdab0d7ed388a1
+    last_modified: 1753385872.1557162
+    file_size: 2630
+    directory: Example1
+    scanned_at: '2025-07-29T19:11:54.986731'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/Python/mpi4py/Example1/run.sbatch
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/Python/mpi4py/Example1/run_ompi.sbatch
+  - name: Readme
+    file_path: src/User_Codes/Parallel_Computing/EP/README.md
+    language: markdown
+    description: HPC Job Submission Examples
+    file_hash: 6ee2592c99f7392193f41ee1169cf49245795c2b338ae5c8261688ef3301254f
+    last_modified: 1753385872.106921
+    file_size: 1572
+    directory: EP
+    scanned_at: '2025-07-29T19:11:55.021462'
+  - name: Readme
+    file_path: src/User_Codes/Parallel_Computing/EP/Example2/README.md
+    language: markdown
+    description: 'Example 2: Serial Summation Example'
+    file_hash: a5ffd114a1e3375c001fc81f6c35b222d6bd894d09fdf44b90e95ae14fd811fb
+    last_modified: 1753385872.1064203
+    file_size: 1141
+    directory: Example2
+    scanned_at: '2025-07-29T19:11:55.031735'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/EP/Example2/run.sbatch
+  - name: Readme
+    file_path: src/User_Codes/Parallel_Computing/EP/Example1/README.md
+    language: markdown
+    description: 'Example 1: Job Arrays in SLURM'
+    file_hash: fcec19c9ab62aeff82a3a95b942e948fda232e9c062b018707fe9172c02d061e
+    last_modified: 1753385872.1030903
+    file_size: 850
+    directory: Example1
+    scanned_at: '2025-07-29T19:11:55.052301'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/EP/Example1/run.sbatch
+  - name: Readme
+    file_path: src/User_Codes/Parallel_Computing/R/README.md
+    language: markdown
+    description: Code example
+    file_hash: 587ddada41189361391cf1551f12bdd2fcb375f20a0f0fe33c62c007813df748
+    last_modified: 1753385872.211737
+    file_size: 5798
+    directory: R
+    scanned_at: '2025-07-29T19:11:55.065292'
+  - name: Readme
+    file_path: src/User_Codes/Parallel_Computing/R/Rmpi/README.md
+    language: markdown
+    description: Code example
+    file_hash: db4ab114d8fa5c0ac47262ab9e58cd697b7aa72c4754c28bc59dfd43b173b82b
+    last_modified: 1753385872.2121704
+    file_size: 6464
+    directory: Rmpi
+    scanned_at: '2025-07-29T19:11:55.075670'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/R/Rmpi/run.sbatch
+  - name: Readme
+    file_path: src/User_Codes/Parallel_Computing/R/pbdMPI/README.md
+    language: markdown
+    description: Code example
+    file_hash: 8015f01cf885bc546eba37fda71de9bb844d3102d2972d5d5575c53c6eb16419
+    last_modified: 1753385872.2155573
+    file_size: 8818
+    directory: pbdMPI
+    scanned_at: '2025-07-29T19:11:55.103418'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/R/pbdMPI/run_apply.sbatch
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/R/pbdMPI/run_Lapply.sbatch
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/R/pbdMPI/run_scatter.sbatch
+  - name: Readme
+    file_path: src/User_Codes/Parallel_Computing/R/Large_Data_Processing_R/README.md
+    language: markdown
+    description: Large Data Processing in R Workshop
+    file_hash: b3680c8793ac98a1d750d8fb3ee6eb621b1bca2c912de1d4cd1daac918a57c67
+    last_modified: 1753385872.1564937
+    file_size: 1660
+    directory: Large_Data_Processing_R
+    scanned_at: '2025-07-29T19:11:55.125506'
+  - name: Nyc Lyft
+    file_path: src/User_Codes/Parallel_Computing/R/Large_Data_Processing_R/data_format/NYC_lyft.md
+    language: markdown
+    description: Code example
+    file_hash: b9b3d82dad53d6c7c90f84df5b1331f04c0077c9a474464c8be4ec046c9c95ff
+    last_modified: 1753385872.18297
+    file_size: 16639
+    directory: data_format
+    scanned_at: '2025-07-29T19:11:55.142774'
+  - name: R Embarrassingly Parallel
+    file_path: src/User_Codes/Parallel_Computing/R/Large_Data_Processing_R/parallel_computation/R_embarrassingly_parallel.md
+    language: markdown
+    description: Scaling Up/Out Embarrassingly Parallel Problems in R
+    file_hash: 41a953d03a665b26e96beae18db2b3748e05daf9bcebbcae9fa645df96198c8a
+    last_modified: 1753385872.189424
+    file_size: 7985
+    directory: parallel_computation
+    scanned_at: '2025-07-29T19:11:55.152917'
+  - name: R Parlapply Vdi
+    file_path: src/User_Codes/Parallel_Computing/R/Large_Data_Processing_R/parallel_computation/R_parLapply_vdi.md
+    language: markdown
+    description: Estimating PI on FASRC server node
+    file_hash: 81eed9f9fc4edd2ccffda853e36b40e39e4cf8025294536eff8e1752c56e35aa
+    last_modified: 1753385872.1895216
+    file_size: 3877
+    directory: parallel_computation
+    scanned_at: '2025-07-29T19:11:55.156452'
+  - name: Readme
+    file_path: src/User_Codes/Parallel_Computing/R/future/README.md
+    language: markdown
+    description: Code example
+    file_hash: 49caa1b30db39aae7dc97865b1b90bb0ad893e831759e277dc64df1ba1d76ec2
+    last_modified: 1753385872.2147844
+    file_size: 11626
+    directory: future
+    scanned_at: '2025-07-29T19:11:55.259684'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/R/future/run_future.sbatch
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/R/future/run_hybrid.sbatch
+  - name: Readme
+    file_path: src/User_Codes/Parallel_Computing/MPI_IO/README.md
+    language: markdown
+    description: MPI IO on the FASRC cluster
+    file_hash: 78b304dec0f3f27423ac0a05379164ef8f63d735f255a87cdbc87927bb464127
+    last_modified: 1753385872.1123261
+    file_size: 780
+    directory: MPI_IO
+    scanned_at: '2025-07-29T19:11:55.281009'
+  - name: Readme
+    file_path: src/User_Codes/Parallel_Computing/MPI_IO/Example1/README.md
+    language: markdown
+    description: Introduction
+    file_hash: ffa0cb2df7ea3e10e3e8f757cceda32a762668995e11660de3c61e168ba6d46d
+    last_modified: 1753385872.1119108
+    file_size: 11589
+    directory: Example1
+    scanned_at: '2025-07-29T19:11:55.297945'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/MPI_IO/Example1/run.sbatch
+  - name: Readme
+    file_path: src/User_Codes/Parallel_Computing/Mathematica/README.md
+    language: markdown
+    description: Code example
+    file_hash: a3d447c2e2469c5f65a2c5f4d67fea87f9840e4a5bbf28d8481bb756a01cd8d6
+    last_modified: 1753385872.112439
+    file_size: 1780
+    directory: Mathematica
+    scanned_at: '2025-07-29T19:11:55.311779'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/Mathematica/run.sbtach
+  - name: Readme
+    file_path: src/User_Codes/Parallel_Computing/Parallel_HDF5/README.md
+    language: markdown
+    description: Code example
+    file_hash: 4e4c313b14b1e93aac105154386c5d8414a2f338dca995dcf28d31bb30bd837a
+    last_modified: 1753385872.1169672
+    file_size: 881
+    directory: Parallel_HDF5
+    scanned_at: '2025-07-29T19:11:55.318948'
+  - name: Readme
+    file_path: src/User_Codes/Parallel_Computing/Parallel_HDF5/Example2/README.md
+    language: markdown
+    description: Code example
+    file_hash: c02400abe291f7967360acb0e8182cd0b969a37f8555f3c270995bbc10b011ec
+    last_modified: 1753385872.116186
+    file_size: 9361
+    directory: Example2
+    scanned_at: '2025-07-29T19:11:55.334243'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/Parallel_HDF5/Example2/run.sbatch
+  - name: Readme
+    file_path: src/User_Codes/Parallel_Computing/Parallel_HDF5/Example3/README.md
+    language: markdown
+    description: Code example
+    file_hash: 0b9fcba662cec4b8d334cb681e71e4e581fd4974d14f6b7e03983bfdeea2b683
+    last_modified: 1753385872.1165564
+    file_size: 32635
+    directory: Example3
+    scanned_at: '2025-07-29T19:11:55.353314'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/Parallel_HDF5/Example3/run.sbatch
+  - name: Readme
+    file_path: src/User_Codes/Parallel_Computing/Parallel_HDF5/Example1/README.md
+    language: markdown
+    description: Code example
+    file_hash: 4f6fd32cdd3a9bc2eec996ec1c683dee842380b4ed4da26e7707d5e06f86aafa
+    last_modified: 1753385872.1156588
+    file_size: 13229
+    directory: Example1
+    scanned_at: '2025-07-29T19:11:55.364486'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/Parallel_HDF5/Example1/run.sbatch
+  - name: Readme
+    file_path: src/User_Codes/Parallel_Computing/Parallel_NetCDF/README.md
+    language: markdown
+    description: Code example
+    file_hash: 3f4e48b6a7ef53cf4bc1dc4b784a2831ccf58973679a8de4c8911edc8107bf13
+    last_modified: 1753385872.118378
+    file_size: 371
+    directory: Parallel_NetCDF
+    scanned_at: '2025-07-29T19:11:55.372278'
+  - name: Readme
+    file_path: src/User_Codes/Parallel_Computing/Parallel_NetCDF/Example2/README.md
+    language: markdown
+    description: SBATCH -J parallel_netcdf SBATCH -o parallel_netcdf.out
+    file_hash: dd61446d0fbc56df5fabd8f467990607faae584daeb759da1670f6965376a33e
+    last_modified: 1753385872.11759
+    file_size: 1514
+    directory: Example2
+    scanned_at: '2025-07-29T19:11:55.388292'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/Parallel_NetCDF/Example2/run.sbatch
+  - name: Readme
+    file_path: src/User_Codes/Parallel_Computing/Parallel_NetCDF/Example3/README.md
+    language: markdown
+    description: Code example
+    file_hash: b9f1e493ec814590252b4118fba313d5af8ec93ffe8b99a387d1fb78f1739db7
+    last_modified: 1753385872.1179938
+    file_size: 1685
+    directory: Example3
+    scanned_at: '2025-07-29T19:11:55.399874'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/Parallel_NetCDF/Example3/run.sbatch
+  - name: Readme
+    file_path: src/User_Codes/Parallel_Computing/Parallel_NetCDF/Example1/README.md
+    language: markdown
+    description: SBATCH -J parallel_netcdf SBATCH -o parallel_netcdf.out
+    file_hash: d79ad74c40df56dcdd665fe2577ff4e41e06c11d06e2dff5000f9e3e6fce85df
+    last_modified: 1753385872.1171818
+    file_size: 1990
+    directory: Example1
+    scanned_at: '2025-07-29T19:11:55.421825'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/Parallel_NetCDF/Example1/run.sbatch
+  - name: Readme
+    file_path: src/User_Codes/Parallel_Computing/MATLAB/README.md
+    language: markdown
+    description: 'Introduction:'
+    file_hash: d10bf84eb76088d7cc327ffeacf68eea5da976a499977ed6a36c196188b739ae
+    last_modified: 1753385872.1091194
+    file_size: 353
+    directory: MATLAB
+    scanned_at: '2025-07-29T19:11:55.429367'
+  - name: Readme
+    file_path: src/User_Codes/Parallel_Computing/MATLAB/Example2/README.md
+    language: markdown
+    description: Code example
+    file_hash: b3546ac901da41ed9b86e70e7eab2e832ccc20b8b5a1ad8a5110e26cc64335d6
+    last_modified: 1753385872.1073616
+    file_size: 1518
+    directory: Example2
+    scanned_at: '2025-07-29T19:11:55.436556'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/MATLAB/Example2/run.sbatch
+  - name: Readme
+    file_path: src/User_Codes/Parallel_Computing/MATLAB/Example3/README.md
+    language: markdown
+    description: Code example
+    file_hash: fa80592e627f8ab565a794b714634b4a3169405818177d4bcf3022788c263401
+    last_modified: 1753385872.1078863
+    file_size: 2356
+    directory: Example3
+    scanned_at: '2025-07-29T19:11:55.463497'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/MATLAB/Example3/run.sbatch
+  - name: Readme
+    file_path: src/User_Codes/Parallel_Computing/MATLAB/Example1/README.md
+    language: markdown
+    description: Code example
+    file_hash: d3e6410d7d4ec60ede2696f72d2a220d723885da61202718a38f564a72b57710
+    last_modified: 1753385872.107084
+    file_size: 2399
+    directory: Example1
+    scanned_at: '2025-07-29T19:11:55.491779'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/MATLAB/Example1/run.sbatch
+  - name: Readme
+    file_path: src/User_Codes/Parallel_Computing/PnetCDF/README.md
+    language: markdown
+    description: Code example
+    file_hash: 578e5b5d35c745c1ad55a5779608a18426eb3d2305de2b9d95b4c423e0dc188a
+    last_modified: 1753385872.1525326
+    file_size: 330
+    directory: PnetCDF
+    scanned_at: '2025-07-29T19:11:55.495650'
   fortran:
+  - name: Psgesv
+    file_path: src/User_Codes/Parallel_Computing/ScaLAPACK/psgesv.f90
+    language: fortran
+    description: LIBPATH=/opt/intel/Compiler/11.0/081/mkl/lib/em64t mpif90  -O1  -o
+      psgesv psgesv.f90  \
+    file_hash: c213df0f1323a1a7f898160645b0b83b12f2c4e99e7060959822051da75da934
+    last_modified: 1753385872.2169394
+    file_size: 9929
+    directory: ScaLAPACK
+    scanned_at: '2025-07-29T20:21:20.443326'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/ScaLAPACK/run.sbatch
+  - name: Mpitest
+    file_path: src/User_Codes/Parallel_Computing/MPI/mpitest.f90
+    language: fortran
+    description: 'Fortran 90 MPI example: mpitest.f90'
+    file_hash: 7a2caa17075a5c0e76c4f55a9b3e85e4da38e83b3eaee543dc4d06a93fb996f9
+    last_modified: 1753385872.1114454
+    file_size: 662
+    directory: MPI
+    scanned_at: '2025-07-29T20:21:20.443699'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/MPI/run.sbtach
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/MPI/run_intelmpi.sbatch
+  - name: Mpitest
+    file_path: src/User_Codes/Parallel_Computing/MPI/mpitest.f
+    language: fortran
+    description: Code example
+    file_hash: f930859786f449d59d92c7afeee2b211df41a04f1f2b619702ffea476622add7
+    last_modified: 1753385872.1113799
+    file_size: 728
+    directory: MPI
+    scanned_at: '2025-07-29T20:21:20.443966'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/MPI/run.sbtach
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/MPI/run_intelmpi.sbatch
+  - name: Ptrap
+    file_path: src/User_Codes/Parallel_Computing/MPI/Example2/ptrap.f90
+    language: fortran
+    description: 'Program: ptrap.f90 Parallel implementation of the trapezoidal rule
+      for integration'
+    file_hash: ba9228fe0c8a652dd6bd07e64292e341a411fbbef33f3f2d3a59aa711e2e426e
+    last_modified: 1753385872.1098607
+    file_size: 3281
+    directory: Example2
+    scanned_at: '2025-07-29T20:21:20.444847'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/MPI/Example2/run.sbatch
+  - name: Planczos2
+    file_path: src/User_Codes/Parallel_Computing/MPI/Example3/planczos2.f90
+    language: fortran
+    description: 'Program: planczos2.f90 Lanczos diagonalization with reorthogonalization'
+    file_hash: 8d7632bec3b3a8c3b2c3dd63ece51d54b461abc50026a30c725f828af0c23883
+    last_modified: 1753385872.110844
+    file_size: 13335
+    directory: Example3
+    scanned_at: '2025-07-29T20:21:20.445221'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/MPI/Example3/run.sbatch
+  - name: External Libs
+    file_path: src/User_Codes/Parallel_Computing/MPI/Example3/external_libs.f90
+    language: fortran
+    description: THIS SUBROUTINE IS A TRANSLATION OF THE ALGOL PROCEDURE TRED2, NUM.
+      MATH. 11, 181-195(1968) BY MARTIN, REINSCH, AND WILKINSON.
+    file_hash: bd4d288d90bf58e5c151dd24a24e9f76f11cd354894fe07444043c20776fe248
+    last_modified: 1753385872.1104243
+    file_size: 14327
+    directory: Example3
+    scanned_at: '2025-07-29T20:21:20.445540'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/MPI/Example3/run.sbatch
+  - name: Pi Monte Carlo
+    file_path: src/User_Codes/Parallel_Computing/MPI/Example1/pi_monte_carlo.f90
+    language: fortran
+    description: 'Program: pi_monte_carlo.f90 Calculate PI via parallel Monte-Carlo
+      algorithm'
+    file_hash: 28fa502d5be799a3f987fa443ba22d9940e8368ae3c1c31c9d8b1c0956104442
+    last_modified: 1753385872.1094513
+    file_size: 2581
+    directory: Example1
+    scanned_at: '2025-07-29T20:21:20.445825'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/MPI/Example1/run.sbatch
+  - name: Mpi Io Test1
+    file_path: src/User_Codes/Parallel_Computing/MPI_IO/Example1/mpi_IO_test1.f90
+    language: fortran
+    description: 'Program: mpi_IO_test1.f90 Program illustrates use of MPI-IO'
+    file_hash: bb86608e3b76c580b8591992639420849378945c349032079b25489bb9800b9c
+    last_modified: 1753385872.1120563
+    file_size: 9286
+    directory: Example1
+    scanned_at: '2025-07-29T20:21:20.449643'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/MPI_IO/Example1/run.sbatch
+  - name: Parallel Hdf5 2D
+    file_path: src/User_Codes/Parallel_Computing/Parallel_HDF5/Example2/parallel_hdf5_2d.f90
+    language: fortran
+    description: 'Program: parallel_hdf_2d.f90 This code generates a random 2D array
+      and writes it in'
+    file_hash: 5dae020e9efe2bae07c96ac3100433309db333d81bb226011e6bc8e870790bd9
+    last_modified: 1753385872.1163354
+    file_size: 8824
+    directory: Example2
+    scanned_at: '2025-07-29T20:21:20.450221'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/Parallel_HDF5/Example2/run.sbatch
+  - name: Parallel Hdf5 3D
+    file_path: src/User_Codes/Parallel_Computing/Parallel_HDF5/Example3/parallel_hdf5_3d.f90
+    language: fortran
+    description: 'Program: parallel_hdf5_3d.f90 This code generates a random 3D array
+      and writes it in'
+    file_hash: 514adb34b15fe84a4584be774b9efb03e4880a302d0082ec4c9330fc5ea1e0d5
+    last_modified: 1753385872.1168385
+    file_size: 8785
+    directory: Example3
+    scanned_at: '2025-07-29T20:21:20.450454'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/Parallel_HDF5/Example3/run.sbatch
+  - name: Parallel Hdf5
+    file_path: src/User_Codes/Parallel_Computing/Parallel_HDF5/Example1/parallel_hdf5.f90
+    language: fortran
+    description: 'Program: parallel_hdf5.f90 Program creates a random vector, distributes
+      it to'
+    file_hash: be37303549a5a385039138cc7560e519cf827b6c987e42e43afc1aca40028eed
+    last_modified: 1753385872.115878
+    file_size: 7438
+    directory: Example1
+    scanned_at: '2025-07-29T20:21:20.450798'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/Parallel_HDF5/Example1/run.sbatch
+  - name: Simple Xy Par Wr
+    file_path: src/User_Codes/Parallel_Computing/Parallel_NetCDF/Example2/simple_xy_par_wr.f90
+    language: fortran
+    description: 'Program: simple_xy_par_wr.f90 Addapted form the official NetCDF
+      package'
+    file_hash: 02f65d664467a72237860aa77e5d5603dd6b72ac6476a0c7e2a1e84e56a562a9
+    last_modified: 1753385872.117828
+    file_size: 4819
+    directory: Example2
+    scanned_at: '2025-07-29T20:21:20.451216'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/Parallel_NetCDF/Example2/run.sbatch
+  - name: Simple Xy Par Rd
+    file_path: src/User_Codes/Parallel_Computing/Parallel_NetCDF/Example3/simple_xy_par_rd.f90
+    language: fortran
+    description: This is part of the netCDF package. Copyright 2008 University Corporation
+      for Atmospheric Research/Unidata.
+    file_hash: 59f4df56c273910ae52518aed974a8ff42e7876733b449ebb10eca2e63a1cc46
+    last_modified: 1753385872.1183076
+    file_size: 2910
+    directory: Example3
+    scanned_at: '2025-07-29T20:21:20.451495'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/Parallel_NetCDF/Example3/run.sbatch
+  - name: F90Tst Parallel
+    file_path: src/User_Codes/Parallel_Computing/Parallel_NetCDF/Example1/f90tst_parallel.f90
+    language: fortran
+    description: This is part of the netCDF package. Copyright 2006 University Corporation
+      for Atmospheric Research/Unidata.
+    file_hash: 0c686cd9e28427aae3923c4737cf7e97dc26819dcc1db74e05f57d8ec905e567
+    last_modified: 1753385872.1173618
+    file_size: 5343
+    directory: Example1
+    scanned_at: '2025-07-29T20:21:20.451733'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/Parallel_NetCDF/Example1/run.sbatch
+  - name: Utils
+    file_path: src/User_Codes/Parallel_Computing/PnetCDF/Example2/utils.F90
+    language: fortran
+    description: Copyright (C) 2015, Northwestern University and Argonne National
+      Laboratory See COPYRIGHT notice in top-level directory.
+    file_hash: a47977eb488a9d4c48c230d57c5ae2b58b6e21f6afe8cf037e7fa9e8c1ee6f51
+    last_modified: 1753385872.15202
+    file_size: 1619
+    directory: Example2
+    scanned_at: '2025-07-29T20:21:20.452342'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/PnetCDF/Example2/run.sbatch
+  - name: Column Wise
+    file_path: src/User_Codes/Parallel_Computing/PnetCDF/Example2/column_wise.f90
+    language: fortran
+    description: Copyright (C) 2012, Northwestern University and Argonne National
+      Laboratory See COPYRIGHT notice in top-level directory.
+    file_hash: ab4146829cc6ea2b156a50c6d9f2bcdbc4c0a9fb7b200dae57ac0e781b423338
+    last_modified: 1753385872.1518955
+    file_size: 6387
+    directory: Example2
+    scanned_at: '2025-07-29T20:21:20.452544'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/PnetCDF/Example2/run.sbatch
+  - name: Block Cyclic
+    file_path: src/User_Codes/Parallel_Computing/PnetCDF/Example3/block_cyclic.f90
+    language: fortran
+    description: Copyright (C) 2012, Northwestern University and Argonne National
+      Laboratory See COPYRIGHT notice in top-level directory.
+    file_hash: 50cbf56f41a24d4217bd4daad5aa7cb33b1f384baf178773bcd5652bb677f53b
+    last_modified: 1753385872.1523435
+    file_size: 10659
+    directory: Example3
+    scanned_at: '2025-07-29T20:21:20.452752'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/PnetCDF/Example3/run.sbatch
+  - name: Utils
+    file_path: src/User_Codes/Parallel_Computing/PnetCDF/Example3/utils.F90
+    language: fortran
+    description: Copyright (C) 2015, Northwestern University and Argonne National
+      Laboratory See COPYRIGHT notice in top-level directory.
+    file_hash: a47977eb488a9d4c48c230d57c5ae2b58b6e21f6afe8cf037e7fa9e8c1ee6f51
+    last_modified: 1753385872.1524708
+    file_size: 1619
+    directory: Example3
+    scanned_at: '2025-07-29T20:21:20.452919'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/PnetCDF/Example3/run.sbatch
+  - name: Transpose
+    file_path: src/User_Codes/Parallel_Computing/PnetCDF/Example1/transpose.f90
+    language: fortran
+    description: Copyright (C) 2014, Northwestern University See COPYRIGHT notice
+      in top-level directory.
+    file_hash: 0a349502853f6492064e38a0cdee0f7be62df9da4fcf713283ad238d88c14f83
+    last_modified: 1753385872.1192067
+    file_size: 10181
+    directory: Example1
+    scanned_at: '2025-07-29T20:21:20.453166'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/PnetCDF/Example1/run.sbatch
+  - name: Utils
+    file_path: src/User_Codes/Parallel_Computing/PnetCDF/Example1/utils.F90
+    language: fortran
+    description: Copyright (C) 2015, Northwestern University and Argonne National
+      Laboratory See COPYRIGHT notice in top-level directory.
+    file_hash: a47977eb488a9d4c48c230d57c5ae2b58b6e21f6afe8cf037e7fa9e8c1ee6f51
+    last_modified: 1753385872.1512415
+    file_size: 1619
+    directory: Example1
+    scanned_at: '2025-07-29T20:21:20.453350'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/PnetCDF/Example1/run.sbatch
+  - name: Omp Diag
+    file_path: src/User_Codes/Parallel_Computing/OpenMP/Example2/omp_diag.f90
+    language: fortran
+    description: 'Program: omp_diag.f90 Create a random matrix and diagonalize it'
+    file_hash: af5221af38e4d8a0696c3895440ab91878d1d3537a763658ddb6a1862f672b02
+    last_modified: 1753385872.1132474
+    file_size: 2570
+    directory: Example2
+    scanned_at: '2025-07-29T20:21:20.453724'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/OpenMP/Example2/run.sbatch
+  - name: Planczos2
+    file_path: src/User_Codes/Training/Advanced_Cluster_Usage/Exercise5/planczos2.f90
+    language: fortran
+    description: 'Program: planczos2.f90 Lanczos diagonalization with reorthogonalization'
+    file_hash: caf6ddca39ab3542cc1beb53f7bc9c4fc9de115fc704425f94ba355a2c6cf10c
+    last_modified: 1753385872.2329936
+    file_size: 13339
+    directory: Exercise5
+    scanned_at: '2025-07-29T20:21:20.454991'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Training/Advanced_Cluster_Usage/Exercise5/run.sbatch
+  - name: External Libs
+    file_path: src/User_Codes/Training/Advanced_Cluster_Usage/Exercise5/external_libs.f90
+    language: fortran
+    description: THIS SUBROUTINE IS A TRANSLATION OF THE ALGOL PROCEDURE TRED2, NUM.
+      MATH. 11, 181-195(1968) BY MARTIN, REINSCH, AND WILKINSON.
+    file_hash: bd4d288d90bf58e5c151dd24a24e9f76f11cd354894fe07444043c20776fe248
+    last_modified: 1753385872.2325492
+    file_size: 14327
+    directory: Exercise5
+    scanned_at: '2025-07-29T20:21:20.455290'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Training/Advanced_Cluster_Usage/Exercise5/run.sbatch
+  - name: Omp Mem Test
+    file_path: src/User_Codes/Training/Advanced_Cluster_Usage/Exercise2/Fortran/omp_mem_test.f90
+    language: fortran
+    description: 'Module: rng_module Defines the RNGState type for thread-safe random
+      number generation'
+    file_hash: 241a5432a23e3f170a5b78840b437e4cbb7401b36ec32cb7de4cd23fe58bb528
+    last_modified: 1753385872.2251213
+    file_size: 3290
+    directory: Fortran
+    scanned_at: '2025-07-29T20:21:20.456301'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Training/Advanced_Cluster_Usage/Exercise2/Fortran/run.sbatch
+  - name: Omp Pi
+    file_path: src/User_Codes/Training/Advanced_Cluster_Usage/Exercise3/Fortran/omp_pi.f90
+    language: fortran
+    description: 'Program: omp_pi.f90 OpenMP implementation of Monte-Carlo algorithm
+      for calculating PI'
+    file_hash: af0e738866c887f35ca8194805c3efaa207835045e32736ce324b7555b627ff3
+    last_modified: 1753385872.2282677
+    file_size: 2059
+    directory: Fortran
+    scanned_at: '2025-07-29T20:21:20.458226'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Training/Advanced_Cluster_Usage/Exercise3/Fortran/run.sbatch
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Training/Advanced_Cluster_Usage/Exercise3/Fortran/run_speedup.sbatch
+  - name: Pi Monte Carlo
+    file_path: src/User_Codes/Training/Advanced_Cluster_Usage/Exercise4/pi_monte_carlo.f90
+    language: fortran
+    description: 'Program: pi_monte_carlo.f90 Calculate PI via parallel Monte-Carlo
+      algorithm'
+    file_hash: 00396bd2b9d1ac7e2bf7ff4c6a92274d1e6f09bf4a7c5f7004025fd1b71ba58b
+    last_modified: 1753385872.230817
+    file_size: 2656
+    directory: Exercise4
+    scanned_at: '2025-07-29T20:21:20.459815'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Training/Advanced_Cluster_Usage/Exercise4/run2.sbatch
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Training/Advanced_Cluster_Usage/Exercise4/run_speedup2.sbatch
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Training/Advanced_Cluster_Usage/Exercise4/run.sbatch
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Training/Advanced_Cluster_Usage/Exercise4/run_speedup.sbatch
+  - name: Mem Test
+    file_path: src/User_Codes/Training/Advanced_Cluster_Usage/Exercise1/Fortran/mem_test.f90
+    language: fortran
+    description: 'Program: mem_test.f90 Program generates a symetric random matrix
+      of dimension 60K'
+    file_hash: 81a35bc050563d64ce9b1c9b48228c7647b72fab2f20abffe2ac0054c4828850
+    last_modified: 1753385872.2227838
+    file_size: 2359
+    directory: Fortran
+    scanned_at: '2025-07-29T20:21:20.460489'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Training/Advanced_Cluster_Usage/Exercise1/Fortran/run.sbatch
+  - name: Blas Test
+    file_path: src/User_Codes/Libraries/BLAS/blas_test.f90
+    language: fortran
+    description: Creates a random matrix and a random vector and computes matrix-vector
+      multiplication
+    file_hash: 512040a84f94d350cb88eb3ef65a25464012818d39fcc7d02a667e7dc6fb28da
+    last_modified: 1753385871.9517994
+    file_size: 3101
+    directory: BLAS
+    scanned_at: '2025-07-29T20:21:20.461773'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Libraries/BLAS/blas_test.sbatch
+  - name: Hdf5 Test
+    file_path: src/User_Codes/Libraries/HDF5/hdf5_test.f90
+    language: fortran
+    description: 'Program: hdf5_test.f90 Create a random vector and write it to a
+      HDF5 file'
+    file_hash: c128ed2bf0aec3359c72d8e42b4c0e9b2e2af59bb276acf6814097872e6fc28d
+    last_modified: 1753385871.9527617
+    file_size: 3569
+    directory: HDF5
+    scanned_at: '2025-07-29T20:21:20.462213'
+  - name: Lapack Test
+    file_path: src/User_Codes/Libraries/LAPACK/lapack_test.f90
+    language: fortran
+    description: LAPACK Test Create a random matrix and diagonalize it
+    file_hash: ab08eded92e1546780cc8e9b474824116f4dde393cfa09f6e62023f4de8b10ef
+    last_modified: 1753385871.9531987
+    file_size: 3407
+    directory: LAPACK
+    scanned_at: '2025-07-29T20:21:20.462499'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Libraries/LAPACK/run.sbatch
+  - name: Openblas Test
+    file_path: src/User_Codes/Libraries/OpenBLAS/openblas_test.f90
+    language: fortran
+    description: 'Program: openblas_test.f90 Program illustrates use of OpenBLAS'
+    file_hash: b720602fb0f75677b74c7a95a4cbc3423e7601220edc5e08bee79ebcda8101f7
+    last_modified: 1753385871.9542522
+    file_size: 1233
+    directory: OpenBLAS
+    scanned_at: '2025-07-29T20:21:20.462900'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Libraries/OpenBLAS/run.sbatch
+  - name: Mkltest
+    file_path: src/User_Codes/Libraries/MKL/mkltest.f90
+    language: fortran
+    description: Intel Math Kernel Library Test Create a random matrix and diagonalize
+      it
+    file_hash: 58462682c7b0937c068d6433cfb826f3246298300d8a152b1aa94c6494c89447
+    last_modified: 1753385871.95361
+    file_size: 3426
+    directory: MKL
+    scanned_at: '2025-07-29T20:21:20.463183'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Libraries/MKL/mkltest.sbatch
+  - name: Netcdf Test
+    file_path: src/User_Codes/Libraries/NETCDF/netcdf_test.f90
+    language: fortran
+    description: 'Program: netcdf_test.f90 Create a random vector and write it to
+      a NC file'
+    file_hash: f24d3913f2c38e936af1821bda38a0db7681e50a30cbf2c3c9c4a8ac0e6d989b
+    last_modified: 1753385871.9539425
+    file_size: 4023
+    directory: NETCDF
+    scanned_at: '2025-07-29T20:21:20.463654'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Libraries/NETCDF/netcdf_test.sbatch
+  - name: Fftw Test
+    file_path: src/User_Codes/Libraries/FFTW/fftw_test.f90
+    language: fortran
+    description: 'Program: fftw_test.f90 Perform 1D  transform in Fortran'
+    file_hash: f84f988fcfcb218cc9423c8ab89598e19487b63669e6e5fd9e0d206249d769f7
+    last_modified: 1753385871.9521337
+    file_size: 1107
+    directory: FFTW
+    scanned_at: '2025-07-29T20:21:20.463858'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Libraries/FFTW/fftw_test.sbatch
   - name: Sum
     file_path: src/User_Codes/Languages/Fortran/Example2/sum.f90
     language: fortran
@@ -406,7 +1163,7 @@ code_examples:
     last_modified: 1753385871.9229915
     file_size: 531
     directory: Example2
-    scanned_at: '2025-07-24T16:12:31.344300'
+    scanned_at: '2025-07-29T20:21:20.467694'
     slurm_files:
     - /Users/swinney/Projects/doc-fun/src/User_Codes/Languages/Fortran/Example2/run.sbatch
   - name: Lanczos
@@ -417,15 +1174,1176 @@ code_examples:
     last_modified: 1753385871.9224057
     file_size: 23691
     directory: Example1
-    scanned_at: '2025-07-24T16:12:31.360685'
+    scanned_at: '2025-07-29T20:21:20.468235'
     slurm_files:
     - /Users/swinney/Projects/doc-fun/src/User_Codes/Languages/Fortran/Example1/run.sbatch
+  - name: Lagint
+    file_path: src/User_Codes/Numerics/Interp/lagint.f90
+    language: fortran
+    description: 'FUNCTION LAGINT: Lagrange interpolation xx    -- abscissa at which
+      the interpolation is to be evaluated'
+    file_hash: e5e58615ac8ec9a0bd0f92792f5c39d7c61299a5e0c80a77b99f2cede599cd87
+    last_modified: 1753385872.102837
+    file_size: 1937
+    directory: Interp
+    scanned_at: '2025-07-29T20:21:20.469597'
+  - name: Interp Test
+    file_path: src/User_Codes/Numerics/Interp/interp_test.f90
+    language: fortran
+    description: 'Program: interp_test.f90 Example program illustrating Langrange
+      interpolation.'
+    file_hash: 91f34539343a7be012efac2743e11a29d705f3f6386bc219a5663c406ab22cdc
+    last_modified: 1753385872.1027722
+    file_size: 1960
+    directory: Interp
+    scanned_at: '2025-07-29T20:21:20.469758'
+  - name: Deriv Test
+    file_path: src/User_Codes/Numerics/Deriv/deriv_test.f90
+    language: fortran
+    description: 'Program: deriv_test.f90 Example program calculating the first derivative
+      of'
+    file_hash: 327c75c8ea0097b89d88bac24de1d72492cb035824201e463e77fdc5ef328106
+    last_modified: 1753385872.102581
+    file_size: 1599
+    directory: Deriv
+    scanned_at: '2025-07-29T20:21:20.469953'
+  - name: Deriv Tab
+    file_path: src/User_Codes/Numerics/Deriv/deriv_tab.f90
+    language: fortran
+    description: 'Function: deriv_tab.f90 Evaluate first- or second-order derivatives,
+      of tabulated function,'
+    file_hash: 85da0ea4b2715187894f983a3a4fbe42b61f65aba46aae82560340efd088a50a
+    last_modified: 1753385872.1025095
+    file_size: 2539
+    directory: Deriv
+    scanned_at: '2025-07-29T20:21:20.470104'
+  - name: Planczos2
+    file_path: src/User_Codes/Courses/AC290/Example5/planczos2.f90
+    language: fortran
+    description: 'Program: planczos2.f90 Lanczos diagonalization with reorthogonalization'
+    file_hash: 8d7632bec3b3a8c3b2c3dd63ece51d54b461abc50026a30c725f828af0c23883
+    last_modified: 1753385871.859436
+    file_size: 13335
+    directory: Example5
+    scanned_at: '2025-07-29T20:21:20.471907'
+  - name: External Libs
+    file_path: src/User_Codes/Courses/AC290/Example5/external_libs.f90
+    language: fortran
+    description: THIS SUBROUTINE IS A TRANSLATION OF THE ALGOL PROCEDURE TRED2, NUM.
+      MATH. 11, 181-195(1968) BY MARTIN, REINSCH, AND WILKINSON.
+    file_hash: bd4d288d90bf58e5c151dd24a24e9f76f11cd354894fe07444043c20776fe248
+    last_modified: 1753385871.858813
+    file_size: 14327
+    directory: Example5
+    scanned_at: '2025-07-29T20:21:20.472229'
+  - name: Planczos2
+    file_path: src/User_Codes/Courses/CS205/MPI_2021/Example5/planczos2.f90
+    language: fortran
+    description: 'Program: planczos2.f90 Lanczos diagonalization with reorthogonalization'
+    file_hash: 8d7632bec3b3a8c3b2c3dd63ece51d54b461abc50026a30c725f828af0c23883
+    last_modified: 1753385871.8647296
+    file_size: 13335
+    directory: Example5
+    scanned_at: '2025-07-29T20:21:20.475108'
+  - name: External Libs
+    file_path: src/User_Codes/Courses/CS205/MPI_2021/Example5/external_libs.f90
+    language: fortran
+    description: THIS SUBROUTINE IS A TRANSLATION OF THE ALGOL PROCEDURE TRED2, NUM.
+      MATH. 11, 181-195(1968) BY MARTIN, REINSCH, AND WILKINSON.
+    file_hash: bd4d288d90bf58e5c151dd24a24e9f76f11cd354894fe07444043c20776fe248
+    last_modified: 1753385871.8645697
+    file_size: 14327
+    directory: Example5
+    scanned_at: '2025-07-29T20:21:20.475442'
+  makefile:
+  - name: Makefile
+    file_path: src/User_Codes/Parallel_Computing/ScaLAPACK/Makefile
+    language: makefile
+    description: Code example
+    file_hash: 2943886d155a5af65d372680741fecc4b31a5d13d12d35152909f490c75507bd
+    last_modified: 1753385872.2166927
+    file_size: 789
+    directory: ScaLAPACK
+    scanned_at: '2025-07-29T19:11:54.825997'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/ScaLAPACK/run.sbatch
+  - name: Makefile
+    file_path: src/User_Codes/Parallel_Computing/MPI/Example2/Makefile
+    language: makefile
+    description: Code example
+    file_hash: ee82407a35812234ce03b1df5413e037aac784c7ffcf74b0413a263c4151e6a1
+    last_modified: 1753385872.1097012
+    file_size: 356
+    directory: Example2
+    scanned_at: '2025-07-29T19:11:54.885743'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/MPI/Example2/run.sbatch
+  - name: Makefile
+    file_path: src/User_Codes/Parallel_Computing/MPI/Example3/Makefile
+    language: makefile
+    description: Code example
+    file_hash: daa50d2748aaa1042712a3508a212066289bdb1a2a53b8db3097b2b73a1e72b9
+    last_modified: 1753385872.1101038
+    file_size: 415
+    directory: Example3
+    scanned_at: '2025-07-29T19:11:54.905465'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/MPI/Example3/run.sbatch
+  - name: Makefile
+    file_path: src/User_Codes/Parallel_Computing/MPI/Example1/Makefile
+    language: makefile
+    description: Make file for pi_monte_carlo.f90
+    file_hash: e526457c113eb57821c03a05ba70d724897e1c78b2b1068c0b458e5c8a5c35c3
+    last_modified: 1753385872.109286
+    file_size: 381
+    directory: Example1
+    scanned_at: '2025-07-29T19:11:54.922812'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/MPI/Example1/run.sbatch
+  - name: Makefile
+    file_path: src/User_Codes/Parallel_Computing/MPI_IO/Example1/Makefile
+    language: makefile
+    description: Make file for mpi_IO_test1.f90
+    file_hash: e08d4327adab9ade4bf6128b440db958edffd33ae4f7b90592e92b3724064675
+    last_modified: 1753385872.111757
+    file_size: 394
+    directory: Example1
+    scanned_at: '2025-07-29T19:11:55.288788'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/MPI_IO/Example1/run.sbatch
+  - name: Makefile
+    file_path: src/User_Codes/Parallel_Computing/Parallel_HDF5/Example2/Makefile
+    language: makefile
+    description: Makefile for parallel_hdf5_2d.f90
+    file_hash: 93b9256779581dc7ca8d65904fa708b0316f789de92009c3ca6ad80d1095b266
+    last_modified: 1753385872.1160412
+    file_size: 463
+    directory: Example2
+    scanned_at: '2025-07-29T19:11:55.322814'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/Parallel_HDF5/Example2/run.sbatch
+  - name: Makefile
+    file_path: src/User_Codes/Parallel_Computing/Parallel_HDF5/Example3/Makefile
+    language: makefile
+    description: Makefile for parallel_hdf5_3d.f90
+    file_hash: f6081e3ec7d47ca1d9a4e123c01231196008d6b01fb601b4da288f84671d0264
+    last_modified: 1753385872.1164927
+    file_size: 463
+    directory: Example3
+    scanned_at: '2025-07-29T19:11:55.345111'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/Parallel_HDF5/Example3/run.sbatch
+  - name: Makefile
+    file_path: src/User_Codes/Parallel_Computing/Parallel_HDF5/Example1/Makefile
+    language: makefile
+    description: Makefile for parallel_hdf5.f90
+    file_hash: e3b3d3d4242da61411d6c79b05a01bfbda7939542d20b99c0da178958db163a2
+    last_modified: 1753385872.1154196
+    file_size: 457
+    directory: Example1
+    scanned_at: '2025-07-29T19:11:55.357176'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/Parallel_HDF5/Example1/run.sbatch
+  - name: Makefile
+    file_path: src/User_Codes/Parallel_Computing/Parallel_NetCDF/Example2/Makefile
+    language: makefile
+    description: Code example
+    file_hash: 1625972865482c6111e003932a68b46be031512332febd8e68c214527c954024
+    last_modified: 1753385872.117518
+    file_size: 435
+    directory: Example2
+    scanned_at: '2025-07-29T19:11:55.380612'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/Parallel_NetCDF/Example2/run.sbatch
+  - name: Makefile
+    file_path: src/User_Codes/Parallel_Computing/Parallel_NetCDF/Example3/Makefile
+    language: makefile
+    description: Code example
+    file_hash: 1f5316ed79c17c6355492a239677d6c2fb9026d3d5795c78b31edbf1d78e21f1
+    last_modified: 1753385872.117923
+    file_size: 435
+    directory: Example3
+    scanned_at: '2025-07-29T19:11:55.391978'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/Parallel_NetCDF/Example3/run.sbatch
+  - name: Makefile
+    file_path: src/User_Codes/Parallel_Computing/Parallel_NetCDF/Example1/Makefile
+    language: makefile
+    description: Code example
+    file_hash: 451879f0fe3ef294ac48f1053cfa323b6703b5438a84915086477fddaa22d80e
+    last_modified: 1753385872.1170971
+    file_size: 434
+    directory: Example1
+    scanned_at: '2025-07-29T19:11:55.414876'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/Parallel_NetCDF/Example1/run.sbatch
+  - name: Makefile
+    file_path: src/User_Codes/Parallel_Computing/PnetCDF/Example2/Makefile
+    language: makefile
+    description: Code example
+    file_hash: eb651c317746a07d93b9ef1d682f102410de3d215e4351ef6b79a72d8e7d397e
+    last_modified: 1753385872.151562
+    file_size: 501
+    directory: Example2
+    scanned_at: '2025-07-29T19:11:55.503220'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/PnetCDF/Example2/run.sbatch
+  fortranfixed:
+  - name: Mpitest
+    file_path: src/User_Codes/Parallel_Computing/MPI/mpitest.f
+    language: fortranfixed
+    description: Code example
+    file_hash: f930859786f449d59d92c7afeee2b211df41a04f1f2b619702ffea476622add7
+    last_modified: 1753385872.1113799
+    file_size: 728
+    directory: MPI
+    scanned_at: '2025-07-29T19:11:54.854756'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/MPI/run.sbtach
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/MPI/run_intelmpi.sbatch
+  cpp:
+  - name: Mpitest
+    file_path: src/User_Codes/Parallel_Computing/MPI/mpitest.cpp
+    language: cpp
+    description: 'C++ MPI example: mpitest.cpp'
+    file_hash: 4d3ea32a6474a9b292c6af0a673432034716096d8a814466959bed759abf1536
+    last_modified: 1753385872.1112597
+    file_size: 647
+    directory: MPI
+    scanned_at: '2025-07-29T19:11:54.864674'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/MPI/run.sbtach
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/MPI/run_intelmpi.sbatch
+  c:
+  - name: Mpitest
+    file_path: src/User_Codes/Parallel_Computing/MPI/mpitest.c
+    language: c
+    description: 'C MPI example: mpitest.c'
+    file_hash: 831f8c62a1d998097722fba2b168c07d397b6cf09bf6ae58e44634e191d3ff9f
+    last_modified: 1753385872.1111891
+    file_size: 611
+    directory: MPI
+    scanned_at: '2025-07-29T20:21:20.444541'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/MPI/run.sbtach
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/MPI/run_intelmpi.sbatch
+  - name: Omp Pi
+    file_path: src/User_Codes/Parallel_Computing/OpenMP/Example3/omp_pi.c
+    language: c
+    description: Code example
+    file_hash: 23d5993826195d563dc4477125fdb309a0b0ef06844c29afa361a63fb2d29db5
+    last_modified: 1753385872.1137598
+    file_size: 1280
+    directory: Example3
+    scanned_at: '2025-07-29T20:21:20.453951'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/OpenMP/Example3/run.sbatch
+  - name: Omp Hello
+    file_path: src/User_Codes/Parallel_Computing/OpenMP/Example1/omp_hello.c
+    language: c
+    description: Parallel region starts here............................ Get thread
+      ID........................................
+    file_hash: 19b11be188bb0a59b2ca650e357b494f1cdba862241841332e3d90db6b3215e9
+    last_modified: 1753385872.1128366
+    file_size: 981
+    directory: Example1
+    scanned_at: '2025-07-29T20:21:20.454433'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/OpenMP/Example1/run.sbatch
+  - name: Omp Mem Test
+    file_path: src/User_Codes/Training/Advanced_Cluster_Usage/Exercise2/C/omp_mem_test.c
+    language: c
+    description: include <stdio.h> include <stdlib.h>
+    file_hash: 2f80f2ccb3961a0d90ccfb5f4cd8ee0d1b9c19e0af3b5e11d7daf67b2598112a
+    last_modified: 1753385872.2243397
+    file_size: 2671
+    directory: C
+    scanned_at: '2025-07-29T20:21:20.456611'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Training/Advanced_Cluster_Usage/Exercise2/C/run.sbatch
+  - name: Omp Pi
+    file_path: src/User_Codes/Training/Advanced_Cluster_Usage/Exercise3/C/omp_pi.c
+    language: c
+    description: Code example
+    file_hash: 23d5993826195d563dc4477125fdb309a0b0ef06844c29afa361a63fb2d29db5
+    last_modified: 1753385872.226615
+    file_size: 1280
+    directory: C
+    scanned_at: '2025-07-29T20:21:20.458828'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Training/Advanced_Cluster_Usage/Exercise3/C/run.sbatch
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Training/Advanced_Cluster_Usage/Exercise3/C/run_speedup.sbatch
+  - name: Mem Test
+    file_path: src/User_Codes/Training/Advanced_Cluster_Usage/Exercise1/C/mem_test.c
+    language: c
+    description: include <stdio.h> include <stdlib.h>
+    file_hash: 3252498a9b1f3c39801c1e0a7f189c3dddf1ab107cba3a5c47b34cecca70d914
+    last_modified: 1753385872.2219117
+    file_size: 1842
+    directory: C
+    scanned_at: '2025-07-29T20:21:20.460853'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Training/Advanced_Cluster_Usage/Exercise1/C/run.sbatch
+  - name: Omp Pi
+    file_path: src/User_Codes/Training/Advanced_Cluster_Usage/Exercise6/omp_pi.c
+    language: c
+    description: Code example
+    file_hash: 23d5993826195d563dc4477125fdb309a0b0ef06844c29afa361a63fb2d29db5
+    last_modified: 1753385872.2334156
+    file_size: 1280
+    directory: Exercise6
+    scanned_at: '2025-07-29T20:21:20.461113'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Training/Advanced_Cluster_Usage/Exercise6/run.sbatch
+  - name: Gsl Int Test
+    file_path: src/User_Codes/Libraries/GSL/gsl_int_test.c
+    language: c
+    description: Code example
+    file_hash: 73cd0ec7e7a94b03884f73d0fb71852d4d1b8f20f9a89978656b15455c2d8ec8
+    last_modified: 1753385871.9524143
+    file_size: 980
+    directory: GSL
+    scanned_at: '2025-07-29T20:21:20.463421'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Libraries/GSL/gsl_int_test.sbatch
+  - name: Sum
+    file_path: src/User_Codes/Languages/C/Example/sum.c
+    language: c
+    description: 'Program: pro.c Computes integer sum from 1 to N where N is an integer'
+    file_hash: 21028adc7b502076dc08e56d1f13976e7980902275f065398183d960b8964878
+    last_modified: 1753385871.9197538
+    file_size: 767
+    directory: Example
+    scanned_at: '2025-07-29T20:21:20.469220'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Languages/C/Example/run.sbatch
+  - name: Mmult
+    file_path: src/User_Codes/Courses/AC290/Example4/mmult.c
+    language: c
+    description: Code example
+    file_hash: 1ac3447200440288a8a93ce269380a32fb104479c44c1053420049932f3ed623
+    last_modified: 1753385871.8579166
+    file_size: 2404
+    directory: Example4
+    scanned_at: '2025-07-29T20:21:20.472517'
+  - name: Prime Mpi
+    file_path: src/User_Codes/Courses/CS205/MPI/Example2/prime_mpi.c
+    language: c
+    description: include <math.h> include <mpi.h>
+    file_hash: 4ac2e87c8313fcc29b62840c2cd403f10f210e59875961dddc26186960d9c369
+    last_modified: 1753385871.8602848
+    file_size: 4585
+    directory: Example2
+    scanned_at: '2025-07-29T20:21:20.473329'
+  - name: Communicator Mpi
+    file_path: src/User_Codes/Courses/CS205/MPI/Example5/communicator_mpi.c
+    language: c
+    description: include <stdlib.h> include <stdio.h>
+    file_hash: 2ac174b73e8a0a61442934104cbbc3d54c2ea947da58ff4e3ba6268c78d96ebd
+    last_modified: 1753385871.8615012
+    file_size: 4992
+    directory: Example5
+    scanned_at: '2025-07-29T20:21:20.473720'
+  - name: Poisson Mpi
+    file_path: src/User_Codes/Courses/CS205/MPI/Example4/poisson_mpi.c
+    language: c
+    description: include <math.h> include <mpi.h>
+    file_hash: 43f26a2b19adaa48bc2218a26ba69f2e60dba6667e2017ccf16b6877d9b0cc39
+    last_modified: 1753385871.8610086
+    file_size: 11344
+    directory: Example4
+    scanned_at: '2025-07-29T20:21:20.474076'
+  - name: Mmult
+    file_path: src/User_Codes/Courses/CS205/MPI/Example3/mmult.c
+    language: c
+    description: Code example
+    file_hash: 1ac3447200440288a8a93ce269380a32fb104479c44c1053420049932f3ed623
+    last_modified: 1753385871.8606288
+    file_size: 2404
+    directory: Example3
+    scanned_at: '2025-07-29T20:21:20.474334'
+  - name: Mpi Hello World
+    file_path: src/User_Codes/Courses/CS205/MPI/Example1/mpi_hello_world.c
+    language: c
+    description: 'Author: Wes Kendall Copyright 2011 www.mpitutorial.com'
+    file_hash: 9d0ca4c459ce9f1ed0773501595ff080f5077992c6db866a5e30a0005ed80df9
+    last_modified: 1753385871.8599348
+    file_size: 1168
+    directory: Example1
+    scanned_at: '2025-07-29T20:21:20.474614'
+  - name: Mmult
+    file_path: src/User_Codes/Courses/CS205/MPI_2021/Example4/mmult.c
+    language: c
+    description: Code example
+    file_hash: 9921dd26439ddff677eda270928c66abf9626a24817119d9c00c790f71b015a1
+    last_modified: 1753385871.863978
+    file_size: 2424
+    directory: Example4
+    scanned_at: '2025-07-29T20:21:20.475699'
+  - name: Omp Loop
+    file_path: src/User_Codes/Courses/CS205/OpenMP/Example2/omp_loop.c
+    language: c
+    description: Code example
+    file_hash: 00e8f76dd58f76359c433017c610b7556444325e8153ab84e1c2c9b2bcf7754a
+    last_modified: 1753385871.8660843
+    file_size: 1023
+    directory: Example2
+    scanned_at: '2025-07-29T20:21:20.476446'
+  - name: Omp Dot2
+    file_path: src/User_Codes/Courses/CS205/OpenMP/Example5/omp_dot2.c
+    language: c
+    description: Function dotprod.........................................
+    file_hash: cebd011a36c119814f940ec2d70667d162234110b67642106d045f2cae2b79af
+    last_modified: 1753385871.8670976
+    file_size: 1193
+    directory: Example5
+    scanned_at: '2025-07-29T20:21:20.476685'
+  - name: Omp Dot
+    file_path: src/User_Codes/Courses/CS205/OpenMP/Example4/omp_dot.c
+    language: c
+    description: Code example
+    file_hash: 42984697f7821773ff384707aad229d5c2058c406b8db1cf83833f4d19a3f69c
+    last_modified: 1753385871.8667965
+    file_size: 1029
+    directory: Example4
+    scanned_at: '2025-07-29T20:21:20.476903'
+  - name: Omp Sections
+    file_path: src/User_Codes/Courses/CS205/OpenMP/Example3/omp_sections.c
+    language: c
+    description: Code example
+    file_hash: 10068a992c2188a79a1adf3cc8af20ba63d4777630de6b7a52ea456a5a78ab2d
+    last_modified: 1753385871.8664916
+    file_size: 1358
+    directory: Example3
+    scanned_at: '2025-07-29T20:21:20.477129'
+  - name: Omp Md
+    file_path: src/User_Codes/Courses/CS205/OpenMP/Example10/omp_md.c
+    language: c
+    description: include <stdlib.h> include <stdio.h>
+    file_hash: 2f29d9ebbdac0d49dcc9eb3be70ed1076524dbd891fed136732b0a9e3d2bb63c
+    last_modified: 1753385871.8656163
+    file_size: 13690
+    directory: Example10
+    scanned_at: '2025-07-29T20:21:20.477337'
+  - name: Omp Pi
+    file_path: src/User_Codes/Courses/CS205/OpenMP/Example6/omp_pi.c
+    language: c
+    description: Code example
+    file_hash: 23d5993826195d563dc4477125fdb309a0b0ef06844c29afa361a63fb2d29db5
+    last_modified: 1753385871.8674529
+    file_size: 1280
+    directory: Example6
+    scanned_at: '2025-07-29T20:21:20.477582'
+  - name: Omp Hello
+    file_path: src/User_Codes/Courses/CS205/OpenMP/Example1/omp_hello.c
+    language: c
+    description: Parallel region starts here............................ Get thread
+      ID........................................
+    file_hash: 19b11be188bb0a59b2ca650e357b494f1cdba862241841332e3d90db6b3215e9
+    last_modified: 1753385871.8651254
+    file_size: 981
+    directory: Example1
+    scanned_at: '2025-07-29T20:21:20.477965'
+  - name: Omp Helmholtz
+    file_path: src/User_Codes/Courses/CS205/OpenMP/Example8/omp_helmholtz.c
+    language: c
+    description: include <stdlib.h> include <stdio.h>
+    file_hash: 2f5fb57a5bcd2ac47e257e32659f9dd73b87bfc65817e121dc40e2e9b0fd7771
+    last_modified: 1753385871.8691185
+    file_size: 16120
+    directory: Example8
+    scanned_at: '2025-07-29T20:21:20.478235'
+  - name: Omp Poisson
+    file_path: src/User_Codes/Courses/CS205/OpenMP/Example9/omp_poisson.c
+    language: c
+    description: include <stdlib.h> include <stdio.h>
+    file_hash: 10ce176b0c53502fe0bb55562bdaa0fa68577539653ec36b954877b4569344b1
+    last_modified: 1753385871.8696284
+    file_size: 12652
+    directory: Example9
+    scanned_at: '2025-07-29T20:21:20.478453'
+  python:
+  - name: Optimize Mpi
+    file_path: src/User_Codes/Parallel_Computing/Python/mpi4py/Example2/optimize_mpi.py
+    language: python
+    description: '!/usr/bin/env python3 Function to minimize'
+    file_hash: 05b8d0f886795a233fea52467b1cc4ff3bcba43ca7219959ad1f82404ab4b2bc
+    last_modified: 1753385872.1561437
+    file_size: 756
+    directory: Example2
+    scanned_at: '2025-07-29T20:21:20.446263'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/Python/mpi4py/Example2/run_ompi.sbatch
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/Python/mpi4py/Example2/run.sbatch
+  - name: Mpi4Py Test
+    file_path: src/User_Codes/Parallel_Computing/Python/mpi4py/Example1/mpi4py_test.py
+    language: python
+    description: '!/usr/bin/env python3 Parallel Python test program: mpi4py'
+    file_hash: 3e67ecf4697507768050f21445ce0931191d53cf6e08e27a6a70ee71aa8a45b6
+    last_modified: 1753385872.1557848
+    file_size: 617
+    directory: Example1
+    scanned_at: '2025-07-29T20:21:20.446620'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/Python/mpi4py/Example1/run_ompi.sbatch
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/Python/mpi4py/Example1/run.sbatch
+  - name: Multiprocessing Basic
+    file_path: src/User_Codes/Parallel_Computing/Python/Python-Multiprocessing-Tutorial/multiprocessing_basic.py
+    language: python
+    description: Create 3 processes
+    file_hash: ae91cd81dfb6fe710a84fc75596b6fe82c80964ee1a273ae59b5efe9a79bbf1f
+    last_modified: 1753385872.1541824
+    file_size: 880
+    directory: Python-Multiprocessing-Tutorial
+    scanned_at: '2025-07-29T20:21:20.447044'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/Python/Python-Multiprocessing-Tutorial/run_multiproc.sbatch
+  - name: Cpu-Count
+    file_path: src/User_Codes/Parallel_Computing/Python/Python-Multiprocessing-Tutorial/cpu-count.py
+    language: python
+    description: '!/usr/bin/env python3 Based on main.py in'
+    file_hash: 1bf50f41e74655663246b36f0961e93a9ae1e444d63a0af0a61635d58e9aaa41
+    last_modified: 1753385872.153836
+    file_size: 478
+    directory: Python-Multiprocessing-Tutorial
+    scanned_at: '2025-07-29T20:21:20.447259'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/Python/Python-Multiprocessing-Tutorial/run_multiproc.sbatch
+  - name: Multiprocessing Pool
+    file_path: src/User_Codes/Parallel_Computing/Python/Python-Multiprocessing-Tutorial/multiprocessing_pool.py
+    language: python
+    description: 'In order to use multiple cores/CPUs, need to request a compute node
+      using --cpus-per-task flag, as shown: salloc --partition=test --nodes=1 --cpus-per-task=10
+      --mem=10GB --time=00:30:00'
+    file_hash: deff63d5a9b36416c5ce5f0251f46558e1249af5123df6ddab7f994b92065d88
+    last_modified: 1753385872.1542494
+    file_size: 1722
+    directory: Python-Multiprocessing-Tutorial
+    scanned_at: '2025-07-29T20:21:20.447451'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/Python/Python-Multiprocessing-Tutorial/run_multiproc.sbatch
+  - name: Serial Sum
+    file_path: src/User_Codes/Parallel_Computing/EP/Example2/serial_sum.py
+    language: python
+    description: '!/usr/bin/env python'
+    file_hash: 34bba9dfc5c2bd0438fa4c5a8419cdd2aadb199a4f4d6b1fc7428d9f43c85e50
+    last_modified: 1753385872.1068468
+    file_size: 414
+    directory: Example2
+    scanned_at: '2025-07-29T20:21:20.447793'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/EP/Example2/run.sbatch
+  - name: Serial Sum
+    file_path: src/User_Codes/Parallel_Computing/EP/Example1/serial_sum.py
+    language: python
+    description: '!/usr/bin/env python'
+    file_hash: b3bc868dcea5b769db033ec344c2ac85cd6de566017b86fe5b65199f5ebbc807
+    last_modified: 1753385872.1063023
+    file_size: 430
+    directory: Example1
+    scanned_at: '2025-07-29T20:21:20.448077'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/EP/Example1/run.sbatch
+  - name: Speedup
+    file_path: src/User_Codes/Parallel_Computing/OpenMP/Example3/speedup.py
+    language: python
+    description: Code example
+    file_hash: 3bdb8385811eddc4fe11772ef8f4fcbf9df835d9010d9c611418fde6a22ffcbc
+    last_modified: 1753385872.1144798
+    file_size: 1261
+    directory: Example3
+    scanned_at: '2025-07-29T20:21:20.454181'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/OpenMP/Example3/run.sbatch
+  - name: Mp Mem Test
+    file_path: src/User_Codes/Training/Advanced_Cluster_Usage/Exercise2/Python/mp_mem_test.py
+    language: python
+    description: Calculate rows for each thread
+    file_hash: c5e7fb404b84a6d74e6baaf034afc270cf9f8381de8d15003df507e9a72c5cd1
+    last_modified: 1753385872.2256882
+    file_size: 1405
+    directory: Python
+    scanned_at: '2025-07-29T20:21:20.455700'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Training/Advanced_Cluster_Usage/Exercise2/Python/run.sbatch
+  - name: Mp Pi
+    file_path: src/User_Codes/Training/Advanced_Cluster_Usage/Exercise3/Python/mp_pi.py
+    language: python
+    description: '!/usr/bin/env python3 Program: mp_pi.py'
+    file_hash: 000ddf8bc9be57fc0e3baa4ad6045152fccc223db576960a23d7d7a53e64238e
+    last_modified: 1753385872.2290432
+    file_size: 1930
+    directory: Python
+    scanned_at: '2025-07-29T20:21:20.457094'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Training/Advanced_Cluster_Usage/Exercise3/Python/run_speedup.sbatch
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Training/Advanced_Cluster_Usage/Exercise3/Python/run.sbatch
+  - name: Speedup
+    file_path: src/User_Codes/Training/Advanced_Cluster_Usage/Exercise3/Python/speedup.py
+    language: python
+    description: Compute speedup and parallel efficiency
+    file_hash: f3563b0d6a34a32b905a9facf6059eff1423a287f3c88cd4dfd7b38378754815
+    last_modified: 1753385872.229523
+    file_size: 1227
+    directory: Python
+    scanned_at: '2025-07-29T20:21:20.457417'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Training/Advanced_Cluster_Usage/Exercise3/Python/run_speedup.sbatch
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Training/Advanced_Cluster_Usage/Exercise3/Python/run.sbatch
+  - name: Speedup
+    file_path: src/User_Codes/Training/Advanced_Cluster_Usage/Exercise3/R/speedup.py
+    language: python
+    description: Compute speedup and parallel efficiency
+    file_hash: f3563b0d6a34a32b905a9facf6059eff1423a287f3c88cd4dfd7b38378754815
+    last_modified: 1753385872.2303057
+    file_size: 1227
+    directory: R
+    scanned_at: '2025-07-29T20:21:20.457707'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Training/Advanced_Cluster_Usage/Exercise3/R/run.sbatch
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Training/Advanced_Cluster_Usage/Exercise3/R/run_speedup.sbatch
+  - name: Speedup
+    file_path: src/User_Codes/Training/Advanced_Cluster_Usage/Exercise3/Cpp/speedup.py
+    language: python
+    description: Compute speedup and parallel efficiency
+    file_hash: f3563b0d6a34a32b905a9facf6059eff1423a287f3c88cd4dfd7b38378754815
+    last_modified: 1753385872.227934
+    file_size: 1227
+    directory: Cpp
+    scanned_at: '2025-07-29T20:21:20.457994'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Training/Advanced_Cluster_Usage/Exercise3/Cpp/run_speedup.sbatch
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Training/Advanced_Cluster_Usage/Exercise3/Cpp/run.sbatch
+  - name: Speedup
+    file_path: src/User_Codes/Training/Advanced_Cluster_Usage/Exercise3/Fortran/speedup.py
+    language: python
+    description: Compute speedup and parallel efficiency
+    file_hash: f3563b0d6a34a32b905a9facf6059eff1423a287f3c88cd4dfd7b38378754815
+    last_modified: 1753385872.2287326
+    file_size: 1227
+    directory: Fortran
+    scanned_at: '2025-07-29T20:21:20.458444'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Training/Advanced_Cluster_Usage/Exercise3/Fortran/run.sbatch
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Training/Advanced_Cluster_Usage/Exercise3/Fortran/run_speedup.sbatch
+  - name: Speedup
+    file_path: src/User_Codes/Training/Advanced_Cluster_Usage/Exercise3/C/speedup.py
+    language: python
+    description: Compute speedup and parallel efficiency
+    file_hash: f3563b0d6a34a32b905a9facf6059eff1423a287f3c88cd4dfd7b38378754815
+    last_modified: 1753385872.2270942
+    file_size: 1227
+    directory: C
+    scanned_at: '2025-07-29T20:21:20.459062'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Training/Advanced_Cluster_Usage/Exercise3/C/run.sbatch
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Training/Advanced_Cluster_Usage/Exercise3/C/run_speedup.sbatch
+  - name: Speedup Mpi2
+    file_path: src/User_Codes/Training/Advanced_Cluster_Usage/Exercise4/speedup_mpi2.py
+    language: python
+    description: Code example
+    file_hash: 9b0906e698ecc3a4dfebe490a61eb8a6d21ddd6eac78d272ed14f0223e535746
+    last_modified: 1753385872.2320158
+    file_size: 1261
+    directory: Exercise4
+    scanned_at: '2025-07-29T20:21:20.459354'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Training/Advanced_Cluster_Usage/Exercise4/run2.sbatch
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Training/Advanced_Cluster_Usage/Exercise4/run_speedup2.sbatch
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Training/Advanced_Cluster_Usage/Exercise4/run.sbatch
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Training/Advanced_Cluster_Usage/Exercise4/run_speedup.sbatch
+  - name: Speedup Mpi
+    file_path: src/User_Codes/Training/Advanced_Cluster_Usage/Exercise4/speedup_mpi.py
+    language: python
+    description: Code example
+    file_hash: 95bb530d432f67d243a19edae97dfc0f9f8f4467dcf75975730871ec4b078e41
+    last_modified: 1753385872.2319577
+    file_size: 1259
+    directory: Exercise4
+    scanned_at: '2025-07-29T20:21:20.459580'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Training/Advanced_Cluster_Usage/Exercise4/run2.sbatch
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Training/Advanced_Cluster_Usage/Exercise4/run_speedup2.sbatch
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Training/Advanced_Cluster_Usage/Exercise4/run.sbatch
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Training/Advanced_Cluster_Usage/Exercise4/run_speedup.sbatch
+  - name: Mem Test
+    file_path: src/User_Codes/Training/Advanced_Cluster_Usage/Exercise1/Python/mem_test.py
+    language: python
+    description: Initialize an n x n matrix filled with zeros Fill the matrix with
+      random numbers and ensure symmetry
+    file_hash: b90e9d8a1e6f86305bd92d2a201b33e32640cf4bb1e6a6692f6c491e23f5dabb
+    last_modified: 1753385872.223152
+    file_size: 1028
+    directory: Python
+    scanned_at: '2025-07-29T20:21:20.460134'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Training/Advanced_Cluster_Usage/Exercise1/Python/run_python.sbatch
+  - name: Speedup
+    file_path: src/User_Codes/Training/Advanced_Cluster_Usage/Exercise6/speedup.py
+    language: python
+    description: Code example
+    file_hash: 3bdb8385811eddc4fe11772ef8f4fcbf9df835d9010d9c611418fde6a22ffcbc
+    last_modified: 1753385872.234034
+    file_size: 1261
+    directory: Exercise6
+    scanned_at: '2025-07-29T20:21:20.461350'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Training/Advanced_Cluster_Usage/Exercise6/run.sbatch
+  - name: Myscript
+    file_path: src/User_Codes/Languages/Python/myscript.py
+    language: python
+    description: Code example
+    file_hash: a796ac4075d7f3702a3d9dd41a3ef8d300825d6bc573d04f6f41b41d05efb153
+    last_modified: 1753385871.9340298
+    file_size: 92
+    directory: Python
+    scanned_at: '2025-07-29T20:21:20.464356'
+  - name: Numpy Pandas Ex
+    file_path: src/User_Codes/Languages/Python/Example2/numpy_pandas_ex.py
+    language: python
+    description: example from https://sparkbyexamples.com/pandas/pandas-dataframe-tutorial-beginners-guide/
+      Create pandas DataFrame from List
+    file_hash: 08f4a0ab0fc9cf3844ed7357fe59637579c9aa633deb8750cae311294ee33f23
+    last_modified: 1753385871.9327369
+    file_size: 1129
+    directory: Example2
+    scanned_at: '2025-07-29T20:21:20.464600'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Languages/Python/Example2/run.sbatch
+  - name: Mc Pi
+    file_path: src/User_Codes/Languages/Python/Example1/mc_pi.py
+    language: python
+    description: '!/usr/bin/env python'
+    file_hash: c0967d116a83929fe383dc127dcb43a36e48bdc790cceaddee8e68ff98b3fead
+    last_modified: 1753385871.9321551
+    file_size: 393
+    directory: Example1
+    scanned_at: '2025-07-29T20:21:20.464925'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Languages/Python/Example1/run.sbatch
+  - name: Test Mc Pi
+    file_path: src/User_Codes/Languages/Python/Example1/test_mc_pi.py
+    language: python
+    description: test_mc_pi.py Set a seed for reproducibility
+    file_hash: 08bbcc637dc52f45c49cee1a9ba6e76eed4917147ea6abc107c68c72c13c8d04
+    last_modified: 1753385871.9322848
+    file_size: 923
+    directory: Example1
+    scanned_at: '2025-07-29T20:21:20.465188'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Languages/Python/Example1/run.sbatch
+  - name: Figure
+    file_path: src/User_Codes/Languages/Julia/Example2/figure.py
+    language: python
+    description: Code example
+    file_hash: cbcd1a8c0bdbb8cab92f1e88231c9c28097ba22a4d666779401829b18a5d3426
+    last_modified: 1753385871.9244678
+    file_size: 1579
+    directory: Example2
+    scanned_at: '2025-07-29T20:21:20.468672'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Languages/Julia/Example2/run.sbatch
+  - name: Setup
+    file_path: src/User_Codes/Courses/numpy-talk/setup.py
+    language: python
+    description: Code example
+    file_hash: e456bc939b9c66faa65aca9112a9493e4f31dbc007ece8202ee24b86aa223121
+    last_modified: 1753385871.8846939
+    file_size: 1022
+    directory: numpy-talk
+    scanned_at: '2025-07-29T20:21:20.470564'
+  - name: '  Init  '
+    file_path: src/User_Codes/Courses/numpy-talk/src/kuramoto/__init__.py
+    language: python
+    description: Code example
+    file_hash: 646a8911d607be3f48404463a684767a891987f4723cca7550ad702bf3e4b257
+    last_modified: 1753385871.8848405
+    file_size: 22
+    directory: kuramoto
+    scanned_at: '2025-07-29T20:21:20.471051'
+  - name: Solvers
+    file_path: src/User_Codes/Courses/numpy-talk/src/kuramoto/solvers.py
+    language: python
+    description: Import C++ shared object file -- this will appear in this directory
+      at build-time
+    file_hash: 3c7ba49839787b14e3443fc49995e3329b2df1b303ce05c9f990bf99105c3496
+    last_modified: 1753385871.885147
+    file_size: 2016
+    directory: kuramoto
+    scanned_at: '2025-07-29T20:21:20.471252'
+  - name: Base
+    file_path: src/User_Codes/Courses/numpy-talk/src/kuramoto/base.py
+    language: python
+    description: Code example
+    file_hash: 6a59e03365a2d3e771fcfb1631940ad8cfe54eb1ba8097c36f189a1ba6599147
+    last_modified: 1753385871.8850248
+    file_size: 2429
+    directory: kuramoto
+    scanned_at: '2025-07-29T20:21:20.471454'
+  - name: Speedup
+    file_path: src/User_Codes/Courses/AC290/Example3/speedup.py
+    language: python
+    description: Code example
+    file_hash: 91e25c39bb36e41093f7284d19b300cea4b0712f777632d7edc0a4093e66793a
+    last_modified: 1753385871.8577464
+    file_size: 1122
+    directory: Example3
+    scanned_at: '2025-07-29T20:21:20.472793'
+  - name: Speedup
+    file_path: src/User_Codes/Courses/CS205/MPI_2021/Example3/speedup.py
+    language: python
+    description: Code example
+    file_hash: a0e4378c4e20dc7094f433f088260de44d898c545f916dec32d67fea1e0eb865
+    last_modified: 1753385871.8636029
+    file_size: 1224
+    directory: Example3
+    scanned_at: '2025-07-29T20:21:20.476027'
+  - name: Speedup
+    file_path: src/User_Codes/Courses/CS205/OpenMP/Example6/speedup.py
+    language: python
+    description: Code example
+    file_hash: 3bdb8385811eddc4fe11772ef8f4fcbf9df835d9010d9c611418fde6a22ffcbc
+    last_modified: 1753385871.8680186
+    file_size: 1261
+    directory: Example6
+    scanned_at: '2025-07-29T20:21:20.477773'
+  bash:
+  - name: Multiprocbuild Env
+    file_path: src/User_Codes/Parallel_Computing/Python/Python-Multiprocessing-Tutorial/multiprocbuild_env.sh
+    language: bash
+    description: Code example
+    file_hash: 0db6add2db15ff1818631637e385f2d48e0b81c81f199913f897efd73619c05e
+    last_modified: 1753385872.153911
+    file_size: 74
+    directory: Python-Multiprocessing-Tutorial
+    scanned_at: '2025-07-29T19:11:55.007849'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/Python/Python-Multiprocessing-Tutorial/run_multiproc.sbatch
+  - name: Run
+    file_path: src/User_Codes/Parallel_Computing/R/Large_Data_Processing_R/parallel_computation/R/run.sh
+    language: bash
+    description: SBATCH -J mpi SBATCH -o %j_job.out
+    file_hash: a905ee5212c99398164856207fed800498b7cbb043679ab6a2b3cf7239388fb7
+    last_modified: 1753385872.189249
+    file_size: 508
+    directory: R
+    scanned_at: '2025-07-29T19:11:55.175577'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/R/Large_Data_Processing_R/parallel_computation/R/run.sh
+  rconsole:
+  - name: Mpi Test
+    file_path: src/User_Codes/Parallel_Computing/R/Rmpi/mpi_test.Rout
+    language: rconsole
+    description: Code example
+    file_hash: 57f11802548495f33c539e0aa123c3ebe84c164d87c74fc38dc14fe13cce2815
+    last_modified: 1753385872.2125072
+    file_size: 2479
+    directory: Rmpi
+    scanned_at: '2025-07-29T19:11:55.069178'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/R/Rmpi/run.sbatch
+  - name: Pbdapply
+    file_path: src/User_Codes/Parallel_Computing/R/pbdMPI/pbdApply.Rout
+    language: rconsole
+    description: Code example
+    file_hash: 69cbd145476e8759e183b0d92800bebe26987b29bae6198110976111cc4825bb
+    last_modified: 1753385872.215681
+    file_size: 784
+    directory: pbdMPI
+    scanned_at: '2025-07-29T19:11:55.099962'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/R/pbdMPI/run_apply.sbatch
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/R/pbdMPI/run_Lapply.sbatch
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/R/pbdMPI/run_scatter.sbatch
+  - name: Pbdlapply
+    file_path: src/User_Codes/Parallel_Computing/R/pbdMPI/pbdLapply.Rout
+    language: rconsole
+    description: Code example
+    file_hash: 5c1bf56b140849973c70c595c061e91e8a41cc4d04d92518d03385bf833dfcde
+    last_modified: 1753385872.2158306
+    file_size: 257
+    directory: pbdMPI
+    scanned_at: '2025-07-29T19:11:55.106891'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/R/pbdMPI/run_apply.sbatch
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/R/pbdMPI/run_Lapply.sbatch
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/R/pbdMPI/run_scatter.sbatch
+  - name: Scatter
+    file_path: src/User_Codes/Parallel_Computing/R/pbdMPI/scatter.Rout
+    language: rconsole
+    description: Code example
+    file_hash: 1115d9ae2c543e45cbb302d28935cf66f3f65005da283452b6b17db6dba8ad87
+    last_modified: 1753385872.2161455
+    file_size: 210
+    directory: pbdMPI
+    scanned_at: '2025-07-29T19:11:55.118576'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/R/pbdMPI/run_apply.sbatch
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/R/pbdMPI/run_Lapply.sbatch
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/R/pbdMPI/run_scatter.sbatch
+  - name: Future Hybrid
+    file_path: src/User_Codes/Parallel_Computing/R/future/future_hybrid.Rout
+    language: rconsole
+    description: Code example
+    file_hash: 4482e6d0d19f7c09500584ed4cecb283cc490bb319ecec2b6a4157efee91b60b
+    last_modified: 1753385872.2149866
+    file_size: 183
+    directory: future
+    scanned_at: '2025-07-29T19:11:55.252344'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/R/future/run_future.sbatch
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/R/future/run_hybrid.sbatch
+  - name: Future Slow Square
+    file_path: src/User_Codes/Parallel_Computing/R/future/future_slow_square.Rout
+    language: rconsole
+    description: Code example
+    file_hash: be5541198b629ced18d06259f12e0efafd27342600c6cc1367de345d578bfa42
+    last_modified: 1753385872.2151468
+    file_size: 50
+    directory: future
+    scanned_at: '2025-07-29T19:11:55.263354'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/R/future/run_future.sbatch
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/R/future/run_hybrid.sbatch
+  s:
+  - name: Mpi Test
+    file_path: src/User_Codes/Parallel_Computing/R/Rmpi/mpi_test.R
+    language: s
+    description: Load the R MPI package if it is not already loaded. Tell all slaves
+      to return a message identifying themselves
+    file_hash: 76416fa04dbf70087532ca19214aa3daa4ca4072fdfeac4bfe6e87b66845b9c6
+    last_modified: 1753385872.2124095
+    file_size: 555
+    directory: Rmpi
+    scanned_at: '2025-07-29T19:11:55.080033'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/R/Rmpi/run.sbatch
+  - name: Pbdapply
+    file_path: src/User_Codes/Parallel_Computing/R/pbdMPI/pbdApply.R
+    language: s
+    description: This is example is a slight modification of pbdMPI's demo `pbdApply.r`
+      compute sum using "master-worker" (mw) model
+    file_hash: 4a57dda99537d214d1b7f9b3d20aaf3da716ed4f7d28dd3c002bb3de72c91408
+    last_modified: 1753385872.215616
+    file_size: 607
+    directory: pbdMPI
+    scanned_at: '2025-07-29T19:11:55.090275'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/R/pbdMPI/run_apply.sbatch
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/R/pbdMPI/run_Lapply.sbatch
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/R/pbdMPI/run_scatter.sbatch
+  - name: Scatter
+    file_path: src/User_Codes/Parallel_Computing/R/pbdMPI/scatter.R
+    language: s
+    description: Code example
+    file_hash: 353a16541d2f813505ab688666d3ff1acd936b0340f6e29ab15c5080855442ee
+    last_modified: 1753385872.2160866
+    file_size: 745
+    directory: pbdMPI
+    scanned_at: '2025-07-29T19:11:55.110630'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/R/pbdMPI/run_apply.sbatch
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/R/pbdMPI/run_Lapply.sbatch
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/R/pbdMPI/run_scatter.sbatch
+  - name: Pbdlapply
+    file_path: src/User_Codes/Parallel_Computing/R/pbdMPI/pbdLapply.R
+    language: s
+    description: This is example is a slight modification of pbdMPI's demo `pbdLApply.r`
+    file_hash: ed6bcf8922976bd63bd07387adedf0eda1ac10462aa7e2a9d5bec2685523e072
+    last_modified: 1753385872.2157693
+    file_size: 578
+    directory: pbdMPI
+    scanned_at: '2025-07-29T19:11:55.121882'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/R/pbdMPI/run_apply.sbatch
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/R/pbdMPI/run_Lapply.sbatch
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/R/pbdMPI/run_scatter.sbatch
+  - name: 0 Helper Functions
+    file_path: src/User_Codes/Parallel_Computing/R/Large_Data_Processing_R/parallel_computation/R/0_helper_functions.R
+    language: s
+    description: 'https://helloacm.com/r-programming-tutorial-how-to-compute-pi-using-monte-carlo-in-r/
+      pi : http://www.geom.uiuc.edu/~huberty/math5337/groupe/digits.html'
+    file_hash: ebf287cbce23514c5777a05e212f6963c4f80f40a53cbf7ea97857f274ecc75b
+    last_modified: 1753385872.188763
+    file_size: 869
+    directory: R
+    scanned_at: '2025-07-29T19:11:55.160169'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/R/Large_Data_Processing_R/parallel_computation/R/run.sh
+  - name: 1 Compute Pi Lapply
+    file_path: src/User_Codes/Parallel_Computing/R/Large_Data_Processing_R/parallel_computation/R/1_compute_pi_lapply.R
+    language: s
+    description: Code example
+    file_hash: d644e95ff15816ecd3a52f01adab53f24dd99e5b522920f3b3d6f59b9b4788da
+    last_modified: 1753385872.188833
+    file_size: 611
+    directory: R
+    scanned_at: '2025-07-29T19:11:55.163716'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/R/Large_Data_Processing_R/parallel_computation/R/run.sh
+  - name: Plot Scaling Data
+    file_path: src/User_Codes/Parallel_Computing/R/Large_Data_Processing_R/parallel_computation/R/plot_scaling_data.R
+    language: s
+    description: Code example
+    file_hash: 559724f1217d35dbafef10318397599001a555d38e273c179181258995d1fa57
+    last_modified: 1753385872.1891809
+    file_size: 324
+    directory: R
+    scanned_at: '2025-07-29T19:11:55.168035'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/R/Large_Data_Processing_R/parallel_computation/R/run.sh
+  - name: 2 Compute Pi Parlapply
+    file_path: src/User_Codes/Parallel_Computing/R/Large_Data_Processing_R/parallel_computation/R/2_compute_pi_parLapply.R
+    language: s
+    description: create cluster of workers
+    file_hash: 258d5c71a05a8c5fbc895cf1b3a5d2d76910dc9b4472842d1b2250579da580bb
+    last_modified: 1753385872.1888933
+    file_size: 779
+    directory: R
+    scanned_at: '2025-07-29T19:11:55.171728'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/R/Large_Data_Processing_R/parallel_computation/R/run.sh
+  - name: Parlapply Mpi
+    file_path: src/User_Codes/Parallel_Computing/R/Large_Data_Processing_R/parallel_computation/R/parLapply_mpi.R
+    language: s
+    description: Load the R MPI package if it is not already loaded. In case R exits
+      unexpectedly, have it automatically clean up
+    file_hash: 002c933b0edabe7b467d5d9cbbd780049ec374a7d5af0c196748060d3ad3cf31
+    last_modified: 1753385872.1891205
+    file_size: 1073
+    directory: R
+    scanned_at: '2025-07-29T19:11:55.179574'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/R/Large_Data_Processing_R/parallel_computation/R/run.sh
+  - name: Future Hybrid
+    file_path: src/User_Codes/Parallel_Computing/R/future/future_hybrid.R
+    language: s
+    description: simple square fucntion to show how to use future sbatch contains
+      the details of the job submission script that will populate
+    file_hash: bfbed3c5620a7fbdb59535c5cde9ed6c380a8b5c9dc0da5e39d0eb5c56ac53cd
+    last_modified: 1753385872.2149224
+    file_size: 2009
+    directory: future
+    scanned_at: '2025-07-29T19:11:55.245180'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/R/future/run_future.sbatch
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/R/future/run_hybrid.sbatch
+  - name: Future Slow Square
+    file_path: src/User_Codes/Parallel_Computing/R/future/future_slow_square.R
+    language: s
+    description: 'select one plan plan(sequential)    # synchronous'
+    file_hash: 1072b6bccba3d0bf984bafe1d7c6f6ce47768e891d0f8c95b87ca0407a51954d
+    last_modified: 1753385872.2150881
+    file_size: 460
+    directory: future
+    scanned_at: '2025-07-29T19:11:55.274930'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/R/future/run_future.sbatch
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/R/future/run_hybrid.sbatch
+  cheetah:
+  - name: Future Slurm
+    file_path: src/User_Codes/Parallel_Computing/R/future/future_slurm.tmpl
+    language: cheetah
+    description: 'SBATCH --job-name <%= resources$job_name %>       ## Name of the
+      job SBATCH --ntasks-per-node <%= resources$n_cpu %>   ## number of processes
+      per node'
+    file_hash: bad93e28d66cb6a32d0b1e0a9ef960a465f8c2afe07de32df1b0738d14814821
+    last_modified: 1753385872.2152178
+    file_size: 980
+    directory: future
+    scanned_at: '2025-07-29T19:11:55.241327'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/R/future/run_future.sbatch
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/R/future/run_hybrid.sbatch
+  objective-c:
+  - name: Parallel Pi
+    file_path: src/User_Codes/Parallel_Computing/Mathematica/parallel_pi.m
+    language: objective-c
+    description: Code example
+    file_hash: 10056335f140609e039306f31ad1000326045909c75a8b2f4bd475b2d407993e
+    last_modified: 1753385872.1125069
+    file_size: 798
+    directory: Mathematica
+    scanned_at: '2025-07-29T19:11:55.307690'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/Mathematica/run.sbtach
+  - name: Thread Test
+    file_path: src/User_Codes/Parallel_Computing/MATLAB/Example2/thread_test.m
+    language: objective-c
+    description: 'Program: thread_test.m Multithreading test'
+    file_hash: 0114bdc631a6727e9acd3eb808e8e5d728a99366d0d2b169c1fd2c775fb6b511
+    last_modified: 1753385872.1077347
+    file_size: 1038
+    directory: Example2
+    scanned_at: '2025-07-29T19:11:55.446012'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/MATLAB/Example2/run.sbatch
+  - name: Prun
+    file_path: src/User_Codes/Parallel_Computing/MATLAB/Example3/prun.m
+    language: objective-c
+    description: 'Program: prun.m Purpose: Parallel driver for se_fdm.m'
+    file_hash: 96bec09a3ed7bb5bce23775ef013be721413542d585a510cc1914cabe54e8667
+    last_modified: 1753385872.1088037
+    file_size: 367
+    directory: Example3
+    scanned_at: '2025-07-29T19:11:55.452602'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/MATLAB/Example3/run.sbatch
+  - name: Simpson1D
+    file_path: src/User_Codes/Parallel_Computing/MATLAB/Example3/simpson1d.m
+    language: objective-c
+    description: 'Function: simpson1d.m Purpose: 1D integration - Simpson''s 1/3 rule'
+    file_hash: 52f3602a746c60c5f884ac551a03a2ebfda156eefbe42db3b7269d9c6886c53a
+    last_modified: 1753385872.109048
+    file_size: 553
+    directory: Example3
+    scanned_at: '2025-07-29T19:11:55.459620'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/MATLAB/Example3/run.sbatch
+  - name: Se Fdm
+    file_path: src/User_Codes/Parallel_Computing/MATLAB/Example3/se_fdm.m
+    language: objective-c
+    description: 'Program: se_fdm.m Purpose: Solutions to 1D time independent Schrodinger
+      Equation'
+    file_hash: 63673791a27f1318b4124e376fcd0f49b775a78917c478a9d785a3ac2df63d5b
+    last_modified: 1753385872.1089756
+    file_size: 2441
+    directory: Example3
+    scanned_at: '2025-07-29T19:11:55.477741'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/MATLAB/Example3/run.sbatch
+  - name: Parallel Monte Carlo
+    file_path: src/User_Codes/Parallel_Computing/MATLAB/Example1/parallel_monte_carlo.m
+    language: objective-c
+    description: Parallel Monte Carlo calculation of PI Compute the X and Y coordinates
+      of where the dart hit the...............
+    file_hash: f81682426c065d6197e616a229c9bab8c07d02746350b475e1b32d341e392a10
+    last_modified: 1753385872.107157
+    file_size: 1004
+    directory: Example1
+    scanned_at: '2025-07-29T19:11:55.484847'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/MATLAB/Example1/run.sbatch
+  nesc:
+  - name: Simple Xy Par
+    file_path: src/User_Codes/Parallel_Computing/Parallel_NetCDF/Example3/simple_xy_par.nc
+    language: nesc
+    description: Code example
+    file_hash: d6b958edd4e874947d86a43ddbfbdbad8de3b45e5f0caf78e9220e47dab2e292
+    last_modified: 1753385872.1182299
+    file_size: 6624
+    directory: Example3
+    scanned_at: '2025-07-29T19:11:55.406964'
+    slurm_files:
+    - /Users/swinney/Projects/doc-fun/src/User_Codes/Parallel_Computing/Parallel_NetCDF/Example3/run.sbatch
 code_examples_metadata:
-  last_scan: '2025-07-24T16:12:31.394183'
-  total_examples: 5
+  last_scan: '2025-07-29T20:21:20.552757'
+  total_examples: 100
   languages:
-  - markdown
   - fortran
+  - c
+  - python
   scan_summary:
-    markdown: 3
-    fortran: 2
+    fortran: 44
+    c: 25
+    python: 31

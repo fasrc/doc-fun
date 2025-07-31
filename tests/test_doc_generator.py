@@ -9,7 +9,7 @@ import os
 # Add the parent directory to the path so we can import doc_generator
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from doc_generator import DocumentationGenerator, DocumentAnalyzer, GPTQualityEvaluator, CodeExampleScanner
+from doc_generator import DocumentationGenerator, DocumentAnalyzer, GPTQualityEvaluator, CodeExampleScanner, ModuleRecommender
 
 
 class TestDocumentationGenerator:
@@ -378,3 +378,221 @@ if __name__ == "__main__":
         assert 'code_examples' in updated_terminology
         assert 'python' in updated_terminology['code_examples']
         assert len(updated_terminology['code_examples']['python']) == 1
+
+
+class TestModuleRecommender:
+    """Test cases for ModuleRecommender class."""
+    
+    def test_init_with_modules(self, sample_terminology):
+        """Test ModuleRecommender initialization."""
+        recommender = ModuleRecommender(sample_terminology['hpc_modules'])
+        
+        assert recommender.hpc_modules == sample_terminology['hpc_modules']
+        assert 'python' in recommender.keyword_mappings
+        assert 'gcc' in recommender.keyword_mappings
+        assert 'cuda' in recommender.keyword_mappings
+    
+    def test_extract_keywords_from_topic(self, sample_terminology):
+        """Test keyword extraction from topics."""
+        recommender = ModuleRecommender(sample_terminology['hpc_modules'])
+        
+        # Test basic topic
+        keywords = recommender._extract_keywords_from_topic("Parallel Python")
+        assert 'parallel' in keywords
+        assert 'python' in keywords
+        assert 'the' not in keywords  # Stop word should be filtered
+        
+        # Test with stop words
+        keywords = recommender._extract_keywords_from_topic("How to use C Programming")
+        assert 'programming' in keywords
+        assert 'how' not in keywords
+        assert 'to' not in keywords
+        # 'use' is only 3 chars so it passes the length filter, but it should be in stop words
+    
+    def test_calculate_module_relevance(self, sample_terminology):
+        """Test module relevance scoring."""
+        recommender = ModuleRecommender(sample_terminology['hpc_modules'])
+        
+        # Test Python module with Python keywords
+        python_module = sample_terminology['hpc_modules'][0]  # python/3.12.8-fasrc01
+        keywords = ['python', 'parallel']
+        score = recommender._calculate_module_relevance(python_module, keywords)
+        assert score > 0
+        
+        # Test irrelevant module - use keywords that shouldn't match CUDA
+        cuda_module = sample_terminology['hpc_modules'][4]  # cuda/12.9.1-fasrc01  
+        keywords = ['biology', 'chemistry']  # These shouldn't match CUDA at all
+        score = recommender._calculate_module_relevance(cuda_module, keywords)
+        assert score == 0
+        
+        # Test R module with statistics keywords
+        r_module = sample_terminology['hpc_modules'][3]  # R/4.4.3-fasrc01
+        keywords = ['statistics', 'data']
+        score = recommender._calculate_module_relevance(r_module, keywords)
+        assert score > 0
+    
+    def test_get_priority_score(self, sample_terminology):
+        """Test priority scoring for modules."""
+        recommender = ModuleRecommender(sample_terminology['hpc_modules'])
+        
+        # Test FASRC01 module (should get priority)
+        python_module = sample_terminology['hpc_modules'][0]  # python/3.12.8-fasrc01
+        score = recommender._get_priority_score(python_module)
+        assert score >= 1.0  # Should get points for fasrc01 and programming category
+        
+        # Test module with programming category
+        gcc_module = sample_terminology['hpc_modules'][2]  # gcc/14.2.0-fasrc01
+        score = recommender._get_priority_score(gcc_module)
+        assert score >= 1.0  # Should get points for compiler category
+    
+    def test_get_modules_for_topic(self, sample_terminology):
+        """Test getting recommended modules for a topic."""
+        recommender = ModuleRecommender(sample_terminology['hpc_modules'])
+        
+        # Test Python topic
+        modules = recommender.get_modules_for_topic("Parallel Python")
+        assert len(modules) > 0
+        assert len(modules) <= 3  # max_modules default
+        
+        # Should return Python modules first
+        top_module = modules[0]
+        assert 'python' in top_module['name'].lower()
+        assert 'load_command' in top_module
+        assert top_module['load_command'].startswith('module load')
+        assert 'relevance_score' in top_module
+        
+        # Test CUDA topic
+        modules = recommender.get_modules_for_topic("GPU Computing with CUDA")
+        assert len(modules) > 0
+        top_module = modules[0]
+        assert 'cuda' in top_module['name'].lower()
+        
+        # Test topic with no matches
+        modules = recommender.get_modules_for_topic("Nonexistent Technology")
+        assert len(modules) == 0
+    
+    def test_get_formatted_recommendations(self, sample_terminology):
+        """Test formatted output for documentation context."""
+        recommender = ModuleRecommender(sample_terminology['hpc_modules'])
+        
+        # Test Python recommendations
+        formatted = recommender.get_formatted_recommendations("Parallel Python")
+        assert "Recommended Modules:" in formatted
+        assert "module load python/" in formatted
+        assert "Description:" in formatted
+        
+        # Test topic with no matches
+        formatted = recommender.get_formatted_recommendations("Nonexistent Technology")
+        assert formatted == ""
+    
+    def test_special_r_case(self, sample_terminology):
+        """Test special handling for R modules."""
+        recommender = ModuleRecommender(sample_terminology['hpc_modules'])
+        
+        # Test that statistics keywords trigger R module detection
+        r_module = sample_terminology['hpc_modules'][3]  # R/4.4.3-fasrc01
+        keywords = ['statistics', 'analysis']
+        score = recommender._calculate_module_relevance(r_module, keywords)
+        assert score >= 15.0  # Should get the special R bonus
+
+
+class TestDocumentationGeneratorEnhancements:
+    """Test cases for enhanced DocumentationGenerator functionality."""
+    
+    def test_build_system_prompt_with_parameterization(self, temp_dir, sample_terminology):
+        """Test enhanced system prompt building with parameterization."""
+        prompt_file = temp_dir / "prompt.yaml"
+        terminology_file = temp_dir / "terminology.yaml"
+        examples_dir = temp_dir / "examples"
+        examples_dir.mkdir()
+        
+        # Create prompt config with parameterized template
+        prompt_config = {
+            'system_prompt': 'You are creating {format} docs for {topic} at {organization}.',
+            'placeholders': {
+                'format': 'HTML',
+                'organization': 'FASRC'
+            }
+        }
+        
+        with open(prompt_file, 'w') as f:
+            yaml.dump(prompt_config, f)
+        with open(terminology_file, 'w') as f:
+            yaml.dump(sample_terminology, f)
+        
+        with patch.dict(os.environ, {'OPENAI_API_KEY': 'test-key'}):
+            with patch('doc_generator.OpenAI'):
+                generator = DocumentationGenerator(
+                    prompt_yaml_path=str(prompt_file),
+                    examples_dir=str(examples_dir),
+                    terminology_path=str(terminology_file)
+                )
+                
+                system_prompt = generator._build_system_prompt("Python Programming")
+                
+                # Check parameterization worked
+                assert "HTML docs" in system_prompt
+                assert "Python Programming" in system_prompt
+                assert "FASRC" in system_prompt
+                
+                # Check terminology context is included
+                assert "Recommended Modules:" in system_prompt
+                assert "module load python/" in system_prompt
+    
+    def test_build_terminology_context_with_module_recommender(self, temp_dir, sample_terminology):
+        """Test terminology context building with ModuleRecommender integration."""
+        prompt_file = temp_dir / "prompt.yaml" 
+        terminology_file = temp_dir / "terminology.yaml"
+        examples_dir = temp_dir / "examples"
+        examples_dir.mkdir()
+        
+        with open(prompt_file, 'w') as f:
+            yaml.dump({'system_prompt': 'test'}, f)
+        with open(terminology_file, 'w') as f:
+            yaml.dump(sample_terminology, f)
+        
+        with patch.dict(os.environ, {'OPENAI_API_KEY': 'test-key'}):
+            with patch('doc_generator.OpenAI'):
+                generator = DocumentationGenerator(
+                    prompt_yaml_path=str(prompt_file),
+                    examples_dir=str(examples_dir), 
+                    terminology_path=str(terminology_file)
+                )
+                
+                context = generator._build_terminology_context("Parallel Python")
+                
+                # Check ModuleRecommender integration
+                assert "Recommended Modules:" in context
+                assert "module load python/3.12.8-fasrc01" in context
+                assert "Python 3.12 with Anaconda distribution" in context
+                
+                # Check other terminology sections still present
+                assert "sbatch" in context  # cluster_commands should be included
+    
+    def test_find_relevant_code_examples_integration(self, temp_dir, sample_terminology):
+        """Test code examples integration in terminology context."""
+        prompt_file = temp_dir / "prompt.yaml"
+        terminology_file = temp_dir / "terminology.yaml"
+        examples_dir = temp_dir / "examples"
+        examples_dir.mkdir()
+        
+        with open(prompt_file, 'w') as f:
+            yaml.dump({'system_prompt': 'test'}, f)
+        with open(terminology_file, 'w') as f:
+            yaml.dump(sample_terminology, f)
+        
+        with patch.dict(os.environ, {'OPENAI_API_KEY': 'test-key'}):
+            with patch('doc_generator.OpenAI'):
+                generator = DocumentationGenerator(
+                    prompt_yaml_path=str(prompt_file),
+                    examples_dir=str(examples_dir),
+                    terminology_path=str(terminology_file)
+                )
+                
+                context = generator._build_terminology_context("Python Programming")
+                
+                # Code examples should be included if they match the topic
+                # The sample only has one python example, so it should appear
+                assert "Relevant Code Examples:" in context or "Test Script" in context
+                # Check that python example is referenced somehow
+                assert "python" in context.lower()
