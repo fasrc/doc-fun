@@ -1,6 +1,6 @@
 # doc-generator
 
-> AI-powered documentation generator for FASRC with extensible plugin architecture
+> AI-powered documentation generator for any topic with extensible plugin architecture
 
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
