@@ -146,8 +146,8 @@ The heart of doc-generator is its extensible plugin architecture:
 graph TB
     A[DocumentationGenerator] --> B[PluginManager]
     B --> C[ModuleRecommender]
-    B --> D[DatasetRecommender (TBD)]
-    B --> E[WorkflowRecommender (TBD)]
+    B --> D["DatasetRecommender<br/>(TBD)"]
+    B --> E["WorkflowRecommender<br/>(TBD)"]
     B --> F[CustomPlugin]
     
     C --> G[HPC Modules]

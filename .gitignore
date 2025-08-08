@@ -2,3 +2,11 @@
 .DS_Store
 __pycache__/
 output/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.coverage
+htmlcov/
+.doc_cache/
+site/
