@@ -270,6 +270,29 @@ placeholders:
   format: "reStructuredText"  # or "LaTeX", "AsciiDoc", etc.
 ```
 
+## 📊 Quality Comparison
+
+Compare your generated documentation with existing references to ensure quality:
+
+```bash
+# Compare with online documentation
+doc-gen --topic "Python Data Analysis" \
+        --compare-url https://pandas.pydata.org/docs/getting_started/intro_tutorials/ \
+        --comparison-report quality_report.md
+
+# View similarity scores
+cat quality_report.md | grep "Composite Score"
+# Output: Composite Score: 75.3%
+```
+
+The comparison feature helps you:
+- Benchmark against gold-standard documentation
+- Identify missing sections or content
+- Optimize generation parameters
+- Track quality improvements
+
+[Learn more about comparison →](comparison.md)
+
 ## 🔄 Workflow Examples
 
 ### Academic Research Workflow

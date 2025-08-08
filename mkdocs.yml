@@ -56,6 +56,7 @@ nav:
     - Installation: guides/installation.md
     - First Steps: guides/getting-started.md
     - Configuration: guides/configuration.md
+    - Documentation Comparison: guides/comparison.md
   - Development:
     - Testing: guides/testing.md
     - Creating Plugins: guides/creating-plugins.md
@@ -64,6 +65,7 @@ nav:
     - Overview: api/index.md
     - Core: api/core.md
     - Plugins: api/plugins.md
+    - Evaluator: api/evaluator.md
     - CLI: api/cli.md
   - Examples:
     - Basic Usage: examples/basic.md

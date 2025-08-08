@@ -46,6 +46,12 @@
 - **GPT-based Quality Evaluation** for technical accuracy assessment
 - **Best-variant Compilation** automatically selects optimal content
 
+### 🎯 **Documentation Comparison**
+- **Compare with References** to benchmark quality against existing documentation
+- **7 Similarity Metrics** including content, structural, semantic, and code similarity
+- **Intelligent Recommendations** for improving generated documentation
+- **Platform Detection** works with Sphinx, MkDocs, ReadTheDocs, GitHub, and more
+
 ### 🛠️ **Professional Development Tools**
 - **Comprehensive CLI** with 15+ command-line options
 - **Python API** for programmatic integration
