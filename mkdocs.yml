@@ -61,6 +61,7 @@ nav:
     - Testing: guides/testing.md
     - Creating Plugins: guides/creating-plugins.md
     - Contributing: guides/contributing.md
+    - Quality Optimization: quality-optimization-approaches.md
   - API Reference:
     - Overview: api/index.md
     - Core: api/core.md

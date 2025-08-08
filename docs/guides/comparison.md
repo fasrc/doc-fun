@@ -334,5 +334,5 @@ jobs:
 ## Next Steps
 
 - [View API Reference](../api/evaluator.md) for detailed method documentation
-- [See Examples](../examples/comparison.md) for more usage patterns
+- [See Advanced Examples](../examples/advanced.md) for more usage patterns
 - [Read Testing Guide](testing.md) to test comparison features
