@@ -70,6 +70,9 @@ nav:
     - Advanced Workflows: examples/advanced.md
     - Plugin Examples: examples/plugins.md
     - Troubleshooting: examples/troubleshooting.md
+  - Design:
+    - Overview: design/index.md
+    - Claude API Integration: design/claude-api-integration.md
 
 markdown_extensions:
   - abbr
