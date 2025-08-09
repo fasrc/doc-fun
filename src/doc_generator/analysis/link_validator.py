@@ -47,6 +47,7 @@ class LinkValidator(AnalysisPlugin):
         self.max_workers = self.config.get('max_workers', 5)
         self.check_internal = self.config.get('check_internal', False)
         self.validate_ssl = self.config.get('validate_ssl', True)
+        self.report_format = self.config.get('report_format', 'markdown')
         
         # User agent for requests
         self.user_agent = self.config.get('user_agent', 
@@ -411,6 +412,154 @@ class LinkValidator(AnalysisPlugin):
         
         return '\n'.join(report_lines)
     
+    def generate_html_report(self, analysis_results: Dict[str, Any], topic: str) -> str:
+        """
+        Generate an HTML report of link validation results.
+        
+        Args:
+            analysis_results: Results from analyze() method
+            topic: The topic used for generation
+            
+        Returns:
+            HTML-formatted report
+        """
+        html_parts = [
+            '<!DOCTYPE html>',
+            '<html lang="en">',
+            '<head>',
+            '<meta charset="UTF-8">',
+            '<meta name="viewport" content="width=device-width, initial-scale=1.0">',
+            f'<title>Link Validation Report: {topic}</title>',
+            '<style>',
+            'body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; ',
+            '       line-height: 1.6; max-width: 1000px; margin: 0 auto; padding: 20px; }',
+            'h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 10px; }',
+            'h2 { color: #34495e; margin-top: 30px; }',
+            '.summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); ',
+            '                gap: 15px; margin: 20px 0; }',
+            '.summary-card { background: #f8f9fa; padding: 15px; border-radius: 8px; text-align: center; }',
+            '.summary-value { font-size: 28px; font-weight: bold; }',
+            '.summary-label { color: #7f8c8d; font-size: 12px; margin-top: 5px; }',
+            '.valid { color: #27ae60; }',
+            '.broken { color: #e74c3c; }',
+            '.skipped { color: #95a5a6; }',
+            '.success-rate { color: #3498db; }',
+            '.link-card { background: white; border: 1px solid #ecf0f1; padding: 15px; ',
+            '             margin: 10px 0; border-radius: 8px; border-left: 4px solid #e74c3c; }',
+            '.link-url { font-family: monospace; font-size: 14px; word-break: break-all; ',
+            '            margin-bottom: 10px; color: #2c3e50; }',
+            '.link-status { font-weight: bold; color: #e74c3c; }',
+            '.link-docs { color: #7f8c8d; font-size: 14px; }',
+            '.performance-stats { background: #ecf0f1; padding: 15px; border-radius: 8px; margin: 20px 0; }',
+            'table { width: 100%; border-collapse: collapse; margin: 20px 0; }',
+            'th { background: #3498db; color: white; padding: 10px; text-align: left; }',
+            'td { padding: 10px; border-bottom: 1px solid #ecf0f1; }',
+            'code { background: #f4f4f4; padding: 2px 5px; border-radius: 3px; font-size: 14px; }',
+            '</style>',
+            '</head>',
+            '<body>',
+            f'<h1>Link Validation Report: {topic}</h1>'
+        ]
+        
+        # Summary section
+        summary = analysis_results.get('summary', {})
+        html_parts.append('<h2>Summary</h2>')
+        html_parts.append('<div class="summary-grid">')
+        html_parts.append(f'<div class="summary-card"><div class="summary-value">{summary.get("total", 0)}</div><div class="summary-label">Total Links</div></div>')
+        html_parts.append(f'<div class="summary-card"><div class="summary-value valid">{summary.get("valid", 0)}</div><div class="summary-label">✅ Valid</div></div>')
+        html_parts.append(f'<div class="summary-card"><div class="summary-value broken">{summary.get("broken", 0)}</div><div class="summary-label">❌ Broken</div></div>')
+        html_parts.append(f'<div class="summary-card"><div class="summary-value skipped">{summary.get("skipped", 0)}</div><div class="summary-label">⏭️ Skipped</div></div>')
+        html_parts.append(f'<div class="summary-card"><div class="summary-value success-rate">{summary.get("success_rate", 100):.1f}%</div><div class="summary-label">Success Rate</div></div>')
+        html_parts.append('</div>')
+        
+        # Broken links section
+        broken_links = analysis_results.get('broken_links', [])
+        if broken_links:
+            html_parts.append('<h2>❌ Broken Links</h2>')
+            html_parts.append('<p>These links need attention:</p>')
+            
+            link_details = analysis_results.get('link_details', {})
+            for url in broken_links:
+                details = link_details.get(url, {})
+                status_code = details.get('status_code', 'N/A')
+                message = details.get('message', 'Unknown error')
+                docs = details.get('documents', [])
+                doc_names = [Path(d).name if isinstance(d, str) else f"Doc {d}" for d in docs]
+                
+                html_parts.append('<div class="link-card">')
+                html_parts.append(f'<div class="link-url">{url}</div>')
+                html_parts.append(f'<div class="link-status">Status: {status_code} - {message}</div>')
+                html_parts.append(f'<div class="link-docs">Found in: {", ".join(doc_names[:3])}')
+                if len(docs) > 3:
+                    html_parts.append(f' (and {len(docs) - 3} more)')
+                html_parts.append('</div>')
+                html_parts.append('</div>')
+        
+        # Valid links summary
+        valid_links = analysis_results.get('valid_links', [])
+        if valid_links:
+            html_parts.append('<h2>✅ Valid Links</h2>')
+            html_parts.append(f'<p>Successfully validated {len(valid_links)} links:</p>')
+            html_parts.append('<table>')
+            html_parts.append('<tr><th>URL</th><th>Response Time</th></tr>')
+            
+            link_details = analysis_results.get('link_details', {})
+            # Show first 10 valid links
+            for url in valid_links[:10]:
+                details = link_details.get(url, {})
+                response_time = details.get('response_time')
+                time_str = f'{response_time:.2f}s' if response_time else 'N/A'
+                html_parts.append(f'<tr><td><code>{url}</code></td><td>{time_str}</td></tr>')
+            
+            if len(valid_links) > 10:
+                html_parts.append(f'<tr><td colspan="2"><em>... and {len(valid_links) - 10} more valid links</em></td></tr>')
+            
+            html_parts.append('</table>')
+        
+        # Performance metrics
+        link_details = analysis_results.get('link_details', {})
+        response_times = [d['response_time'] for d in link_details.values() 
+                         if d.get('response_time') is not None]
+        
+        if response_times:
+            avg_response = sum(response_times) / len(response_times)
+            max_response = max(response_times)
+            min_response = min(response_times)
+            
+            html_parts.append('<h2>Performance Metrics</h2>')
+            html_parts.append('<div class="performance-stats">')
+            html_parts.append(f'<p><strong>Average Response Time:</strong> {avg_response:.2f}s</p>')
+            html_parts.append(f'<p><strong>Fastest Response:</strong> {min_response:.2f}s</p>')
+            html_parts.append(f'<p><strong>Slowest Response:</strong> {max_response:.2f}s</p>')
+            html_parts.append('</div>')
+        
+        # Skipped links summary
+        skipped_links = analysis_results.get('skipped_links', [])
+        if skipped_links:
+            html_parts.append('<h2>⏭️ Skipped Links</h2>')
+            html_parts.append(f'<p>Skipped {len(skipped_links)} links based on ignore patterns:</p>')
+            
+            # Group by type
+            mailto = [l for l in skipped_links if l.startswith('mailto:')]
+            anchors = [l for l in skipped_links if l.startswith('#')]
+            others = [l for l in skipped_links if not l.startswith('mailto:') and not l.startswith('#')]
+            
+            html_parts.append('<ul>')
+            if mailto:
+                html_parts.append(f'<li>Email links: {len(mailto)}</li>')
+            if anchors:
+                html_parts.append(f'<li>Anchor links: {len(anchors)}</li>')
+            if others:
+                html_parts.append(f'<li>Other ignored patterns: {len(others)}</li>')
+            html_parts.append('</ul>')
+        
+        html_parts.extend([
+            '</body>',
+            '</html>'
+        ])
+        
+        return '\n'.join(html_parts)
+    
     def save_artifacts(self, results: Dict[str, Any], output_dir: Path, topic: str) -> List[Path]:
         """
         Save link validation report to file.
@@ -426,9 +575,14 @@ class LinkValidator(AnalysisPlugin):
         saved_files = []
         safe_topic = self.sanitize_filename(topic)
         
-        # Save markdown report
-        report = self.generate_report(results, topic)
-        report_path = output_dir / f'{safe_topic}_link_validation.md'
+        # Save report in configured format
+        if self.report_format == 'html':
+            report = self.generate_html_report(results, topic)
+            report_path = output_dir / f'{safe_topic}_link_validation.html'
+        else:  # Default to markdown
+            report = self.generate_report(results, topic)
+            report_path = output_dir / f'{safe_topic}_link_validation.md'
+        
         with open(report_path, 'w', encoding='utf-8') as f:
             f.write(report)
         saved_files.append(report_path)

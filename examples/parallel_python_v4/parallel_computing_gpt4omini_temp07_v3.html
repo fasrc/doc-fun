@@ -1,0 +1,49 @@
+<html>
+<head>
+    <title>Parallel Computing on FASRC Cluster</title>
+</head>
+<body>
+    <h1>Parallel Computing on FASRC Cluster</h1>
+
+    <h2>Description</h2>
+    <p>Parallel computing is an essential paradigm in high-performance computing (HPC) that enables the simultaneous execution of multiple calculations or processes, significantly reducing the time required to solve complex computational problems. On the FASRC cluster, parallel computing leverages the power of distributed resources to enhance computational efficiency and scalability. This documentation provides an overview of utilizing parallel computing effectively on the FASRC infrastructure.</p>
+
+    <h2>Installation</h2>
+    <p>To begin utilizing parallel computing capabilities on the FASRC cluster, you must load the appropriate MPI (Message Passing Interface) modules, which facilitate communication between processes. The available MPI implementations include:</p>
+    <ul>
+        <li><code>module load openmpi/4.1.4-fasrc01</code> - Open MPI implementation</li>
+        <li><code>module load mpich/4.3.0-fasrc01</code> - MPICH MPI implementation (latest)</li>
+        <li><code>module load mpich/4.2.2-fasrc01</code> - MPICH MPI implementation</li>
+    </ul>
+    <p>To load a module, execute the respective command in your terminal session. Verify the loaded module by running <code>module list</code>.</p>
+
+    <h2>Usage</h2>
+    <p>To utilize parallel computing effectively, consider the following best practices:</p>
+    <ul>
+        <li><strong>Job Submission:</strong> Use the SLURM scheduler to submit your parallel jobs. An example SLURM command for submitting a batch job is:</li>
+        <pre><code>sbatch script.sh</code></pre>
+        <li><strong>Process Allocation:</strong> Allocate resources appropriately using the <code>salloc</code> command. For instance:</li>
+        <pre><code>salloc --partition=shared --time=2:00:00</code></pre>
+        <li><strong>Job Management:</strong> Monitor job status using <code>squeue -u username</code> and cancel jobs if necessary using <code>scancel job_id</code>.</li>
+    </ul>
+
+    <h2>Examples</h2>
+    <p>This section provides practical examples to illustrate the use of parallel computing on the FASRC cluster. The following examples highlight the integration of parallel computing with various programming languages:</p>
+    <ul>
+        <li><a href="src/User_Codes/Parallel_Computing/R/Large_Data_Processing_R/parallel_computation/R_embarrassingly_parallel.md">R: Embarrassingly Parallel Computation</a> - This example demonstrates how to scale up/out embarrassingly parallel problems in R.</li>
+        <li><a href="src/User_Codes/Parallel_Computing/Parallel_HDF5/Example1/parallel_hdf5.f90">Fortran: Parallel HDF5</a> - This code generates a random vector, distributes it to multiple processes, and writes it in parallel.</li>
+        <li><a href="src/User_Codes/Parallel_Computing/MATLAB/Example1/parallel_monte_carlo.m">MATLAB: Parallel Monte Carlo</a> - This example illustrates a parallel Monte Carlo simulation for calculating the value of π.</li>
+        <li><a href="src/User_Codes/Parallel_Computing/Parallel_HDF5/Example2/parallel_hdf5_2d.f90">Fortran: Parallel HDF5 2D</a> - This program generates a random 2D array and writes it in parallel.</li>
+        <li><a href="src/User_Codes/Parallel_Computing/Parallel_HDF5/Example3/parallel_hdf5_3d.f90">Fortran: Parallel HDF5 3D</a> - This code generates a random 3D array and writes it in parallel.</li>
+    </ul>
+
+    <h2>References</h2>
+    <p>For further reading and resources on parallel computing, consider the following links:</p>
+    <ul>
+        <li><a href="https://www.open-mpi.org/doc/v4.1/">Open MPI Documentation</a></li>
+        <li><a href="https://www.mpich.org/documentation/">MPICH Documentation</a></li>
+        <li><a href="https://slurm.schedmd.com/documentation.php">SLURM Documentation</a></li>
+        <li><a href="https://docs.rc.fas.harvard.edu/kb/">FASRC Knowledge Base</a></li>
+    </ul>
+</body>
+</html>

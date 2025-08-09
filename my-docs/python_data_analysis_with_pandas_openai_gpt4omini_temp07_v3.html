@@ -1,0 +1,58 @@
+<html>
+<head>
+    <title>Python Data Analysis with Pandas</title>
+</head>
+<body>
+    <h1>Python Data Analysis with Pandas</h1>
+    
+    <h2>Description</h2>
+    <p>Pandas is a powerful and flexible open-source data analysis and manipulation library for Python, providing data structures such as Series and DataFrames for efficiently handling large datasets. It is widely used in data science, machine learning, and statistical analysis. In high-performance computing (HPC) environments, Pandas can be leveraged to perform complex data analyses on large datasets distributed across computational clusters, making use of parallel processing capabilities.</p>
+    
+    <h2>Installation</h2>
+    <p>To use Pandas in your HPC environment, you need to load a Python module that includes Pandas. You can choose from the following recommended modules:</p>
+    <ul>
+        <li><code>module load python/3.12.8-fasrc01</code> - Python 3.12 with Anaconda distribution</li>
+        <li><code>module load python/3.10.13-fasrc01</code> - Python 3.10 with Anaconda distribution</li>
+        <li><code>module load intelpython/3.9.16-fasrc01</code> - Intel distribution of Python</li>
+    </ul>
+    
+    <h2>Usage</h2>
+    <p>Once the appropriate Python module is loaded, you can start using Pandas for data analysis. Here are some best practices for using Pandas effectively in an HPC environment:</p>
+    <ul>
+        <li>Load only the necessary libraries to minimize memory usage.</li>
+        <li>Use vectorized operations to leverage the underlying optimizations in Pandas.</li>
+        <li>Utilize the <code>chunksize</code> parameter in functions like <code>read_csv()</code> to process large files in manageable portions.</li>
+        <li>When performing computations on large datasets, consider using Dask or multiprocessing for parallel processing.</li>
+    </ul>
+
+    <h2>Examples</h2>
+    <p>Here are some practical examples of using Pandas for data analysis:</p>
+    <h3>Example 1: Creating a DataFrame</h3>
+    <pre><code>import pandas as pd
+
+data = {
+    'Name': ['Alice', 'Bob', 'Charlie'],
+    'Age': [25, 30, 35],
+    'City': ['New York', 'Los Angeles', 'Chicago']
+}
+
+df = pd.DataFrame(data)
+print(df)</code></pre>
+
+    <h3>Example 2: Reading a CSV file</h3>
+    <pre><code>df = pd.read_csv('/path/to/large_file.csv', chunksize=1000)
+for chunk in df:
+    process(chunk)  # Replace with your processing function</code></pre>
+
+    <h3>Example 3: Data Aggregation</h3>
+    <pre><code>grouped = df.groupby('City').mean()
+print(grouped)</code></pre>
+
+    <h2>References</h2>
+    <ul>
+        <li><a href="https://pandas.pydata.org/docs/" target="_blank">Pandas Documentation</a></li>
+        <li><a href="https://towardsdatascience.com/pandas-tutorial-data-analysis-with-python-9f9b4c9c4b4e" target="_blank">Data Analysis with Pandas Tutorial</a></li>
+        <li><a href="https://github.com/pandas-dev/pandas" target="_blank">Pandas GitHub Repository</a></li>
+    </ul>
+</body>
+</html>

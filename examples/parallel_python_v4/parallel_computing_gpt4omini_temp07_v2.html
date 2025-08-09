@@ -1,0 +1,70 @@
+<html>
+<head>
+    <title>Parallel Computing on FASRC Cluster</title>
+</head>
+<body>
+    <article>
+        <h1>Parallel Computing on FASRC Cluster</h1>
+
+        <h2>Description</h2>
+        <p>
+            Parallel Computing is a computational paradigm that allows for the simultaneous execution of multiple computations. This methodology is vital in High-Performance Computing (HPC) environments like the Faculty Arts and Sciences Research Computing (FASRC) cluster, where tasks are distributed across multiple processors to expedite processing times and efficiently handle large datasets. Parallel computing leverages various programming models such as MPI (Message Passing Interface) and OpenMP, enabling researchers to tackle complex computational problems that would be infeasible with sequential processing.
+        </p>
+
+        <h2>Installation</h2>
+        <p>
+            To utilize parallel computing capabilities on the FASRC cluster, you must load the appropriate software modules based on your chosen programming language and parallelization method. Below are the recommended modules for MPI and OpenMP implementations:
+        </p>
+        <pre>
+            module load openmpi/4.1.4-fasrc01  # For MPI applications
+            module load mpich/4.3.0-fasrc01    # Alternative MPI implementation
+        </pre>
+        <p>
+            Ensure that your job scripts include the proper module loading commands to prepare the environment for parallel execution.
+        </p>
+
+        <h2>Usage</h2>
+        <p>
+            Effective use of parallel computing involves understanding how to distribute workloads among multiple processors. For MPI applications, you will typically follow these steps:
+        </p>
+        <ol>
+            <li>Initialize the MPI environment using <code>MPI_Init()</code>.</li>
+            <li>Determine the rank of each process using <code>MPI_Comm_rank()</code>.</li>
+            <li>Distribute data and tasks among processes accordingly.</li>
+            <li>Use collective communication functions (e.g., <code>MPI_Send</code>, <code>MPI_Recv</code>) for inter-process communication.</li>
+            <li>Finalize the MPI environment with <code>MPI_Finalize()</code>.</li>
+        </ol>
+        <p>
+            For OpenMP, you can parallelize sections of code using directives. An example loop parallelization looks like this:
+        </p>
+        <pre>
+            #pragma omp parallel for
+            for (int i = 0; i < N; i++) {
+                // Code to be executed in parallel
+            }
+        </pre>
+        <p>
+            It is essential to consider thread safety and data dependencies when designing parallel algorithms.
+        </p>
+
+        <h2>Examples</h2>
+        <p>
+            The following are practical examples of parallel computing applications relevant to the FASRC cluster:
+        </p>
+        <ul>
+            <li><a href="https://github.com/fasrc/User_Codes/tree/master/Parallel_Computing/MPI/Example1">Monte Carlo Simulation</a>: A parallel implementation that estimates the value of π.</li>
+            <li><a href="https://github.com/fasrc/User_Codes/tree/master/Parallel_Computing/OpenMP/Example1">Image Processing</a>: Using OpenMP to parallelize image transformation tasks.</li>
+            <li><a href="https://github.com/fasrc/User_Codes/tree/master/Parallel_Computing/MPI/Example2">Matrix Multiplication</a>: Demonstrating the efficiency of parallel algorithms in matrix operations.</li>
+        </ul>
+
+        <h2>References</h2>
+        <p>For further reading and resources, consider the following links:</p>
+        <ul>
+            <li><a href="https://www.openmp.org/">OpenMP Official Website</a></li>
+            <li><a href="https://www.mpich.org/">MPICH Official Website</a></li>
+            <li><a href="https://www.open-mpi.org/">Open MPI Official Website</a></li>
+            <li><a href="https://docs.rc.fas.harvard.edu/kb/parallel-computing/">FASRC Parallel Computing Documentation</a></li>
+        </ul>
+    </article>
+</body>
+</html>

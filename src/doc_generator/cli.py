@@ -82,6 +82,9 @@ Examples:
     parser.add_argument('--analysis-prompt-path', 
                        default='./prompts/analysis/default.yaml',
                        help='Path to analysis prompt configuration')
+    parser.add_argument('--report-format', choices=['markdown', 'html', 'json'],
+                       default='markdown',
+                       help='Format for analysis reports (default: markdown)')
     
     # Plugin options
     parser.add_argument('--list-plugins', action='store_true',
@@ -347,8 +350,12 @@ def run_generation(args, logger: logging.Logger) -> None:
         if len(results) >= 2 or args.analyze:
             logger.info("Running analysis pipeline...")
             
-            # Load analysis plugins
-            generator.plugin_manager.load_analysis_plugins()
+            # Load analysis plugins with configuration
+            analysis_config = {
+                'reporter': {'formats': [args.report_format]},
+                'link_validator': {'report_format': args.report_format}
+            }
+            generator.plugin_manager.load_analysis_plugins(config=analysis_config)
             
             # Prepare documents for analysis
             documents = []

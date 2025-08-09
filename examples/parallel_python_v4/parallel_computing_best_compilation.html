@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Parallel Computing Documentation - Best Compilation</title>
+<style>
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+       line-height: 1.6; max-width: 900px; margin: 0 auto; padding: 20px; }
+h1, h2, h3 { color: #2c3e50; }
+code { background-color: #f4f4f4; padding: 2px 4px; border-radius: 3px; }
+pre { background-color: #f4f4f4; padding: 15px; border-radius: 5px; overflow-x: auto; }
+.metadata { background-color: #e8f4f8; padding: 15px; border-radius: 5px; 
+            margin-bottom: 30px; font-size: 0.9em; }
+.section { margin-bottom: 40px; }
+.version-note { color: #7f8c8d; font-size: 0.85em; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>Parallel Computing Documentation</h1>
+<div class="metadata">
+<strong>Compiled from best sections across 5 versions</strong><br>
+Generated using: gpt-4o-mini (Temperature: 0.7)<br>
+Compilation date: 2025-07-30 14:52:28
+</div>
+<div class="section">
+<h2>Description</h2>
+<span class="version-note">From Version 5</span>
+<p>Parallel computing is a computational paradigm that enables the simultaneous execution of multiple calculations or processes, leveraging multiple processors or cores to enhance performance and efficiency. In high-performance computing (HPC) environments, such as the Faculty Arts and Sciences Research Computing (FASRC) cluster, parallel computing is crucial for handling large-scale data analysis, complex simulations, and other resource-intensive tasks. The FASRC cluster supports various parallel computing frameworks, including OpenMPI and MPICH, facilitating the development and execution of parallel applications across distributed nodes.</p>
+</div>
+<div class="section">
+<h2>Installation</h2>
+<span class="version-note">From Version 5</span>
+<p>To utilize parallel computing on the FASRC cluster, users must first load the appropriate MPI (Message Passing Interface) module depending on their specific application requirements. The recommended modules for MPI implementations on the FASRC cluster are:</p>
+<ul>
+<li><code>module load openmpi/4.1.4-fasrc01</code> - Open MPI implementation</li>
+<li><code>module load mpich/4.3.0-fasrc01</code> - MPICH MPI implementation (latest)</li>
+<li><code>module load mpich/4.2.2-fasrc01</code> - MPICH MPI implementation</li>
+</ul>
+<p>After loading the appropriate module, users can compile their parallel applications using the respective compiler flags, ensuring that the MPI library is correctly linked during the build process.</p>
+</div>
+<div class="section">
+<h2>Usage</h2>
+<span class="version-note">From Version 2</span>
+<p>
+            Effective use of parallel computing involves understanding how to distribute workloads among multiple processors. For MPI applications, you will typically follow these steps:
+        </p>
+<ol>
+<li>Initialize the MPI environment using <code>MPI_Init()</code>.</li>
+<li>Determine the rank of each process using <code>MPI_Comm_rank()</code>.</li>
+<li>Distribute data and tasks among processes accordingly.</li>
+<li>Use collective communication functions (e.g., <code>MPI_Send</code>, <code>MPI_Recv</code>) for inter-process communication.</li>
+<li>Finalize the MPI environment with <code>MPI_Finalize()</code>.</li>
+</ol>
+<p>
+            For OpenMP, you can parallelize sections of code using directives. An example loop parallelization looks like this:
+        </p>
+<pre>
+            #pragma omp parallel for
+            for (int i = 0; i &lt; N; i++) {
+                // Code to be executed in parallel
+            }
+        </pre>
+<p>
+            It is essential to consider thread safety and data dependencies when designing parallel algorithms.
+        </p>
+</div>
+<div class="section">
+<h2>Examples</h2>
+<span class="version-note">From Version 3</span>
+<p>This section provides practical examples to illustrate the use of parallel computing on the FASRC cluster. The following examples highlight the integration of parallel computing with various programming languages:</p>
+<ul>
+<li><a href="src/User_Codes/Parallel_Computing/R/Large_Data_Processing_R/parallel_computation/R_embarrassingly_parallel.md">R: Embarrassingly Parallel Computation</a> - This example demonstrates how to scale up/out embarrassingly parallel problems in R.</li>
+<li><a href="src/User_Codes/Parallel_Computing/Parallel_HDF5/Example1/parallel_hdf5.f90">Fortran: Parallel HDF5</a> - This code generates a random vector, distributes it to multiple processes, and writes it in parallel.</li>
+<li><a href="src/User_Codes/Parallel_Computing/MATLAB/Example1/parallel_monte_carlo.m">MATLAB: Parallel Monte Carlo</a> - This example illustrates a parallel Monte Carlo simulation for calculating the value of π.</li>
+<li><a href="src/User_Codes/Parallel_Computing/Parallel_HDF5/Example2/parallel_hdf5_2d.f90">Fortran: Parallel HDF5 2D</a> - This program generates a random 2D array and writes it in parallel.</li>
+<li><a href="src/User_Codes/Parallel_Computing/Parallel_HDF5/Example3/parallel_hdf5_3d.f90">Fortran: Parallel HDF5 3D</a> - This code generates a random 3D array and writes it in parallel.</li>
+</ul>
+</div>
+<div class="section">
+<h2>References</h2>
+<span class="version-note">From Version 2</span>
+<p>For further reading and resources, consider the following links:</p>
+<ul>
+<li><a href="https://www.openmp.org/">OpenMP Official Website</a></li>
+<li><a href="https://www.mpich.org/">MPICH Official Website</a></li>
+<li><a href="https://www.open-mpi.org/">Open MPI Official Website</a></li>
+<li><a href="https://docs.rc.fas.harvard.edu/kb/parallel-computing/">FASRC Parallel Computing Documentation</a></li>
+</ul>
+</div>
+<div class="metadata" style="margin-top: 50px;">
+<strong>Section Sources:</strong><br>
+Description: Version 5 (Score: 25.7)<br>
+Installation: Version 5 (Score: 67.2)<br>
+Usage: Version 2 (Score: 70.0)<br>
+Examples: Version 3 (Score: 50.0)<br>
+References: Version 2 (Score: 54.6)<br>
+</div>
+</body>
+</html>

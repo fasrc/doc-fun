@@ -1,0 +1,79 @@
+<html>
+<head>
+    <title>Python Data Analysis with Pandas</title>
+</head>
+<body>
+    <h1>Python Data Analysis with Pandas</h1>
+
+    <h2>Description</h2>
+    <p>Pandas is a powerful and flexible open-source data analysis and manipulation library for Python. It provides data structures like Series and DataFrames, which allow for efficient handling of structured data. Pandas is particularly useful for data cleaning, transformation, and analysis, making it a popular choice among data scientists and researchers. In high-performance computing (HPC) environments, Pandas can be utilized to process large datasets efficiently, leveraging parallel processing capabilities when integrated with libraries like Dask or using multi-threading techniques.</p>
+
+    <h2>Installation</h2>
+    <p>To use Pandas in the Faculty Arts and Sciences Research Computing (FASRC) environment, you need to load an appropriate Python module. You can choose from the following versions:</p>
+    <ul>
+        <li>For Python 3.12 with Anaconda distribution: 
+            <pre>module load python/3.12.8-fasrc01</pre>
+        </li>
+        <li>For Python 3.10 with Anaconda distribution: 
+            <pre>module load python/3.10.13-fasrc01</pre>
+        </li>
+        <li>For Intel distribution of Python: 
+            <pre>module load intelpython/3.9.16-fasrc01</pre>
+        </li>
+    </ul>
+    <p>After loading the desired module, you can install Pandas using pip:</p>
+    <pre>pip install pandas</pre>
+
+    <h2>Usage</h2>
+    <p>To effectively use Pandas for data analysis, follow these best practices:</p>
+    <ul>
+        <li>Load data efficiently using <code>pd.read_csv()</code> or <code>pd.read_excel()</code> for large datasets.</li>
+        <li>Utilize vectorized operations instead of loops for faster computations.</li>
+        <li>Use <code>DataFrame.apply()</code> for applying functions across rows or columns.</li>
+        <li>Leverage Pandas' built-in functions for data aggregation and transformation, such as <code>groupby()</code>, <code>pivot_table()</code>, and <code>merge()</code>.</li>
+        <li>For large datasets, consider using Dask to parallelize operations.</li>
+    </ul>
+
+    <h2>Examples</h2>
+    <p>Here are some practical examples of using Pandas for data analysis:</p>
+    <h3>Example 1: Loading and Inspecting Data</h3>
+    <pre>
+import pandas as pd
+
+# Load data
+df = pd.read_csv('/n/holyscratch01/data.csv')
+
+# Inspect data
+print(df.head())
+    </pre>
+
+    <h3>Example 2: Data Cleaning</h3>
+    <pre>
+# Drop missing values
+df_cleaned = df.dropna()
+
+# Rename columns
+df_cleaned.rename(columns={'old_name': 'new_name'}, inplace=True)
+    </pre>
+
+    <h3>Example 3: Data Aggregation</h3>
+    <pre>
+# Group by a column and calculate the mean
+grouped_data = df_cleaned.groupby('category').mean()
+print(grouped_data)
+    </pre>
+
+    <h3>Example 4: Merging DataFrames</h3>
+    <pre>
+# Merge two DataFrames
+df_merged = pd.merge(df1, df2, on='key_column')
+    </pre>
+
+    <h2>References</h2>
+    <ul>
+        <li><a href="https://pandas.pydata.org/" target="_blank">Pandas Official Documentation</a></li>
+        <li><a href="https://towardsdatascience.com/pandas-dataframe-tutorial-1a2d8e2e5b0f" target="_blank">Pandas DataFrame Tutorial</a></li>
+        <li><a href="https://github.com/fasrc/User_Codes/tree/master/Languages/Python/Example2/numpy_pandas_ex.py" target="_blank">Example Code: Numpy Pandas Ex</a></li>
+    </ul>
+</body>
+</html>

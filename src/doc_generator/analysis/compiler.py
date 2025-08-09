@@ -39,6 +39,7 @@ class DocumentCompiler(AnalysisPlugin):
             'Description', 'Installation', 'Usage', 'Examples', 'References'
         ])
         self.min_runs = self.config.get('min_runs', 2)
+        self.report_format = self.config.get('report_format', 'markdown')
         
         # Initialize analyzer
         self.analyzer = DocumentAnalyzer(section_headers=self.section_headers)

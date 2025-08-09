@@ -391,6 +391,161 @@ class AnalysisReporter(AnalysisPlugin):
         
         return '\n'.join(report_lines)
     
+    def generate_html_report(self, analysis_results: Dict[str, Any], topic: str) -> str:
+        """
+        Generate an HTML report of the analysis.
+        
+        Args:
+            analysis_results: Results from analyze() method
+            topic: The topic used for generation
+            
+        Returns:
+            HTML-formatted report
+        """
+        html_parts = [
+            '<!DOCTYPE html>',
+            '<html lang="en">',
+            '<head>',
+            '<meta charset="UTF-8">',
+            '<meta name="viewport" content="width=device-width, initial-scale=1.0">',
+            f'<title>Documentation Analysis Report: {topic}</title>',
+            '<style>',
+            'body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; ',
+            '       line-height: 1.6; max-width: 1200px; margin: 0 auto; padding: 20px; }',
+            'h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 10px; }',
+            'h2 { color: #34495e; margin-top: 30px; border-bottom: 1px solid #ecf0f1; padding-bottom: 5px; }',
+            'h3 { color: #7f8c8d; margin-top: 20px; }',
+            '.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin: 20px 0; }',
+            '.stat-card { background: #f8f9fa; padding: 15px; border-radius: 8px; border-left: 4px solid #3498db; }',
+            '.stat-value { font-size: 24px; font-weight: bold; color: #2c3e50; }',
+            '.stat-label { color: #7f8c8d; font-size: 14px; }',
+            'table { width: 100%; border-collapse: collapse; margin: 20px 0; }',
+            'th { background: #3498db; color: white; padding: 10px; text-align: left; }',
+            'td { padding: 10px; border-bottom: 1px solid #ecf0f1; }',
+            'tr:hover { background: #f8f9fa; }',
+            '.success { color: #27ae60; }',
+            '.warning { color: #f39c12; }',
+            '.error { color: #e74c3c; }',
+            '.missing { color: #95a5a6; font-style: italic; }',
+            '.document-section { background: #ffffff; border: 1px solid #ecf0f1; ',
+            '                    padding: 20px; margin: 20px 0; border-radius: 8px; }',
+            '</style>',
+            '</head>',
+            '<body>',
+            f'<h1>Documentation Analysis Report: {topic}</h1>',
+            f'<p><strong>Generated:</strong> {analysis_results.get("timestamp", "N/A")}</p>'
+        ]
+        
+        # Overall Statistics
+        overall_stats = analysis_results.get('overall_stats', {})
+        if overall_stats:
+            html_parts.append('<h2>Overall Statistics</h2>')
+            html_parts.append('<div class="stats-grid">')
+            html_parts.append(f'<div class="stat-card"><div class="stat-value">{overall_stats.get("total_documents", 0)}</div><div class="stat-label">Total Documents</div></div>')
+            html_parts.append(f'<div class="stat-card"><div class="stat-value">{overall_stats.get("average_words", 0):.0f}</div><div class="stat-label">Avg Word Count</div></div>')
+            html_parts.append(f'<div class="stat-card"><div class="stat-value">{overall_stats.get("average_code_blocks", 0):.1f}</div><div class="stat-label">Avg Code Blocks</div></div>')
+            html_parts.append(f'<div class="stat-card"><div class="stat-value">{overall_stats.get("average_links", 0):.1f}</div><div class="stat-label">Avg Links</div></div>')
+            html_parts.append('</div>')
+            
+            # Section Coverage
+            html_parts.append('<h3>Section Coverage</h3>')
+            html_parts.append('<table>')
+            html_parts.append('<tr><th>Section</th><th>Coverage</th><th>Percentage</th></tr>')
+            for section, coverage in overall_stats.get('section_coverage', {}).items():
+                percentage = coverage['percentage']
+                status_class = 'success' if percentage == 100 else 'warning' if percentage >= 50 else 'error'
+                html_parts.append(f'<tr><td>{section}</td><td>{coverage["count"]}/{overall_stats["total_documents"]}</td>')
+                html_parts.append(f'<td class="{status_class}">{percentage:.0f}%</td></tr>')
+            html_parts.append('</table>')
+        
+        # Document Analysis
+        document_metrics = analysis_results.get('document_metrics', [])
+        if document_metrics:
+            html_parts.append('<h2>Document Analysis</h2>')
+            for doc in document_metrics:
+                doc_name = Path(doc['path']).name if isinstance(doc['path'], str) else f"Document {doc['index']}"
+                html_parts.append(f'<div class="document-section">')
+                html_parts.append(f'<h3>{doc_name}</h3>')
+                html_parts.append('<table>')
+                html_parts.append('<tr><th>Metric</th><th>Value</th></tr>')
+                html_parts.append(f'<tr><td>Total Words</td><td>{doc["total_words"]}</td></tr>')
+                html_parts.append(f'<tr><td>Code Blocks</td><td>{doc["code_blocks"]}</td></tr>')
+                html_parts.append(f'<tr><td>Links</td><td>{doc["links"]}</td></tr>')
+                html_parts.append(f'<tr><td>Tables</td><td>{doc["tables"]}</td></tr>')
+                html_parts.append(f'<tr><td>Lists</td><td>{doc["lists"]}</td></tr>')
+                html_parts.append('</table>')
+                
+                html_parts.append('<h4>Section Scores</h4>')
+                html_parts.append('<table>')
+                html_parts.append('<tr><th>Section</th><th>Score</th><th>Words</th><th>Code Blocks</th></tr>')
+                for section_name in self.section_headers:
+                    section = doc['sections'].get(section_name, {})
+                    if section.get('exists', False):
+                        html_parts.append(f'<tr><td>{section_name}</td>')
+                        html_parts.append(f'<td>{section["score"]:.2f}</td>')
+                        html_parts.append(f'<td>{section["words"]}</td>')
+                        html_parts.append(f'<td>{section["code_blocks"]}</td></tr>')
+                    else:
+                        html_parts.append(f'<tr><td>{section_name}</td>')
+                        html_parts.append('<td colspan="3" class="missing">Missing</td></tr>')
+                html_parts.append('</table>')
+                html_parts.append('</div>')
+        
+        # Comparisons
+        comparisons = analysis_results.get('comparisons', {})
+        if comparisons and self.include_comparisons:
+            html_parts.append('<h2>Cross-Document Comparisons</h2>')
+            html_parts.append('<div class="stats-grid">')
+            
+            if comparisons.get('best_overall'):
+                best = comparisons['best_overall']
+                html_parts.append(f'<div class="stat-card"><div class="stat-label">Best Overall</div>')
+                html_parts.append(f'<div>Document {best["index"]}</div><div class="success">Score: {best["total_score"]:.2f}</div></div>')
+            
+            if comparisons.get('worst_overall'):
+                worst = comparisons['worst_overall']
+                html_parts.append(f'<div class="stat-card"><div class="stat-label">Worst Overall</div>')
+                html_parts.append(f'<div>Document {worst["index"]}</div><div class="error">Score: {worst["total_score"]:.2f}</div></div>')
+            
+            if comparisons.get('most_comprehensive'):
+                most = comparisons['most_comprehensive']
+                html_parts.append(f'<div class="stat-card"><div class="stat-label">Most Comprehensive</div>')
+                html_parts.append(f'<div>Document {most["index"]}</div><div>{most["total_words"]} words</div></div>')
+            
+            html_parts.append('</div>')
+            
+            # Best sections table
+            if comparisons.get('best_sections'):
+                html_parts.append('<h3>Best Sections by Score</h3>')
+                html_parts.append('<table>')
+                html_parts.append('<tr><th>Section</th><th>Document</th><th>Score</th></tr>')
+                for section_name, best in comparisons['best_sections'].items():
+                    html_parts.append(f'<tr><td>{section_name}</td>')
+                    html_parts.append(f'<td>Document {best["doc_index"]}</td>')
+                    html_parts.append(f'<td class="success">{best["score"]:.2f}</td></tr>')
+                html_parts.append('</table>')
+            
+            # Consistency analysis
+            if comparisons.get('consistency_analysis'):
+                html_parts.append('<h3>Section Consistency Analysis</h3>')
+                html_parts.append('<table>')
+                html_parts.append('<tr><th>Section</th><th>Avg Words</th><th>Std Dev</th><th>Variability</th></tr>')
+                for section_name, stats in comparisons['consistency_analysis'].items():
+                    variability = 'Low' if stats['std_dev'] < 50 else 'Medium' if stats['std_dev'] < 150 else 'High'
+                    var_class = 'success' if variability == 'Low' else 'warning' if variability == 'Medium' else 'error'
+                    html_parts.append(f'<tr><td>{section_name}</td>')
+                    html_parts.append(f'<td>{stats["average_words"]:.0f}</td>')
+                    html_parts.append(f'<td>{stats["std_dev"]:.0f}</td>')
+                    html_parts.append(f'<td class="{var_class}">{variability}</td></tr>')
+                html_parts.append('</table>')
+        
+        html_parts.extend([
+            '</body>',
+            '</html>'
+        ])
+        
+        return '\n'.join(html_parts)
+    
     def save_artifacts(self, results: Dict[str, Any], output_dir: Path, topic: str) -> List[Path]:
         """
         Save analysis reports in configured formats.
@@ -414,6 +569,15 @@ class AnalysisReporter(AnalysisPlugin):
                 f.write(report)
             saved_files.append(report_path)
             self.logger.info(f"Saved analysis report to {report_path}")
+        
+        # Save HTML report
+        if 'html' in self.formats:
+            html_report = self.generate_html_report(results, topic)
+            html_path = output_dir / f'{safe_topic}_analysis_report.html'
+            with open(html_path, 'w', encoding='utf-8') as f:
+                f.write(html_report)
+            saved_files.append(html_path)
+            self.logger.info(f"Saved HTML analysis report to {html_path}")
         
         # Save JSON data if requested
         if 'json' in self.formats:
