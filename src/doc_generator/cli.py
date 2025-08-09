@@ -343,9 +343,50 @@ def run_generation(args, logger: logging.Logger) -> None:
         if args.compare_url or args.compare_file:
             run_comparison(args, results, logger)
         
-        # Run analysis if requested
-        if args.analyze:
-            logger.info("Running document analysis...")
+        # Run analysis pipeline for multiple runs
+        if len(results) >= 2 or args.analyze:
+            logger.info("Running analysis pipeline...")
+            
+            # Load analysis plugins
+            generator.plugin_manager.load_analysis_plugins()
+            
+            # Prepare documents for analysis
+            documents = []
+            for result_path in results:
+                try:
+                    with open(result_path, 'r', encoding='utf-8') as f:
+                        content = f.read()
+                    documents.append({
+                        'path': result_path,
+                        'content': content
+                    })
+                except FileNotFoundError:
+                    logger.error(f"Generated file not found: {result_path}")
+            
+            if documents:
+                # Run analysis pipeline
+                output_dir = Path(args.output_dir)
+                analysis_results = generator.plugin_manager.run_analysis_pipeline(
+                    documents=documents,
+                    topic=args.topic,
+                    output_dir=output_dir
+                )
+                
+                # Report results
+                for plugin_name, plugin_results in analysis_results.items():
+                    if 'error' in plugin_results:
+                        logger.error(f"  ✗ {plugin_name}: {plugin_results['error']}")
+                    else:
+                        artifacts = plugin_results.get('artifacts', [])
+                        if artifacts:
+                            logger.info(f"  ✓ {plugin_name}: Generated {len(artifacts)} files")
+                            if not args.quiet:
+                                for artifact in artifacts:
+                                    print(f"     - {Path(artifact).name}")
+        
+        # Legacy analysis if requested and no plugins available
+        elif args.analyze:
+            logger.info("Running basic document analysis...")
             analyzer = DocumentAnalyzer()
             
             for i, result in enumerate(results):
