@@ -102,7 +102,7 @@ class ProviderManager:
         
         # Return preferred models by provider
         if default_provider == 'openai':
-            for preferred in ['gpt-4o-mini', 'gpt-4', 'gpt-3.5-turbo']:
+            for preferred in ['gpt-5-mini', 'gpt-5', 'gpt-4o-mini', 'gpt-4', 'gpt-3.5-turbo']:
                 if preferred in models:
                     return preferred
         elif default_provider == 'claude':

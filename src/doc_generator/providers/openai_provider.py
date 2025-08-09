@@ -51,6 +51,10 @@ class OpenAIProvider(LLMProvider):
     def get_available_models(self) -> List[str]:
         """Get available OpenAI models."""
         return [
+            'gpt-5',                # Flagship model, high performance for complex tasks
+            'gpt-5-mini',           # Faster and more cost-efficient for well-defined tasks
+            'gpt-5-nano',           # Fastest and most cost-efficient for simpler tasks
+            'gpt-5-chat-latest',    # Non-reasoning version of GPT-5 used in ChatGPT
             'gpt-4',
             'gpt-4o', 
             'gpt-4o-mini',
@@ -73,6 +77,10 @@ class OpenAIProvider(LLMProvider):
         
         # OpenAI pricing (as of 2025, subject to change)
         pricing = {
+            'gpt-5': {'input': 0.04, 'output': 0.08},           # Flagship model pricing
+            'gpt-5-mini': {'input': 0.002, 'output': 0.006},    # Cost-efficient version
+            'gpt-5-nano': {'input': 0.0001, 'output': 0.0003},  # Most cost-efficient
+            'gpt-5-chat-latest': {'input': 0.01, 'output': 0.03}, # ChatGPT version
             'gpt-4': {'input': 0.03, 'output': 0.06},
             'gpt-4o': {'input': 0.005, 'output': 0.015},
             'gpt-4o-mini': {'input': 0.00015, 'output': 0.0006},
