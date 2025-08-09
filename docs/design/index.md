@@ -33,8 +33,8 @@ The doc-generator project follows these core design principles:
 | Document | Status | Description |
 |----------|--------|-------------|
 | [Claude API Integration](claude-api-integration.md) | 🚧 Draft | Adding Anthropic Claude alongside OpenAI |
-| [Plugin Architecture v2](plugin-architecture-v2.md) | 💭 Planned | Enhanced plugin system with better discovery |
-| [Multi-Provider Strategy](multi-provider-strategy.md) | 💭 Planned | Framework for supporting multiple LLM providers |
+| Plugin Architecture v2 | 💭 Planned | Enhanced plugin system with better discovery |
+| Multi-Provider Strategy | 💭 Planned | Framework for supporting multiple LLM providers |
 
 ---
 
