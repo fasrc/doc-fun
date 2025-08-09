@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "doc-generator"
-version = "2.1.2"
+version = "2.1.3"
 description = "AI-powered documentation generator for FASRC with plugin-based recommendations"
 authors = [
     {name = "FASRC Research Computing", email = "rchelp@fas.harvard.edu"}

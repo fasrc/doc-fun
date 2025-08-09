@@ -146,14 +146,13 @@ def run_comparison(args, results: list, logger: logging.Logger) -> None:
         logger.error("No generated files to compare")
         return
     
-    generated_file = results[0].get('filename')
+    generated_file = results[0]  # results contains file paths directly
     if not generated_file:
         logger.error("Generated file path not found")
         return
     
-    # Build full path
-    from pathlib import Path
-    generated_path = Path(args.output_dir) / generated_file
+    # Build full path  
+    generated_path = Path(generated_file)
     
     try:
         if args.compare_url:
@@ -337,7 +336,7 @@ def run_generation(args, logger: logging.Logger) -> None:
         if not args.quiet:
             print("\nGenerated Files:")
             for i, result in enumerate(results, 1):
-                filename = result.get('filename', f'output_{i}.html')
+                filename = Path(result).name  # result is a file path
                 print(f"  {i}. {filename}")
         
         # Run comparison if requested
@@ -350,10 +349,14 @@ def run_generation(args, logger: logging.Logger) -> None:
             analyzer = DocumentAnalyzer()
             
             for i, result in enumerate(results):
-                content = result.get('content', '')
-                if content:
+                # result is a file path, read content from file
+                try:
+                    with open(result, 'r', encoding='utf-8') as f:
+                        content = f.read()
                     sections = analyzer.extract_sections(content)
                     logger.info(f"Variant {i+1}: Found {len(sections)} sections")
+                except FileNotFoundError:
+                    logger.error(f"Generated file not found: {result}")
         
         # Run quality evaluation if requested
         if args.quality_eval:
@@ -365,7 +368,14 @@ def run_generation(args, logger: logging.Logger) -> None:
                 )
                 
                 for i, result in enumerate(results):
-                    content = result.get('content', '')
+                    # result is a file path, read content from file
+                    try:
+                        with open(result, 'r', encoding='utf-8') as f:
+                            content = f.read()
+                    except FileNotFoundError:
+                        logger.error(f"Generated file not found: {result}")
+                        continue
+                    
                     if content:
                         # This is a simplified evaluation - full implementation would
                         # evaluate each section separately
