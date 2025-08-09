@@ -89,18 +89,21 @@ class TestDocumentationGenerator:
         with mock_plugin_discovery(sample_plugins):
             with patch.dict(os.environ, {'OPENAI_API_KEY': 'test-key'}):
                 with patch('doc_generator.core.Path.cwd', return_value=temp_dir):
-                    generator = DocumentationGenerator(
-                        prompt_yaml_path=str(prompt_file),
-                        examples_dir=str(examples_dir),
-                        terminology_path=str(terminology_file)
-                    )
-                    generator.client = mock_openai_client
-                    
-                    result = generator.generate_documentation("Python programming", runs=1)
-                    
-                    assert isinstance(result, list)
-                    assert len(result) == 1
-                    mock_openai_client.chat.completions.create.assert_called()
+                    # Mock the OpenAI provider's generate_completion method
+                    with patch('doc_generator.providers.openai_provider.OpenAI') as mock_openai_class:
+                        mock_openai_class.return_value = mock_openai_client
+                        
+                        generator = DocumentationGenerator(
+                            prompt_yaml_path=str(prompt_file),
+                            examples_dir=str(examples_dir),
+                            terminology_path=str(terminology_file)
+                        )
+                        
+                        result = generator.generate_documentation("Python programming", runs=1)
+                        
+                        assert isinstance(result, list)
+                        assert len(result) == 1
+                        mock_openai_client.chat.completions.create.assert_called()
 
     def test_prompt_config_loading(self, temp_dir, sample_yaml_config, sample_terminology, mock_plugin_discovery, sample_plugins):
         """Test that prompt configuration is loaded correctly."""
