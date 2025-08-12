@@ -261,13 +261,21 @@ def run_generation(args, logger: logging.Logger) -> None:
             print("  - ANTHROPIC_API_KEY for Claude models")
             return
         
-        for provider, models in available_models.items():
-            print(f"\n{provider.upper()}:")
+        for provider_name, models in available_models.items():
+            provider = manager.get_provider(provider_name)
+            is_configured = provider.is_available() if provider else False
+            status = "✅ CONFIGURED" if is_configured else "❌ NOT CONFIGURED (API key missing)"
+            
+            print(f"\n{provider_name.upper()}: {status}")
             for model in models:
                 print(f"  - {model}")
         
-        print(f"\nDefault provider: {manager.get_default_provider()}")
-        print(f"Default model: {manager.get_default_model()}")
+        default_provider = manager.get_default_provider()
+        if default_provider:
+            print(f"\nDefault provider: {default_provider}")
+            print(f"Default model: {manager.get_default_model()}")
+        else:
+            print(f"\nNo default provider available - configure API keys to use models")
         return
     
     try:

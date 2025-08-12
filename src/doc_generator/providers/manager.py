@@ -32,13 +32,15 @@ class ProviderManager:
         # Register OpenAI provider
         try:
             openai_provider = OpenAIProvider()
+            # Always register the provider for model listing, but mark availability
+            self.providers['openai'] = openai_provider
+            for model in openai_provider.get_available_models():
+                self.model_mapping[model] = 'openai'
+            
             if openai_provider.is_available():
-                self.providers['openai'] = openai_provider
-                for model in openai_provider.get_available_models():
-                    self.model_mapping[model] = 'openai'
                 self.logger.info("OpenAI provider loaded successfully")
             else:
-                self.logger.info("OpenAI provider not available (API key not configured)")
+                self.logger.info("OpenAI provider loaded (API key not configured - models listed but not usable)")
         except Exception as e:
             self.logger.warning(f"Failed to load OpenAI provider: {e}")
         
@@ -83,12 +85,17 @@ class ProviderManager:
         return list(self.model_mapping.keys())
     
     def get_default_provider(self) -> Optional[str]:
-        """Get the default provider (first available)."""
-        available = self.get_available_providers()
-        if 'openai' in available:
+        """Get the default provider (first usable with API key configured)."""
+        # Check providers that are actually usable (have API keys configured)
+        usable_providers = [
+            name for name, provider in self.providers.items() 
+            if provider.is_available()
+        ]
+        
+        if 'openai' in usable_providers:
             return 'openai'  # Prefer OpenAI for backward compatibility
-        elif available:
-            return available[0]
+        elif usable_providers:
+            return usable_providers[0]
         return None
     
     def get_default_model(self) -> Optional[str]:

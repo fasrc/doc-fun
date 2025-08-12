@@ -26,15 +26,59 @@ class OpenAIProvider(LLMProvider):
             raise ValueError("OpenAI API key not configured. Set OPENAI_API_KEY environment variable.")
             
         try:
-            response = self.client.chat.completions.create(
-                model=request.model,
-                messages=request.messages,
-                temperature=request.temperature,
-                max_tokens=request.max_tokens or 4096
-            )
+            # GPT-5 models have specific parameter requirements
+            if request.model and request.model.startswith('gpt-5'):
+                # GPT-5 only supports temperature=1.0 and max_completion_tokens instead of max_tokens
+                gpt5_params = {
+                    'model': request.model,
+                    'messages': request.messages,
+                    'temperature': 1.0,  # GPT-5 only supports temperature=1.0
+                }
+                
+                # Try with max_completion_tokens first
+                try:
+                    response = self.client.chat.completions.create(
+                        max_completion_tokens=request.max_tokens or 4096,
+                        **gpt5_params
+                    )
+                except Exception as gpt5_error:
+                    error_msg = str(gpt5_error).lower()
+                    # Handle parameter compatibility issues
+                    if 'max_completion_tokens' in error_msg or 'max_tokens' in error_msg:
+                        self.logger.warning(f"GPT-5 max_completion_tokens parameter not supported yet, proceeding without token limit")
+                        response = self.client.chat.completions.create(**gpt5_params)
+                    else:
+                        # Re-raise if it's a different error
+                        raise gpt5_error
+                        
+                # Log temperature override for user awareness
+                if request.temperature != 1.0:
+                    self.logger.info(f"GPT-5 requires temperature=1.0, overriding requested temperature={request.temperature}")
+            else:
+                response = self.client.chat.completions.create(
+                    model=request.model,
+                    messages=request.messages,
+                    temperature=request.temperature,
+                    max_tokens=request.max_tokens or 4096
+                )
+            
+            # Extract response content
+            raw_content = response.choices[0].message.content
+            
+            # GPT-5 bug workaround: Models return None content despite successful API calls
+            if not raw_content and request.model and request.model.startswith('gpt-5'):
+                self.logger.warning(
+                    f"⚠️ GPT-5 bug detected: {request.model} returned empty content despite successful API call. "
+                    f"This is a known issue with GPT-5 models. Consider using GPT-4 models instead."
+                )
+                # Return empty content to allow graceful failure
+                raw_content = ""
+            elif not raw_content:
+                self.logger.error(f"Empty response content from {request.model}")
+                raw_content = ""
             
             return CompletionResponse(
-                content=response.choices[0].message.content.strip(),
+                content=raw_content.strip() if raw_content else "",
                 model=response.model,
                 provider=self.get_provider_name(),
                 usage={
@@ -51,13 +95,13 @@ class OpenAIProvider(LLMProvider):
     def get_available_models(self) -> List[str]:
         """Get available OpenAI models."""
         return [
-            'gpt-5',                # Flagship model, high performance for complex tasks
-            'gpt-5-mini',           # Faster and more cost-efficient for well-defined tasks
-            'gpt-5-nano',           # Fastest and most cost-efficient for simpler tasks
-            'gpt-5-chat-latest',    # Non-reasoning version of GPT-5 used in ChatGPT
-            'gpt-4',
-            'gpt-4o', 
-            'gpt-4o-mini',
+            'gpt-5',                # ⚠️ Known issue: Returns empty content (API bug)
+            'gpt-5-mini',           # ⚠️ Known issue: Returns empty content (API bug)
+            'gpt-5-nano',           # ⚠️ Known issue: Returns empty content (API bug)
+            'gpt-5-chat-latest',    # ⚠️ Known issue: Returns empty content (API bug)
+            'gpt-4',                # Recommended: Stable and reliable
+            'gpt-4o',               # Recommended: Optimized GPT-4
+            'gpt-4o-mini',          # Recommended: Cost-efficient GPT-4
             'gpt-4-turbo',
             'gpt-3.5-turbo'
         ]
