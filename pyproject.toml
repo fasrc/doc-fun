@@ -19,8 +19,6 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -28,7 +26,7 @@ classifiers = [
     "Topic :: Scientific/Engineering",
     "Topic :: Software Development :: Documentation",
 ]
-requires-python = ">=3.8"
+requires-python = ">=3.10"
 dependencies = [
     "openai>=1.0.0",
     "anthropic>=0.25.0",
@@ -39,6 +37,7 @@ dependencies = [
     "tabulate>=0.9.0",
     "requests>=2.28.0",
     "numpy>=1.21.0",
+    "pygments>=2.7.0",
 ]
 
 [project.optional-dependencies]
@@ -102,7 +101,7 @@ markers = [
 
 [tool.black]
 line-length = 100
-target-version = ['py38', 'py39', 'py310', 'py311', 'py312']
+target-version = ['py310', 'py311', 'py312']
 include = '\.pyi?$'
 extend-exclude = '''
 /(
@@ -119,7 +118,7 @@ extend-exclude = '''
 '''
 
 [tool.mypy]
-python_version = "3.8"
+python_version = "3.10"
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = true
