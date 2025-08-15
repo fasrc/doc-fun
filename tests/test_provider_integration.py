@@ -22,10 +22,10 @@ class TestProviderIntegration:
         # Create minimal config files
         self.prompt_file = self.temp_path / "prompt.yaml"
         self.terminology_file = self.temp_path / "terminology.yaml"
-        self.examples_dir = self.temp_path / "examples"
+        self.shots_dir = self.temp_path / "examples"
         self.output_dir = self.temp_path / "output"
         
-        self.examples_dir.mkdir()
+        self.shots_dir.mkdir()
         self.output_dir.mkdir()
         
         # Create basic config files
@@ -64,7 +64,7 @@ hpc_modules:
         
         generator = DocumentationGenerator(
             prompt_yaml_path=str(self.prompt_file),
-            examples_dir=str(self.examples_dir),
+            shots_dir=str(self.shots_dir),
             terminology_path=str(self.terminology_file),
             provider='auto'
         )
@@ -92,7 +92,7 @@ hpc_modules:
         
         generator = DocumentationGenerator(
             prompt_yaml_path=str(self.prompt_file),
-            examples_dir=str(self.examples_dir),
+            shots_dir=str(self.shots_dir),
             terminology_path=str(self.terminology_file),
             provider='claude'
         )
@@ -115,7 +115,7 @@ hpc_modules:
         with pytest.raises(ValueError, match="No LLM providers are available"):
             DocumentationGenerator(
                 prompt_yaml_path=str(self.prompt_file),
-                examples_dir=str(self.examples_dir),
+                shots_dir=str(self.shots_dir),
                 terminology_path=str(self.terminology_file),
                 provider='auto'
             )
@@ -136,7 +136,7 @@ hpc_modules:
         with pytest.raises(ValueError, match="Provider 'invalid' is not available"):
             DocumentationGenerator(
                 prompt_yaml_path=str(self.prompt_file),
-                examples_dir=str(self.examples_dir),
+                shots_dir=str(self.shots_dir),
                 terminology_path=str(self.terminology_file),
                 provider='invalid'
             )
@@ -171,7 +171,7 @@ hpc_modules:
         
         generator = DocumentationGenerator(
             prompt_yaml_path=str(self.prompt_file),
-            examples_dir=str(self.examples_dir),
+            shots_dir=str(self.shots_dir),
             terminology_path=str(self.terminology_file)
         )
         
@@ -223,7 +223,7 @@ hpc_modules:
         
         generator = DocumentationGenerator(
             prompt_yaml_path=str(self.prompt_file),
-            examples_dir=str(self.examples_dir),
+            shots_dir=str(self.shots_dir),
             terminology_path=str(self.terminology_file)
         )
         
@@ -275,7 +275,7 @@ hpc_modules:
         
         generator = DocumentationGenerator(
             prompt_yaml_path=str(self.prompt_file),
-            examples_dir=str(self.examples_dir),
+            shots_dir=str(self.shots_dir),
             terminology_path=str(self.terminology_file)
         )
         
@@ -311,7 +311,7 @@ hpc_modules:
         
         generator = DocumentationGenerator(
             prompt_yaml_path=str(self.prompt_file),
-            examples_dir=str(self.examples_dir),
+            shots_dir=str(self.shots_dir),
             terminology_path=str(self.terminology_file)
         )
         
@@ -353,7 +353,7 @@ hpc_modules:
         
         generator = DocumentationGenerator(
             prompt_yaml_path=str(self.prompt_file),
-            examples_dir=str(self.examples_dir),
+            shots_dir=str(self.shots_dir),
             terminology_path=str(self.terminology_file)
         )
         

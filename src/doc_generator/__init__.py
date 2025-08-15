@@ -10,12 +10,14 @@ __version__ = "1.1.0"
 from .core import DocumentationGenerator, DocumentAnalyzer, GPTQualityEvaluator, CodeExampleScanner
 from .plugin_manager import PluginManager
 from .plugins import RecommendationEngine
+from .readme_generator import ReadmeGenerator
 
 __all__ = [
     "DocumentationGenerator",
     "DocumentAnalyzer", 
     "GPTQualityEvaluator",
     "CodeExampleScanner",
+    "ReadmeGenerator",
     "PluginManager",
     "RecommendationEngine"
 ]

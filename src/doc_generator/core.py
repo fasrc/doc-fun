@@ -33,7 +33,7 @@ except ImportError:
 class DocumentationGenerator:
     """Main class for generating documentation using multiple LLM providers with plugin support."""
     
-    def __init__(self, prompt_yaml_path: str = './prompts/generator/default.yaml', examples_dir: str = 'examples/',
+    def __init__(self, prompt_yaml_path: str = './prompts/generator/default.yaml', shots_dir: str = 'shots/',
                  terminology_path: str = 'terminology.yaml', provider: str = 'auto', 
                  logger: Optional[logging.Logger] = None):
         """Initialize the documentation generator with configuration."""
@@ -56,7 +56,7 @@ class DocumentationGenerator:
         self.logger.info(f"Using default provider: {self.default_provider}")
         
         # Initialize other components
-        self.examples_dir = Path(examples_dir)
+        self.shots_dir = Path(shots_dir)
         self.prompt_config = self._load_prompt_config(prompt_yaml_path)
         self.terminology = self._load_terminology(terminology_path)
         self.examples = self._load_examples()
@@ -99,11 +99,11 @@ class DocumentationGenerator:
         """Load few-shot examples from YAML files."""
         examples = []
         
-        # Ensure examples directory exists
-        self.examples_dir.mkdir(exist_ok=True)
+        # Ensure shots directory exists
+        self.shots_dir.mkdir(exist_ok=True)
         
         # Load YAML examples
-        yaml_files = sorted(self.examples_dir.glob('*.yaml'))
+        yaml_files = sorted(self.shots_dir.glob('*.yaml'))
         for yaml_file in yaml_files:
             try:
                 with open(yaml_file, 'r') as f:
@@ -116,7 +116,7 @@ class DocumentationGenerator:
                 print(f"Error loading {yaml_file}: {e}")
         
         # Load HTML examples if needed for reference
-        html_files = sorted(self.examples_dir.glob('*.html'))
+        html_files = sorted(self.shots_dir.glob('*.html'))
         for html_file in html_files:
             try:
                 with open(html_file, 'r') as f:
@@ -1278,7 +1278,7 @@ def main():
         try:
             generator = DocumentationGenerator(
                 prompt_yaml_path=args.generator_prompt,
-                examples_dir='examples/',
+                shots_dir='shots/',
                 terminology_path=args.terminology
             )
             print("✅ Generator initialized successfully")

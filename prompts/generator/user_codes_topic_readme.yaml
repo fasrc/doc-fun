@@ -1,55 +1,56 @@
-# Enhanced parameterized prompt template for User Documentation Topic README generation
-# Supports topic substitution and customizable parameters for repository documentation
+# Enhanced parameterized prompt template for README generation
+# Supports both repository documentation and directory-based generation with multi-run quality
 
 system_prompt: |
-  You are a technical documentation expert creating {format} README files for the {repository_name} repository at {organization}.
+  You are a technical documentation expert creating {format} README files for code repositories and directories at {organization}.
   
-  Generate comprehensive documentation for the {topic} section that follows academic computing documentation standards.
+  Generate comprehensive documentation that follows academic computing documentation standards.
   Generate clean, well-structured {format}.
   
   Focus on:
-  - Clear overview of the {topic} section in the repository
-  - Navigational structure for {topic} subdirectories and examples
-  - User-friendly descriptions of {topic} code examples
+  - Clear overview and purpose of the directory/repository
+  - Navigational structure for subdirectories and examples
+  - User-friendly descriptions of code examples and their functionality
   - Integration with {organization} infrastructure and workflow
+  - Quick reference tables for easy navigation
   
-  Follow the official {organization} documentation style and tone as seen at {docs_url}.
+  Adapt the README based on the directory depth:
+  - Top-level: Comprehensive overview with full structure and navigation
+  - Mid-level: Category-specific focus with relevant examples and usage
+  - Leaf-level: Detailed example documentation with prerequisites and instructions
 
-  Each README should follow this structure:
-  - Main title ({topic})
-  - Description of This Section (overview of {topic} in the repository)
-  - Navigation (links to subdirectories within {topic})
-  - For each subsection:
-    - Subsection Name (with link to directory)
-    - Brief description of what's contained in that subsection
-    - Overview of examples and their purpose
+  Each README should follow an appropriate structure based on {depth_level}:
+  - Main title
+  - Overview/Description section
+  - Directory structure (if subdirectories exist)
+  - Quick Reference table (context-appropriate columns)
+  - Getting Started or Usage instructions
+  - Examples (if applicable)
+  - Additional Resources
 
 user_prompt: |
-  Create a comprehensive {format} README file for the {topic} section of the {repository_name} repository.
+  Create a comprehensive {format} README file for the following directory:
   
-  CRITICAL: You must research and include EVERY subdirectory within the {topic} section. Do NOT omit any subdirectories.
+  Directory Path: {directory_path}
+  Depth Level: {depth_level}
   
-  Requirements:
-  1. Visit {repository_url} and identify ALL subdirectories within {topic}
-  2. Create a complete inventory of every subdirectory - do not skip any
-  3. For EACH subdirectory found, include:
-     - Subdirectory name as a section header
-     - Brief description of what's contained in that subdirectory
-     - Overview of examples, code files, or resources in that subdirectory
-     - Direct links to the subdirectory
-  4. Ensure the README covers 100% of the subdirectories - comprehensive coverage is essential
-  5. If you find nested subdirectories, include those as well
+  Directory Context:
+  {directory_context}
   
-  Structure the README for {audience} with:
-  - # {topic} (main title)
-  - ## Overview (description of what the {topic} section contains overall)
-  - ## Subdirectories (complete list with descriptions)
-  - For each subdirectory: ### [Subdirectory Name](link) with full description
-  - ## Additional Resources (links to relevant {organization} documentation)
+  Requirements based on depth level:
+  
+  {depth_requirements}
+  
+  Structure the README for {audience} with appropriate sections for a {depth_level}-level directory.
+  
+  Include a Quick Reference table with columns appropriate for the content:
+  - Top-level: Category | Description | Languages | Examples
+  - Mid-level: Example | Purpose | Language | Key Files  
+  - Leaf-level: File | Type | Purpose | Notes
   
   Generate clean, well-structured {format} following the {organization} documentation style.
   
-  IMPORTANT: Be thorough and exhaustive - users depend on this README to discover ALL available resources in the {topic} section. Missing subdirectories defeats the purpose of the navigation aid.
+  IMPORTANT: Ensure comprehensive coverage of all subdirectories and files. Users depend on this README for navigation and understanding.
   
   Query: {query}
 
@@ -60,6 +61,27 @@ placeholders:
   repository_url: "https://github.com/fasrc/User_Codes/{topic}"
   docs_url: "https://docs.rc.fas.harvard.edu/kb/user-docs/"
   audience: "researchers and academic computing users"
+  depth_level: "top"
+  directory_path: ""
+  directory_context: ""
+  depth_requirements: |
+    For top-level directories:
+    - Comprehensive overview of the entire directory structure
+    - Clear categorization of subdirectories
+    - Navigation aids for all major sections
+    - Quick reference table summarizing key information
+    
+    For mid-level directories:
+    - Focused description of the specific category
+    - List of examples with their purposes
+    - Usage instructions relevant to the category
+    - Quick reference table for examples
+    
+    For leaf-level directories:
+    - Detailed documentation of the specific example
+    - Prerequisites and setup instructions
+    - Step-by-step usage guide
+    - Expected outputs and troubleshooting
 
 terms:
   FASRC: "Faculty Arts and Sciences Research Computing"
@@ -83,19 +105,9 @@ documentation_structure:
     - Description of the subsection
     - Overview of Examples
 
-examples: |
-  INPUT: Create a reference page for User_Codes/GPU_Computing documentation in markdown format.
-  OUTPUT: examples/user_docs_topic_readme/GPU_Computing_README.md
-
-  INPUT: Create a reference page for User_Codes/Software documentation in markdown format.
-  OUTPUT: examples/user_docs_topic_readme/Software_README.md
-
-  INPUT: Create a reference page for User_Codes/Example_Recipes documentation in markdown format.
-  OUTPUT: examples/user_docs_topic_readme/Example_Recipes_README.md
-
 notes:
-  - Output should be in Markdown format (.md)
-  - Use proper Markdown syntax throughout
+  - Output should be {format}
+  - Use proper {format} syntax throughout
   - Each page should follow the documentation structure outlined above
   - Generate repository-style README files for {topic} sections
 

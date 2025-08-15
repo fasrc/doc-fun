@@ -1,0 +1,226 @@
+# Perfect README Analysis Prompt
+# Specifically designed to evaluate README files generated with perfect_readme.yaml
+# Based on the success factors from parallel_computing.md
+
+analysis_prompts:
+  structure_quality: |
+    Evaluate the structural organization of this README about {topic}.
+    
+    Rate from 1-10 based on the PERFECT README CRITERIA:
+    - **Title Format**: Uses "# [Topic] Examples" or similar pattern (2 points)
+    - **Opening Impact**: One-sentence description of what users can DO (2 points)
+    - **Hierarchical Organization**: Clear main categories (##) with logical subcategories (###) (2 points)
+    - **Consistent Formatting**: Bold directory links **[Name](path/)** with descriptions (1 point)
+    - **Relative Path Usage**: All paths are relative to README location, no absolute paths (2 points)
+    - **Quick Reference Table**: Practical comparison table at the end (1 point)
+    
+    DEDUCT POINTS FOR:
+    - Generic opening like "This repository contains..." (-2)
+    - Missing hierarchical structure (-2)
+    - Inconsistent link formatting (-1)
+    - No quick reference table (-2)
+    - Poor category organization (-1)
+    - Absolute paths instead of relative paths (-3)
+    - File references without proper markdown links (-2)
+    
+    Provide a score and specific feedback on structure.
+    
+    Content to evaluate:
+    {content}
+
+  conciseness_quality: |
+    Evaluate the conciseness and information density of this README about {topic}.
+    
+    Rate from 1-10 based on PERFECT README STANDARDS:
+    - **Unique Descriptions**: Each directory description adds distinct value (3 points)
+    - **No Redundancy**: Avoids repeating information or generic phrases (2 points)
+    - **Meaningful Details**: Describes capabilities/use cases, not just "examples of X" (3 points)
+    - **Optimal Length**: Around 50-60 lines total, every word counts (2 points)
+    
+    DEDUCT POINTS FOR:
+    - Generic descriptions like "Contains examples of..." (-2)
+    - Redundant information already in directory names (-1)
+    - Excessive length without added value (-2)
+    - Missing specific capability descriptions (-2)
+    - Filler text or unnecessary explanations (-1)
+    
+    Provide a score and identify any redundancies or generic phrases.
+    
+    Content to evaluate:
+    {content}
+
+  navigation_effectiveness: |
+    Evaluate how effectively this README helps users navigate and understand the {topic} resources.
+    
+    Rate from 1-10 based on NAVIGATION EXCELLENCE:
+    - **Logical Grouping**: Directories grouped by paradigm/approach rather than alphabetically (3 points)
+    - **Category Clarity**: Main categories clearly explain the approach/technology (2 points)
+    - **Visual Hierarchy**: Proper use of headers, bold links, and indentation (2 points)
+    - **Decision Support**: Quick reference table helps users choose appropriate tools (3 points)
+    
+    DEDUCT POINTS FOR:
+    - Alphabetical instead of logical grouping (-2)
+    - Unclear category purposes (-2)
+    - Poor visual hierarchy or formatting (-1)
+    - Missing or unhelpful quick reference (-3)
+    - Difficult to scan structure (-1)
+    
+    Provide a score and suggest improvements for navigation.
+    
+    Content to evaluate:
+    {content}
+
+  technical_accuracy: |
+    Evaluate the technical accuracy and appropriateness of descriptions for {topic}.
+    
+    Rate from 1-10 based on:
+    - **Accurate Technology Descriptions**: Correct explanations of tools/approaches (3 points)
+    - **Appropriate Categorization**: Technologies grouped logically by type/paradigm (2 points)
+    - **Correct Terminology**: Uses proper technical terms and concepts (2 points)
+    - **Relevant Context**: Descriptions match the actual capabilities (2 points)
+    - **Current Information**: Up-to-date tools and approaches (1 point)
+    
+    DEDUCT POINTS FOR:
+    - Incorrect technical information (-3)
+    - Misplaced or wrongly categorized items (-2)
+    - Outdated or deprecated information (-1)
+    - Vague or misleading descriptions (-2)
+    
+    Provide a score and identify any technical issues.
+    
+    Content to evaluate:
+    {content}
+
+  quick_reference_quality: |
+    Evaluate the effectiveness of the Quick Reference table for {topic}.
+    
+    Rate from 1-10 based on QUICK REFERENCE EXCELLENCE:
+    - **Appropriate Columns**: Table columns support decision-making (3 points)
+    - **Complete Coverage**: Covers main tools/approaches mentioned (2 points)
+    - **Practical Information**: Helps users choose the right tool for their needs (3 points)
+    - **Concise Entries**: Brief but informative table entries (2 points)
+    
+    IDEAL COLUMN PATTERNS:
+    - Tool/Paradigm | Best For | Languages | Examples
+    - Technology | Use Case | Requirements | Key Features
+    - Approach | Scenario | Complexity | Performance
+    
+    DEDUCT POINTS FOR:
+    - Missing quick reference table (-5)
+    - Unhelpful or generic columns (-2)
+    - Incomplete coverage of main topics (-2)
+    - Verbose or unclear entries (-1)
+    
+    Provide a score and suggest table improvements.
+    
+    Content to evaluate:
+    {content}
+
+  path_correctness: |
+    Evaluate the correctness of file and directory path references in this README about {topic}.
+    
+    Rate from 1-10 based on PATH REQUIREMENTS:
+    - **Relative Paths Only**: All paths are relative to README location (4 points)
+    - **Proper Markdown Links**: File references use [filename.ext](./path/to/file.ext) format (3 points)
+    - **Directory Link Format**: Directory links use **[DirName](./DirName/)** format (2 points)
+    - **No Absolute Paths**: No references like "src/User_Codes/..." or "/absolute/paths" (1 point)
+    
+    CORRECT EXAMPLES:
+    - Directory: **[Julia](./Julia/)** 
+    - File: [figure.py](./Julia/Example2/figure.py)
+    - Nested: [script.sh](./SubDir/tools/script.sh)
+    
+    INCORRECT EXAMPLES:
+    - Absolute: "src/User_Codes/Languages/Julia/Example2/figure.py"
+    - Non-markdown: "see Julia/Example2/figure.py"
+    - Wrong format: (Julia/Example2/figure.py)
+    
+    DEDUCT POINTS FOR:
+    - Any absolute path references (-4)
+    - File references without markdown links (-2)
+    - Incorrect directory link format (-1)
+    - Inconsistent path formatting (-1)
+    
+    Provide a score and list any path formatting issues.
+    
+    Content to evaluate:
+    {content}
+
+# Section-specific criteria for perfect README evaluation
+section_criteria:
+  Title:
+    - "Uses pattern: '# [Topic] Examples' or '# [Topic] Resources'"
+    - "Clear, descriptive topic identification"
+    
+  Opening:
+    - "One sentence describing what users can DO with the contents"
+    - "Avoids generic 'contains' or 'includes' language"
+    - "Action-oriented and practical"
+    
+  Main_Categories:
+    - "Groups content by paradigm/approach, not alphabetically"
+    - "Each category has a clear explanatory subtitle"
+    - "Categories represent distinct approaches or technologies"
+    
+  Directory_Descriptions:
+    - "Each description explains specific capabilities or use cases"
+    - "Avoids redundant information already in directory names"
+    - "Uses consistent bold link format: **[Name](path/)**"
+    - "Descriptions are unique and informative"
+    
+  Quick_Reference:
+    - "Table with 4 practical columns for decision-making"
+    - "Covers main tools/approaches from the document"
+    - "Entries are concise but informative"
+    - "Helps users select appropriate tools"
+    
+  Documentation_Link:
+    - "Includes reference to general documentation"
+    - "Properly formatted link with descriptive text"
+
+# Overall quality benchmarks based on parallel_computing.md success
+quality_benchmarks:
+  excellent: 9-10  # Matches parallel_computing.md quality
+  good: 7-8        # Strong organization and descriptions
+  acceptable: 5-6  # Basic structure but room for improvement
+  poor: 1-4        # Significant issues with structure or content
+
+# Specific patterns to look for
+success_patterns:
+  opening_examples:
+    - "Each directory contains complete working examples with..."
+    - "Comprehensive collection of tools and examples for..."
+    - "Working implementations and tutorials for..."
+  
+  category_patterns:
+    - "Core [Technology] Paradigms"
+    - "Language Ecosystems" 
+    - "Technical Computing Platforms"
+    - "High-Performance [Type] Libraries"
+  
+  description_patterns:
+    - "Multi-language [tool] examples (languages) with comprehensive guides"
+    - "[Technology] for [specific use case]"
+    - "[Specific capability] using [technology]"
+
+# Anti-patterns to flag
+problematic_patterns:
+  generic_phrases:
+    - "Contains examples of"
+    - "Includes tutorials for"
+    - "Examples and demonstrations"
+    - "Various implementations"
+  
+  redundant_descriptions:
+    - Repeating directory names in descriptions
+    - Multiple items with nearly identical descriptions
+    - Generic categorization without explanation
+
+# Scoring weights for overall evaluation
+scoring_weights:
+  structure_quality: 20%      # Organization drives usability
+  conciseness_quality: 20%    # Density of useful information
+  navigation_effectiveness: 20% # Critical for user experience
+  path_correctness: 20%       # Critical for functional links
+  technical_accuracy: 10%     # Important but assumes correct information
+  quick_reference_quality: 10% # Important finishing touch

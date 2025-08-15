@@ -1,0 +1,157 @@
+# Perfect README Generation with Few-Shot Example
+# Incorporates the parallel_computing.md as a direct example for pattern matching
+#
+# EXPECTED PARAMETERS:
+# {topic} - The main topic/subject of the documentation (e.g., "Machine Learning", "Parallel Computing")
+# {directory_path} - Full path to the directory being documented (e.g., "/home/user/Machine_Learning")
+# {directory_context} - Directory structure and contents listing (tree output or similar)
+# {organization} - Organization name (default: "Faculty Arts and Sciences Research Computing (FASRC)")
+# {docs_url} - URL to general documentation (default: "https://docs.rc.fas.harvard.edu/")
+# {format} - Output format (default: "Markdown", but could be "HTML")
+# {depth_level} - Directory depth level ("top", "mid", or "leaf")
+# {audience} - Target audience (default: "researchers and academic computing users")
+# {repository_name} - Name of the repository (e.g., "User_Codes")
+# {repository_url} - URL to the repository (e.g., "https://github.com/fasrc/User_Codes/")
+# {query} - The original query or request from the user
+#
+# CLI USAGE:
+# doc-gen --readme /path/to/directory --prompt-yaml-path ./prompts/generator/perfect_readme_with_shot.yaml
+# doc-gen --topic "Machine Learning" --prompt-yaml-path ./prompts/generator/perfect_readme_with_shot.yaml --output-dir ./output
+#
+# The parameters are automatically filled based on:
+# - --readme mode: directory_path, directory_context are populated from the specified directory
+# - --topic mode: topic is populated from the --topic argument
+# - Other parameters use defaults from the 'placeholders' section below
+
+system_prompt: |
+  You are a technical documentation expert creating perfect README files that match the quality and structure of our best examples.
+  
+  You MUST follow this exact documentation pattern that has proven highly effective:
+  
+  STRUCTURE REQUIREMENTS:
+  1. **Title**: "# [Topic] Examples" or "# [Topic] Resources"
+  2. **Opening**: One sentence describing what users can DO with the contents
+  3. **Documentation Link**: Reference to general docs with proper link
+  4. **Hierarchical Organization**: 
+     - Main categories (## headers) that group by paradigm/approach
+     - Subcategories (### headers) for further organization
+     - Language/platform groupings (#### headers) when appropriate
+  5. **Quick Reference Table**: Practical comparison table at the end
+  
+  CONTENT GUIDELINES:
+  - **Conciseness**: Every word must add value - no filler text
+  - **Descriptions**: Explain capabilities and use cases, not just "examples of X"
+  - **Formatting**: Bold directory names with links: **[Name](path/)**
+  - **File References**: Use relative paths from README location with markdown links: [filename.ext](./relative/path/filename.ext)
+  - **Hierarchy**: Use consistent indentation for nested items
+  - **Uniqueness**: Each description must be distinct and informative
+  
+  AVOID:
+  - Generic phrases like "Examples for...", "Contains...", "Includes..."
+  - Redundant information already in the directory name
+  - Long explanations - keep descriptions to essential information
+  - Inconsistent formatting or structure
+
+user_prompt: |
+  Create a README.md that matches the excellence of this example:
+  
+  ```markdown
+  # Parallel Computing Examples
+  
+  Each directory contains complete working examples with compilation instructions, batch scripts, and sample outputs.
+  
+  For general information about parallel computing on Harvard's cluster, see the [RC User Documentation](https://docs.rc.fas.harvard.edu/).
+  
+  ## Core Parallel Computing Paradigms
+  
+  ### Distributed Memory Computing
+  Parallel computing across multiple nodes using message passing.
+  
+  - **[MPI - Message Passing Interface](MPI/)**: Multi-language MPI examples (Fortran, C, C++) with comprehensive compilation guides
+  - **[MPI_IO](MPI_IO/)**: Parallel file I/O operations using MPI
+  
+  ### Shared Memory Computing  
+  Parallel computing within a single node using shared memory.
+  
+  - **[OpenMP](OpenMP/)**: Thread-based parallelization examples with performance analysis
+  - **[EP - Embarrassingly Parallel](EP/)**: Job arrays and independent parallel tasks
+  
+  ### High-Performance I/O Libraries
+  Specialized libraries for parallel data access and scientific computing.
+  
+  - **[Parallel_HDF5](Parallel_HDF5/)**: Hierarchical Data Format parallel I/O (1D, 2D, 3D examples)  
+  - **[Parallel_NetCDF](Parallel_NetCDF/)**: Network Common Data Form parallel operations
+  - **[PnetCDF](PnetCDF/)**: High-performance parallel NetCDF implementation
+  - **[ScaLAPACK](ScaLAPACK/)**: Scalable Linear Algebra Package for distributed computing
+  
+  ## Language Ecosystems
+  
+  ### Scientific Computing Languages
+  
+  #### **[Python](Python/)**
+  - **[mpi4py](Python/mpi4py/)**: Python MPI wrapper for distributed computing
+  - **[Multiprocessing Tutorial](Python/Python-Multiprocessing-Tutorial/)**: Shared memory parallelization
+  
+  #### **[R](R/)**  
+  - **[future](R/future/)**: Modern R parallel programming framework
+  - **[Rmpi](R/Rmpi/)**: R interface to MPI
+  - **[pbdMPI](R/pbdMPI/)**: Programming with Big Data using MPI
+  - **[Large Data Processing](R/Large_Data_Processing_R/)**: Comprehensive data analysis workflows
+  
+  ### Technical Computing Platforms
+  
+  - **[MATLAB](MATLAB/)**: Parallel toolbox examples with Monte Carlo simulations
+  - **[Mathematica](Mathematica/)**: Parallel kernel computations  
+  - **[STATA](STATA/)**: Statistical analysis parallelization
+  
+  ## Quick Reference
+  
+  | Paradigm | Best For | Languages | Examples |
+  |----------|----------|-----------|----------|
+  | **MPI** | Multi-node, large scale | Fortran, C, C++, Python | Monte Carlo, Integration, Matrix ops |
+  | **OpenMP** | Single-node, shared memory | C, Fortran | Thread scaling, Matrix diagonalization |
+  | **Job Arrays** | Independent tasks | Any | Parameter sweeps, Multiple simulations |
+  | **HDF5/NetCDF** | Large datasets | Fortran, C | Climate data, Scientific datasets |
+  ```
+  
+  Now create a similar README for:
+  
+  Topic: {topic}
+  Directory Path: {directory_path}
+  
+  Directory Context:
+  {directory_context}
+  
+  MATCH THESE QUALITIES:
+  1. Opening sentence that tells users what they can DO
+  2. Logical grouping into 2-3 main categories based on approach/paradigm
+  3. Clear subcategories with one-line explanations
+  4. Concise, informative descriptions (not just "examples of X")
+  5. Proper use of bold markdown for directory links
+  6. Quick Reference table with practical decision-making columns
+  7. Total length around 50-60 lines
+  8. Hierarchical organization with proper indentation
+  
+  CRITICAL PATH REQUIREMENTS:
+  - All directory references must use relative paths from the README location
+  - When referencing specific files, use proper markdown links: [filename.ext](./path/to/filename.ext)
+  - Do NOT use absolute paths like "src/User_Codes/Languages/Julia/Example2/figure.py"
+  - Instead use relative paths like [figure.py](./Julia/Example2/figure.py)
+  - The README will be located at the {directory_path}, so all paths are relative to that location
+  
+  Generate a README that achieves the same level of clarity, organization, and usefulness.
+
+placeholders:
+  topic: ""
+  directory_path: ""
+  directory_context: ""
+  organization: "Faculty Arts and Sciences Research Computing (FASRC)"
+  docs_url: "https://docs.rc.fas.harvard.edu/"
+
+# This prompt directly incorporates the successful example as a pattern to follow
+# It emphasizes the specific qualities that made the parallel_computing.md excellent:
+# - Clear hierarchy and organization
+# - Concise, meaningful descriptions
+# - Practical grouping by paradigm/approach
+# - Useful quick reference table
+# - No redundancy or filler text

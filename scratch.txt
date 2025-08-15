@@ -1,0 +1,117 @@
+I think.... 
+
+For README,
+
+
+--topic ( i.e. "Parallel Computing")
+
+--format ( i.e. "markdown" or "html" ) 
+
+change --prompt-yaml to --generator-prompt or --gp ( path/to/prompt )
+change --analysis-prompt-path to --analysis-prompt or -ap ( path/to/prmopt )
+
+--shots ( path/to/shots )
+add -r to --runs
+add -a to --analysis
+
+usage: doc-gen [-h] [--topic TOPIC] [--output-dir OUTPUT_DIR]
+               [--prompt-yaml-path PROMPT_YAML_PATH]
+               [--examples-dir EXAMPLES_DIR] [--shots PATH]
+               [--terminology-path TERMINOLOGY_PATH] [--runs RUNS]
+               [--model MODEL] [--provider {openai,claude,auto}]
+               [--list-models] [--temperature TEMPERATURE] [--analyze]
+               [--quality-eval] [--analysis-prompt-path ANALYSIS_PROMPT_PATH]
+               [--report-format {markdown,html,json}] [--list-plugins]
+               [--disable-plugins [PLUGIN ...]] [--enable-only [PLUGIN ...]]
+               [--scan-code [DIR]] [--max-scan-files MAX_SCAN_FILES]
+               [--generate-readme] [--recursive] [--overwrite]
+               [--suffix SUFFIX] [--ai-enhance] [--compare-url URL]
+               [--compare-file FILE] [--comparison-report FILE] [--verbose]
+               [--quiet] [--version]
+options:
+  -h, --help            show this help message and exit
+  --topic TOPIC         Topic to generate documentation for
+  --output-dir OUTPUT_DIR
+                        Output directory for generated files (default: output)
+  --prompt-yaml-path PROMPT_YAML_PATH, --prompt-yaml PROMPT_YAML_PATH
+                        Path to prompt YAML configuration (default:
+                        ./prompts/generator/default.yaml)
+  --examples-dir EXAMPLES_DIR
+                        Directory containing few-shot examples (default:
+                        shots)
+  --shots PATH          Path to few-shot examples directory (overrides
+                        --examples-dir)
+  --terminology-path TERMINOLOGY_PATH
+                        Path to terminology YAML file (default:
+                        terminology.yaml)
+  --runs RUNS           Number of documentation variants to generate (default:
+                        1)
+  --model MODEL         Model to use (e.g., gpt-4o-mini,
+                        claude-3-5-sonnet-20240620). Auto-detects provider.
+  --provider {openai,claude,auto}
+                        LLM provider to use (default: auto-detect)
+  --list-models         List available models and providers
+  --temperature TEMPERATURE
+                        Temperature for text generation (default: 0.3)
+  --analyze             Run document analysis after generation
+  --quality-eval        Run GPT-based quality evaluation
+  --analysis-prompt-path ANALYSIS_PROMPT_PATH
+                        Path to analysis prompt configuration
+  --report-format {markdown,html,json}
+                        Format for analysis reports (default: markdown)
+  --list-plugins        List all available plugins and exit
+  --disable-plugins [PLUGIN ...]
+                        Disable specific plugins by name
+  --enable-only [PLUGIN ...]
+                        Enable only specified plugins (disable all others)
+  --scan-code [DIR]     Scan directory for code examples and update
+                        terminology (default: current dir)
+  --max-scan-files MAX_SCAN_FILES
+                        Maximum files to scan for code examples (default: 50)
+  --generate-readme     Generate README.md files from scanned code directory
+                        structure
+  --recursive           Recursively generate README files for all
+                        subdirectories
+  --overwrite           Overwrite existing README.md files (default: create
+                        README_generated.md)
+  --suffix SUFFIX       Custom suffix for generated README files (default:
+                        _generated)
+  --ai-enhance          Use AI (GPT/Claude) to enhance README descriptions
+  --compare-url URL     Compare generated documentation with existing
+                        documentation at URL
+  --compare-file FILE   Compare generated documentation with local file
+  --comparison-report FILE
+                        Save comparison report to file
+  --verbose, -v         Enable verbose logging
+  --quiet, -q           Suppress non-essential output
+  --version             show program's version number and exit
+
+Examples:
+  # Basic usage
+  doc-gen --topic "Python Programming" --output-dir ./output
+
+  # Multiple runs with custom model
+  doc-gen --topic "Machine Learning" --runs 3 --model gpt-4 --temperature 0.7
+
+  # Use custom prompt template
+  doc-gen --topic "CUDA Programming" --prompt-yaml ./prompts/cuda.yaml
+
+  # Full analysis pipeline
+  doc-gen --topic "Parallel Computing" --runs 5 --analyze --quality-eval
+
+
+doc-gen -v --topic "Languages" --model gpt-4o-mini --scan-code /home/austin/Projects/User_Codes/Languages --generate-readme --ai-enhance
+
+I am thinking we should redo this functionality ( README ) completely.  Follow the existing generation meathodology, using a --prompt, --shots, --runs, etc.  
+
+Look through the codebase, asses a path forward.
+
+
+
+
+if you specify --model, then it should infer the provider.
+
+I think we can get ride of --provider, or make it optional.  Perhaps some later LLM will only have provider? 
+
+
+Same for --analyze and --analyze-prompt-path

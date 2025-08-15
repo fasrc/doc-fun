@@ -23,8 +23,8 @@ class TestPluginIntegration:
         with mock_plugin_discovery(sample_plugins):
             prompt_file = temp_dir / "prompt.yaml"
             terminology_file = temp_dir / "terminology.yaml"
-            examples_dir = temp_dir / "examples"
-            examples_dir.mkdir()
+            shots_dir = temp_dir / "examples"
+            shots_dir.mkdir()
             
             with open(prompt_file, 'w') as f:
                 yaml.dump({'system_prompt': 'Test prompt for {topic}'}, f)
@@ -35,7 +35,7 @@ class TestPluginIntegration:
                 with patch('doc_generator.core.OpenAI'):
                     generator = DocumentationGenerator(
                         prompt_yaml_path=str(prompt_file),
-                        examples_dir=str(examples_dir),
+                        shots_dir=str(shots_dir),
                         terminology_path=str(terminology_file)
                     )
                     
@@ -58,8 +58,8 @@ class TestPluginIntegration:
         with mock_plugin_discovery(plugins):
             prompt_file = temp_dir / "prompt.yaml"
             terminology_file = temp_dir / "terminology.yaml"
-            examples_dir = temp_dir / "examples"
-            examples_dir.mkdir()
+            shots_dir = temp_dir / "examples"
+            shots_dir.mkdir()
             
             with open(prompt_file, 'w') as f:
                 yaml.dump({'system_prompt': 'Test prompt'}, f)
@@ -70,7 +70,7 @@ class TestPluginIntegration:
                 with patch('doc_generator.core.OpenAI'):
                     generator = DocumentationGenerator(
                         prompt_yaml_path=str(prompt_file),
-                        examples_dir=str(examples_dir),
+                        shots_dir=str(shots_dir),
                         terminology_path=str(terminology_file)
                     )
                     
@@ -95,8 +95,8 @@ class TestPluginIntegration:
         with mock_plugin_discovery(plugins):
             prompt_file = temp_dir / "prompt.yaml"
             terminology_file = temp_dir / "terminology.yaml"
-            examples_dir = temp_dir / "examples"
-            examples_dir.mkdir()
+            shots_dir = temp_dir / "examples"
+            shots_dir.mkdir()
             
             with open(prompt_file, 'w') as f:
                 yaml.dump({'system_prompt': 'Test prompt'}, f)
@@ -107,7 +107,7 @@ class TestPluginIntegration:
                 with patch('doc_generator.core.OpenAI'):
                     generator = DocumentationGenerator(
                         prompt_yaml_path=str(prompt_file),
-                        examples_dir=str(examples_dir),
+                        shots_dir=str(shots_dir),
                         terminology_path=str(terminology_file)
                     )
                     
@@ -126,8 +126,8 @@ class TestPluginIntegration:
         with mock_plugin_discovery({}):  # No plugins
             prompt_file = temp_dir / "prompt.yaml"
             terminology_file = temp_dir / "terminology.yaml"
-            examples_dir = temp_dir / "examples"
-            examples_dir.mkdir()
+            shots_dir = temp_dir / "examples"
+            shots_dir.mkdir()
             
             with open(prompt_file, 'w') as f:
                 yaml.dump({
@@ -141,7 +141,7 @@ class TestPluginIntegration:
                 with patch('doc_generator.core.OpenAI'):
                     generator = DocumentationGenerator(
                         prompt_yaml_path=str(prompt_file),
-                        examples_dir=str(examples_dir),
+                        shots_dir=str(shots_dir),
                         terminology_path=str(terminology_file)
                     )
                     
@@ -163,8 +163,8 @@ class TestPluginIntegration:
         with mock_plugin_discovery(sample_plugins):
             prompt_file = temp_dir / "prompt.yaml"
             terminology_file = temp_dir / "terminology.yaml"
-            examples_dir = temp_dir / "examples"
-            examples_dir.mkdir()
+            shots_dir = temp_dir / "examples"
+            shots_dir.mkdir()
             
             prompt_config = {
                 'system_prompt': 'You are creating {format} docs for {topic} at {organization}.',
@@ -183,7 +183,7 @@ class TestPluginIntegration:
                 with patch('doc_generator.core.OpenAI'):
                     generator = DocumentationGenerator(
                         prompt_yaml_path=str(prompt_file),
-                        examples_dir=str(examples_dir),
+                        shots_dir=str(shots_dir),
                         terminology_path=str(terminology_file)
                     )
                     
@@ -229,8 +229,8 @@ class TestPluginIntegration:
         with mock_plugin_discovery(plugins):
             prompt_file = temp_dir / "prompt.yaml"
             terminology_file = temp_dir / "terminology.yaml"
-            examples_dir = temp_dir / "examples"
-            examples_dir.mkdir()
+            shots_dir = temp_dir / "examples"
+            shots_dir.mkdir()
             
             with open(prompt_file, 'w') as f:
                 yaml.dump({'system_prompt': 'Test'}, f)
@@ -241,7 +241,7 @@ class TestPluginIntegration:
                 with patch('doc_generator.core.OpenAI'):
                     generator = DocumentationGenerator(
                         prompt_yaml_path=str(prompt_file),
-                        examples_dir=str(examples_dir),
+                        shots_dir=str(shots_dir),
                         terminology_path=str(terminology_file)
                     )
                     

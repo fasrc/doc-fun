@@ -44,6 +44,9 @@
 # Install the package
 pip install -e .
 
+# For development and testing (includes pytest-cov)
+pip install -e ".[test]"
+
 # Verify installation
 doc-gen --version
 ```
@@ -160,6 +163,9 @@ cluster_commands:
 Run the comprehensive test suite:
 
 ```bash
+# Install test dependencies first
+pip install -e ".[test]"
+
 # Run all tests
 python -m pytest -v
 
@@ -267,8 +273,29 @@ cd doc-fun
 # Install in development mode
 pip install -e ".[dev]"
 
+# Install documentation dependencies
+pip install -e ".[docs]"
+
 # Run tests
 python -m pytest -v
+```
+
+### Documentation
+
+The project uses MkDocs with Material theme for documentation:
+
+```bash
+# Install documentation dependencies
+pip install -e ".[docs]"
+
+# Serve documentation locally (http://127.0.0.1:8000)
+mkdocs serve
+
+# Build static documentation site
+mkdocs build
+
+# Deploy to GitHub Pages (requires permissions)
+mkdocs gh-deploy
 ```
 
 ## 📄 License

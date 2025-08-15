@@ -1,0 +1,185 @@
+# README Analysis Prompt Configuration
+# Validates README.md output from the unified generation pipeline
+
+analysis_prompts:
+  navigation_quality: |
+    Evaluate the navigation and directory structure quality of this {section_name} section in a README for {topic}.
+    
+    Rate from 1-10 based on:
+    - Clear directory structure presentation
+    - Logical organization of subdirectories
+    - Easy-to-follow navigation links
+    - Comprehensive coverage of all directories
+    - Intuitive grouping and categorization
+    
+    Provide a score and brief explanation focusing on how well users can navigate the codebase.
+    
+    Content to evaluate:
+    {content}
+
+  completeness_coverage: |
+    Evaluate the completeness and coverage of this {section_name} section in a README for {topic}.
+    
+    Rate from 1-10 based on:
+    - All subdirectories and major files are mentioned
+    - Adequate description of each component's purpose
+    - Complete inventory of available resources
+    - No missing or overlooked directories
+    - Thorough documentation of examples and utilities
+    
+    Provide a score and brief explanation focusing on comprehensive coverage.
+    
+    Content to evaluate:
+    {content}
+
+  usability_clarity: |
+    Evaluate the usability and clarity of this {section_name} section in a README for {topic}.
+    
+    Rate from 1-10 based on:
+    - Clear, jargon-free language appropriate for users
+    - Step-by-step instructions that are easy to follow
+    - Proper formatting with headers, tables, and lists
+    - Good use of markdown syntax for readability
+    - Practical information that helps users get started quickly
+    
+    Provide a score and brief explanation focusing on user experience.
+    
+    Content to evaluate:
+    {content}
+
+  technical_accuracy: |
+    Evaluate the technical accuracy of this {section_name} section in a README for {topic}.
+    
+    Rate from 1-10 based on:
+    - Correct module names and load commands
+    - Accurate file paths and directory references
+    - Valid command syntax and examples
+    - Proper FASRC/HPC environment references
+    - Accurate programming language and tool information
+    
+    Provide a score and brief explanation focusing on technical correctness.
+    
+    Content to evaluate:
+    {content}
+
+section_criteria:
+  Overview:
+    - "Clear explanation of the directory's purpose and scope"
+    - "Identifies target audience and use cases"
+    - "Provides context within the larger repository"
+    - "Sets expectations for what users will find"
+    
+  Directory Structure:
+    - "Lists all subdirectories with descriptions"
+    - "Uses consistent formatting (links, bullets, etc.)"
+    - "Provides logical grouping of related directories"
+    - "Includes file counts or examples where helpful"
+    
+  Getting Started:
+    - "Clear prerequisites and setup instructions"
+    - "Proper module loading commands for FASRC"
+    - "Step-by-step workflow guidance"
+    - "Environment configuration details"
+    
+  Quick Reference:
+    - "Well-formatted table with appropriate columns"
+    - "Comprehensive coverage of examples/files"
+    - "Consistent and helpful descriptions"
+    - "Easy to scan and find relevant information"
+    
+  Examples:
+    - "Representative use cases with clear explanations"
+    - "Working code snippets where applicable"
+    - "Expected outputs or results"
+    - "Links to actual example files"
+    
+  Additional Resources:
+    - "Links to relevant FASRC documentation"
+    - "References to related repositories or directories"
+    - "Contact information or support channels"
+    - "Further learning resources"
+    
+  Prerequisites:
+    - "Clear dependency and requirement lists"
+    - "Version specifications where important"
+    - "Software installation instructions"
+    - "System or environment requirements"
+    
+  Usage:
+    - "Step-by-step usage instructions"
+    - "Common commands and their syntax"
+    - "Typical workflows and patterns"
+    - "Troubleshooting guidance"
+    
+  Files:
+    - "Complete listing of important files"
+    - "Clear purpose description for each file"
+    - "File type and format information"
+    - "Usage notes for key files"
+
+depth_level_requirements:
+  top:
+    critical_sections: ["Overview", "Directory Structure", "Quick Reference"]
+    optional_sections: ["Getting Started", "Additional Resources"]
+    table_columns: ["Category", "Description", "Languages", "Examples"]
+    focus: "Comprehensive navigation and repository overview"
+    
+  mid:
+    critical_sections: ["Overview", "Examples", "Quick Reference"]
+    optional_sections: ["Getting Started", "Usage", "Additional Resources"]
+    table_columns: ["Example", "Purpose", "Language", "Key Files"]
+    focus: "Category-specific guidance and example documentation"
+    
+  leaf:
+    critical_sections: ["Overview", "Prerequisites", "Usage", "Files"]
+    optional_sections: ["Examples", "Additional Resources"]
+    table_columns: ["File", "Type", "Purpose", "Notes"]
+    focus: "Detailed example documentation and usage instructions"
+
+quality_weights:
+  navigation_quality: 0.3
+  completeness_coverage: 0.3
+  usability_clarity: 0.25
+  technical_accuracy: 0.15
+
+readme_specific_metrics:
+  table_quality:
+    - "Proper markdown table formatting"
+    - "Appropriate column headers for depth level"
+    - "Consistent data presentation"
+    - "Complete coverage of items"
+    
+  link_quality:
+    - "Working relative links to subdirectories"
+    - "Proper markdown link syntax"
+    - "Appropriate external resource links"
+    - "Consistent link formatting"
+    
+  structure_quality:
+    - "Logical section ordering"
+    - "Appropriate header levels (H1, H2, H3)"
+    - "Good use of markdown formatting"
+    - "Clear visual hierarchy"
+    
+  depth_appropriateness:
+    - "Content matches expected depth level"
+    - "Right amount of detail for directory level"
+    - "Appropriate scope and focus"
+    - "Proper context for intended users"
+
+scoring_guidelines:
+  excellent: 9-10
+  good: 7-8
+  satisfactory: 5-6
+  needs_improvement: 3-4
+  poor: 1-2
+
+output_format: |
+  Return evaluation as JSON:
+  {
+    "score": <1-10 numeric score>,
+    "explanation": "<brief explanation of score>",
+    "strengths": ["<strength 1>", "<strength 2>"],
+    "weaknesses": ["<weakness 1>", "<weakness 2>"],
+    "suggestions": ["<improvement 1>", "<improvement 2>"]
+  }

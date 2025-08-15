@@ -1,0 +1,130 @@
+# README generation prompt template
+# Optimized for directory-based documentation with multi-run quality
+
+system_prompt: |
+  You are a technical documentation expert creating README.md files for code repositories and directories.
+  
+  Generate comprehensive README documentation in Markdown format that helps users understand and navigate the codebase.
+  
+  Focus on:
+  - Clear directory structure and organization
+  - Purpose and functionality of code examples
+  - Prerequisites and setup instructions
+  - Quick reference guides for common tasks
+  - Links to relevant resources and documentation
+  
+  The README should be tailored based on the directory depth:
+  - Top-level: Comprehensive overview with full structure
+  - Mid-level: Category-specific focus with relevant examples
+  - Leaf-level: Detailed example documentation with usage instructions
+  
+  Output pure Markdown without code block wrapping.
+
+user_prompt: |
+  Create a comprehensive README.md for the following directory structure:
+  
+  {directory_context}
+  
+  The README should include:
+  
+  ## Overview
+  - Purpose and scope of this directory
+  - Key features and capabilities
+  - Target audience and use cases
+  
+  ## Directory Structure
+  - Clear explanation of subdirectories
+  - File organization patterns
+  - Notable files and their purposes
+  
+  ## Getting Started
+  - Prerequisites and requirements
+  - Setup instructions
+  - Environment configuration
+  
+  ## Quick Reference
+  - Table format with relevant columns based on content type
+  - Common commands or operations
+  - Key files and their purposes
+  
+  ## Examples
+  - Representative use cases (if applicable)
+  - Code snippets showing typical usage
+  - Expected outputs or results
+  
+  ## Additional Resources
+  - Links to documentation
+  - Related repositories or directories
+  - Support and contact information
+  
+  Generate pure Markdown appropriate for the directory depth level. Make it informative yet concise.
+  
+  Directory Path: {directory_path}
+  Depth Level: {depth_level}
+
+placeholders:
+  organization: "Research Computing"
+  format: "Markdown"
+  depth_level: "top"
+
+documentation_structure:
+  - Overview
+  - Directory Structure
+  - Getting Started
+  - Quick Reference
+  - Examples
+  - Additional Resources
+
+depth_templates:
+  top:
+    sections:
+      - Overview
+      - Directory Structure
+      - Getting Started
+      - Quick Reference
+      - Additional Resources
+    quick_reference_columns:
+      - Category
+      - Description
+      - Languages
+      - Examples
+  
+  mid:
+    sections:
+      - Overview
+      - Examples
+      - Quick Reference
+      - Usage
+    quick_reference_columns:
+      - Example
+      - Purpose
+      - Language
+      - Key Files
+  
+  leaf:
+    sections:
+      - Description
+      - Prerequisites
+      - Usage
+      - Files
+      - Output
+    quick_reference_columns:
+      - File
+      - Type
+      - Purpose
+
+examples: |
+  INPUT: Generate README for /User_Codes/Parallel_Computing directory
+  OUTPUT: README.md with parallel computing examples overview
+  
+  INPUT: Generate README for /User_Codes/Languages/Python directory
+  OUTPUT: README.md with Python-specific examples and usage
+  
+  INPUT: Generate README for /User_Codes/Languages/Python/Example1 directory
+  OUTPUT: README.md with detailed example documentation
+
+notes:
+  - Adapt content depth based on directory level
+  - Include tables for quick reference
+  - Use relative links for navigation
+  - Focus on practical usage and examples

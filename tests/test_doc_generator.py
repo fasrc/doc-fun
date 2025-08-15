@@ -22,8 +22,8 @@ class TestDocumentationGenerator:
         # Create temporary config files
         prompt_file = temp_dir / "prompt.yaml"
         terminology_file = temp_dir / "terminology.yaml"
-        examples_dir = temp_dir / "examples"
-        examples_dir.mkdir()
+        shots_dir = temp_dir / "examples"
+        shots_dir.mkdir()
         
         with open(prompt_file, 'w') as f:
             yaml.dump(sample_yaml_config, f)
@@ -35,7 +35,7 @@ class TestDocumentationGenerator:
                 with patch('doc_generator.core.OpenAI') as mock_openai:
                     generator = DocumentationGenerator(
                         prompt_yaml_path=str(prompt_file),
-                        examples_dir=str(examples_dir),
+                        shots_dir=str(shots_dir),
                         terminology_path=str(terminology_file)
                     )
                     
@@ -49,12 +49,12 @@ class TestDocumentationGenerator:
         """Test loading examples from directory."""
         prompt_file = temp_dir / "prompt.yaml"
         terminology_file = temp_dir / "terminology.yaml"
-        examples_dir = temp_dir / "examples"
-        examples_dir.mkdir()
+        shots_dir = temp_dir / "examples"
+        shots_dir.mkdir()
         
         # Create sample YAML files (the class loads YAML, not HTML)
-        (examples_dir / "example1.yaml").write_text("- example: content1")
-        (examples_dir / "example2.yaml").write_text("- example: content2")
+        (shots_dir / "example1.yaml").write_text("- example: content1")
+        (shots_dir / "example2.yaml").write_text("- example: content2")
         
         with open(prompt_file, 'w') as f:
             yaml.dump(sample_yaml_config, f)
@@ -66,7 +66,7 @@ class TestDocumentationGenerator:
                 with patch('doc_generator.core.OpenAI'):
                     generator = DocumentationGenerator(
                         prompt_yaml_path=str(prompt_file),
-                        examples_dir=str(examples_dir),
+                        shots_dir=str(shots_dir),
                         terminology_path=str(terminology_file)
                     )
                     
@@ -76,8 +76,8 @@ class TestDocumentationGenerator:
         """Test documentation generation."""
         prompt_file = temp_dir / "prompt.yaml"
         terminology_file = temp_dir / "terminology.yaml"
-        examples_dir = temp_dir / "examples"
-        examples_dir.mkdir()
+        shots_dir = temp_dir / "examples"
+        shots_dir.mkdir()
         output_dir = temp_dir / "output"
         output_dir.mkdir()
         
@@ -95,7 +95,7 @@ class TestDocumentationGenerator:
                         
                         generator = DocumentationGenerator(
                             prompt_yaml_path=str(prompt_file),
-                            examples_dir=str(examples_dir),
+                            shots_dir=str(shots_dir),
                             terminology_path=str(terminology_file)
                         )
                         
@@ -109,8 +109,8 @@ class TestDocumentationGenerator:
         """Test that prompt configuration is loaded correctly."""
         prompt_file = temp_dir / "prompt.yaml"
         terminology_file = temp_dir / "terminology.yaml"
-        examples_dir = temp_dir / "examples"
-        examples_dir.mkdir()
+        shots_dir = temp_dir / "examples"
+        shots_dir.mkdir()
         
         with open(prompt_file, 'w') as f:
             yaml.dump(sample_yaml_config, f)
@@ -122,7 +122,7 @@ class TestDocumentationGenerator:
                 with patch('doc_generator.core.OpenAI'):
                     generator = DocumentationGenerator(
                         prompt_yaml_path=str(prompt_file),
-                        examples_dir=str(examples_dir),
+                        shots_dir=str(shots_dir),
                         terminology_path=str(terminology_file)
                     )
                     
@@ -514,8 +514,8 @@ class TestDocumentationGeneratorEnhancements:
         """Test enhanced system prompt building with parameterization."""
         prompt_file = temp_dir / "prompt.yaml"
         terminology_file = temp_dir / "terminology.yaml"
-        examples_dir = temp_dir / "examples"
-        examples_dir.mkdir()
+        shots_dir = temp_dir / "examples"
+        shots_dir.mkdir()
         
         # Create prompt config with parameterized template
         prompt_config = {
@@ -536,7 +536,7 @@ class TestDocumentationGeneratorEnhancements:
                 with patch('doc_generator.core.OpenAI'):
                     generator = DocumentationGenerator(
                         prompt_yaml_path=str(prompt_file),
-                        examples_dir=str(examples_dir),
+                        shots_dir=str(shots_dir),
                         terminology_path=str(terminology_file)
                     )
                     
@@ -554,8 +554,8 @@ class TestDocumentationGeneratorEnhancements:
         """Test terminology context building with ModuleRecommender integration."""
         prompt_file = temp_dir / "prompt.yaml" 
         terminology_file = temp_dir / "terminology.yaml"
-        examples_dir = temp_dir / "examples"
-        examples_dir.mkdir()
+        shots_dir = temp_dir / "examples"
+        shots_dir.mkdir()
         
         with open(prompt_file, 'w') as f:
             yaml.dump({'system_prompt': 'test'}, f)
@@ -567,7 +567,7 @@ class TestDocumentationGeneratorEnhancements:
                 with patch('doc_generator.core.OpenAI'):
                     generator = DocumentationGenerator(
                         prompt_yaml_path=str(prompt_file),
-                        examples_dir=str(examples_dir), 
+                        shots_dir=str(shots_dir), 
                         terminology_path=str(terminology_file)
                     )
                     
@@ -584,8 +584,8 @@ class TestDocumentationGeneratorEnhancements:
         """Test code examples integration in terminology context."""
         prompt_file = temp_dir / "prompt.yaml"
         terminology_file = temp_dir / "terminology.yaml"
-        examples_dir = temp_dir / "examples"
-        examples_dir.mkdir()
+        shots_dir = temp_dir / "examples"
+        shots_dir.mkdir()
         
         with open(prompt_file, 'w') as f:
             yaml.dump({'system_prompt': 'test'}, f)
@@ -597,7 +597,7 @@ class TestDocumentationGeneratorEnhancements:
                 with patch('doc_generator.core.OpenAI'):
                     generator = DocumentationGenerator(
                         prompt_yaml_path=str(prompt_file),
-                        examples_dir=str(examples_dir),
+                        shots_dir=str(shots_dir),
                         terminology_path=str(terminology_file)
                     )
                     
