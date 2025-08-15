@@ -209,6 +209,7 @@ class TestProviderManager:
         
         assert manager.get_default_provider() == 'openai'
     
+    @patch.dict('os.environ', {}, clear=True)  # Clear environment variables
     def test_get_default_provider_fallback(self):
         """Test default provider fallback when OpenAI unavailable."""
         manager = ProviderManager()

@@ -142,6 +142,7 @@ class TestOpenAIProvider:
             max_tokens=2000
         )
     
+    @patch.dict('os.environ', {}, clear=True)  # Clear environment variables
     def test_generate_completion_no_client(self):
         """Test completion generation without API key."""
         provider = OpenAIProvider()  # No API key
