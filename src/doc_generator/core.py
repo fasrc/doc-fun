@@ -23,6 +23,10 @@ from bs4 import BeautifulSoup
 
 from .plugin_manager import PluginManager
 from .providers import ProviderManager, CompletionRequest
+from .config import get_settings
+from .exceptions import DocGeneratorError, ConfigurationError, ProviderError, FileOperationError
+from .error_handler import ErrorHandler, retry_on_failure, handle_gracefully
+from .cache import cached
 
 try:
     import pandas as pd
@@ -33,32 +37,39 @@ except ImportError:
 class DocumentationGenerator:
     """Main class for generating documentation using multiple LLM providers with plugin support."""
     
-    def __init__(self, prompt_yaml_path: str = './prompts/generator/default.yaml', shots_dir: str = 'shots/',
-                 terminology_path: str = 'terminology.yaml', provider: str = 'auto', 
+    def __init__(self, prompt_yaml_path: str = None, shots_dir: str = None,
+                 terminology_path: str = None, provider: str = 'auto', 
                  logger: Optional[logging.Logger] = None):
         """Initialize the documentation generator with configuration."""
+        # Load settings from new configuration system
+        self.settings = get_settings()
         self.logger = logger or logging.getLogger(__name__)
+        
+        # Initialize error handler
+        self.error_handler = ErrorHandler(
+            max_retries=self.settings.performance.retry_max_attempts,
+            backoff_factor=self.settings.performance.retry_backoff_factor,
+            logger=self.logger
+        )
+        
+        # Use settings with fallback to provided values
+        self.prompt_yaml_path = Path(
+            prompt_yaml_path or self.settings.paths.prompts_dir / 'generator' / 'default.yaml'
+        )
+        self.shots_dir = Path(shots_dir or self.settings.paths.shots_dir)
+        self.terminology_path = Path(
+            terminology_path or self.settings.paths.terminology_path
+        )
         
         # Initialize provider manager
         self.provider_manager = ProviderManager(logger=self.logger)
         
-        # Set default provider
-        if provider == 'auto':
-            self.default_provider = self.provider_manager.get_default_provider()
-            if not self.default_provider:
-                raise ValueError("No LLM providers are available. Check API keys (OPENAI_API_KEY, ANTHROPIC_API_KEY).")
-        else:
-            if provider not in self.provider_manager.get_available_providers():
-                available = self.provider_manager.get_available_providers()
-                raise ValueError(f"Provider '{provider}' is not available. Available providers: {available}")
-            self.default_provider = provider
+        # Set default provider with validation
+        self._setup_provider(provider)
         
-        self.logger.info(f"Using default provider: {self.default_provider}")
-        
-        # Initialize other components
-        self.shots_dir = Path(shots_dir)
-        self.prompt_config = self._load_prompt_config(prompt_yaml_path)
-        self.terminology = self._load_terminology(terminology_path)
+        # Load configurations with caching
+        self.prompt_config = self._load_prompt_config()
+        self.terminology = self._load_terminology()
         self.examples = self._load_examples()
         
         # Initialize plugin manager
@@ -68,68 +79,105 @@ class DocumentationGenerator:
         )
         self.plugin_manager.load_plugins()
         
+        self.logger.info(
+            f"DocumentationGenerator initialized with provider: {self.default_provider}"
+        )
+        
         # Keep legacy client for backward compatibility (deprecated)
         try:
             self.client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
         except:
             self.client = None
+    
+    def _setup_provider(self, provider: str) -> None:
+        """Setup and validate provider selection."""
+        if provider == 'auto':
+            self.default_provider = self.provider_manager.get_default_provider()
+            if not self.default_provider:
+                available = self.provider_manager.get_available_providers()
+                raise ProviderError(
+                    "No LLM providers are available. Check API keys.",
+                    context={'available_providers': available}
+                )
+        else:
+            available = self.provider_manager.get_available_providers()
+            if provider not in available:
+                raise ProviderError(
+                    f"Provider '{provider}' is not available",
+                    context={'available_providers': available}
+                )
+            self.default_provider = provider
         
-    def _load_prompt_config(self, path: str) -> dict:
-        """Load the prompt configuration from YAML file."""
-        try:
-            with open(path, 'r') as f:
-                return yaml.safe_load(f)
-        except FileNotFoundError:
-            print(f"Warning: {path} not found. Using default configuration.")
+    @cached(ttl=86400)  # Cache for 24 hours
+    def _load_prompt_config(self) -> dict:
+        """Load prompt configuration with caching and validation."""
+        if not self.prompt_yaml_path.exists():
+            self.logger.warning(
+                f"Prompt config not found at {self.prompt_yaml_path}, using defaults"
+            )
             return {
                 'system_prompt': 'You are a technical documentation expert.',
-                'documentation_structure': ['Description', 'Installation', 'Usage', 'Examples', 'References']
+                'documentation_structure': [
+                    'Description', 'Installation', 'Usage', 'Examples', 'References'
+                ]
             }
-    
-    def _load_terminology(self, path: str) -> dict:
-        """Load terminology configuration from YAML file."""
+            
         try:
-            with open(path, 'r') as f:
-                return yaml.safe_load(f)
-        except FileNotFoundError:
-            print(f"Warning: {path} not found. No terminology loaded.")
+            with open(self.prompt_yaml_path, 'r', encoding='utf-8') as f:
+                config = yaml.safe_load(f)
+                
+            # Validate required fields
+            if 'system_prompt' not in config:
+                raise ConfigurationError(
+                    "Missing 'system_prompt' in configuration",
+                    context={'config_path': str(self.prompt_yaml_path)}
+                )
+                
+            return config
+            
+        except yaml.YAMLError as e:
+            raise ConfigurationError(
+                f"Invalid YAML in prompt configuration: {e}",
+                context={'config_path': str(self.prompt_yaml_path)}
+            )
+    
+    @cached(ttl=86400)  # Cache for 24 hours
+    def _load_terminology(self) -> dict:
+        """Load terminology with caching and error handling."""
+        if not self.terminology_path.exists():
+            self.logger.info(f"No terminology file at {self.terminology_path}")
+            return {}
+            
+        try:
+            with open(self.terminology_path, 'r', encoding='utf-8') as f:
+                return yaml.safe_load(f) or {}
+                
+        except Exception as e:
+            self.logger.warning(f"Failed to load terminology: {e}")
             return {}
     
+    @cached(ttl=86400)  # Cache for 24 hours
     def _load_examples(self) -> List[Dict[str, str]]:
-        """Load few-shot examples from YAML files."""
+        """Load few-shot examples with caching and validation."""
         examples = []
         
-        # Ensure shots directory exists
-        self.shots_dir.mkdir(exist_ok=True)
-        
-        # Load YAML examples
-        yaml_files = sorted(self.shots_dir.glob('*.yaml'))
-        for yaml_file in yaml_files:
+        if not self.shots_dir.exists():
+            self.logger.info(f"No shots directory at {self.shots_dir}")
+            return examples
+            
+        # Load examples from YAML files
+        for yaml_file in self.shots_dir.glob("*.yaml"):
             try:
-                with open(yaml_file, 'r') as f:
-                    msgs = yaml.safe_load(f)
-                    if isinstance(msgs, list):
-                        examples.extend(msgs)
-                    else:
-                        examples.append(msgs)
+                with open(yaml_file, 'r', encoding='utf-8') as f:
+                    example = yaml.safe_load(f)
+                    if example and isinstance(example, dict):
+                        examples.append(example)
+                        
             except Exception as e:
-                print(f"Error loading {yaml_file}: {e}")
-        
-        # Load HTML examples if needed for reference
-        html_files = sorted(self.shots_dir.glob('*.html'))
-        for html_file in html_files:
-            try:
-                with open(html_file, 'r') as f:
-                    content = f.read()
-                    # Add as assistant example showing the expected format
-                    examples.append({
-                        'role': 'assistant',
-                        'content': content,
-                        'metadata': {'filename': html_file.name}
-                    })
-            except Exception as e:
-                print(f"Error loading {html_file}: {e}")
-        
+                self.logger.warning(f"Failed to load example {yaml_file}: {e}")
+                continue
+                
+        self.logger.info(f"Loaded {len(examples)} few-shot examples")
         return examples
     
     def _extract_topic_from_query(self, query: str) -> str:
