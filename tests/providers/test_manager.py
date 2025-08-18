@@ -90,11 +90,9 @@ class TestProviderManager:
         
         manager = ProviderManager()
         
-        # OpenAI provider is always registered for model listing
-        assert 'openai' in manager.providers
-        assert not manager.providers['openai'].is_available()
-        # Claude is not registered when unavailable
-        assert 'claude' not in manager.providers
+        # No providers should be registered when unavailable
+        assert len(manager.providers) == 0
+        assert len(manager.model_mapping) == 0
     
     @patch('doc_generator.providers.manager.OpenAIProvider')
     @patch('doc_generator.providers.manager.ClaudeProvider')
@@ -158,8 +156,7 @@ class TestProviderManager:
         manager.providers['provider2'] = MockProvider('provider2')
         
         providers = manager.get_available_providers()
-        # OpenAI is always registered, plus our test providers
-        assert set(providers) == {'openai', 'provider1', 'provider2'}
+        assert set(providers) == {'provider1', 'provider2'}
     
     @patch('doc_generator.providers.manager.OpenAIProvider')
     @patch('doc_generator.providers.manager.ClaudeProvider')
@@ -186,7 +183,6 @@ class TestProviderManager:
         models = manager.get_available_models()
         
         assert models == {
-            'openai': [],  # OpenAI is always present but has no models when unavailable
             'provider1': ['model1', 'model2'],
             'provider2': ['model3', 'model4']
         }
@@ -225,8 +221,8 @@ class TestProviderManager:
         manager.providers['other'] = MockProvider('other')
         
         default = manager.get_default_provider()
-        # OpenAI is always present and preferred when available
-        assert default == 'openai'
+        # Should return first available provider when OpenAI not registered
+        assert default in ['claude', 'other']
     
     @patch('doc_generator.providers.manager.OpenAIProvider')
     @patch('doc_generator.providers.manager.ClaudeProvider')
