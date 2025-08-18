@@ -32,15 +32,13 @@ class ProviderManager:
         # Register OpenAI provider
         try:
             openai_provider = OpenAIProvider()
-            # Always register the provider for model listing, but mark availability
-            self.providers['openai'] = openai_provider
-            for model in openai_provider.get_available_models():
-                self.model_mapping[model] = 'openai'
-            
             if openai_provider.is_available():
+                self.providers['openai'] = openai_provider
+                for model in openai_provider.get_available_models():
+                    self.model_mapping[model] = 'openai'
                 self.logger.info("OpenAI provider loaded successfully")
             else:
-                self.logger.info("OpenAI provider loaded (API key not configured - models listed but not usable)")
+                self.logger.info("OpenAI provider not available (API key not configured)")
         except Exception as e:
             self.logger.warning(f"Failed to load OpenAI provider: {e}")
         
