@@ -7,6 +7,7 @@ import os
 from unittest.mock import Mock, patch, MagicMock
 from doc_generator.providers.openai_provider import OpenAIProvider
 from doc_generator.providers.base import CompletionRequest, CompletionResponse
+from doc_generator.exceptions import ProviderError
 
 
 class TestOpenAIProvider:
@@ -145,15 +146,16 @@ class TestOpenAIProvider:
     @patch.dict('os.environ', {}, clear=True)  # Clear environment variables
     def test_generate_completion_no_client(self):
         """Test completion generation without API key."""
-        provider = OpenAIProvider()  # No API key
-        request = CompletionRequest(
-            messages=[{"role": "user", "content": "Hello"}],
-            model="gpt-4",
-            temperature=0.7
-        )
-        
-        with pytest.raises(ValueError, match="OpenAI API key not configured"):
-            provider.generate_completion(request)
+        with patch.dict(os.environ, {}, clear=True):  # Clear environment
+            provider = OpenAIProvider()  # No API key
+            request = CompletionRequest(
+                messages=[{"role": "user", "content": "Hello"}],
+                model="gpt-4",
+                temperature=0.7
+            )
+            
+            with pytest.raises(ProviderError, match="OpenAI API key not configured"):
+                provider.generate_completion(request)
     
     @patch('doc_generator.providers.openai_provider.OpenAI')
     def test_generate_completion_api_error(self, mock_openai_class):

@@ -7,8 +7,9 @@ import os
 from pathlib import Path
 from typing import Optional, Dict, Any, List
 from functools import lru_cache
-from pydantic import Field, validator
-from pydantic_settings import BaseSettings
+from pydantic import Field
+from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic import field_validator
 import yaml
 
 
@@ -22,7 +23,8 @@ class ProviderSettings(BaseSettings):
     temperature: float = Field(0.3, ge=0.0, le=2.0)
     max_tokens: int = Field(2000, ge=1, le=128000)
     
-    @validator('default_provider')
+    @field_validator('default_provider')
+    @classmethod
     def validate_provider(cls, v):
         """Validate provider selection."""
         valid_providers = {'openai', 'claude', 'auto'}
@@ -30,12 +32,12 @@ class ProviderSettings(BaseSettings):
             raise ValueError(f"Provider must be one of {valid_providers}")
         return v
     
-    model_config = {
-        'env_file': '.env',
-        'env_file_encoding': 'utf-8',
-        'case_sensitive': False,
-        'extra': 'ignore'
-    }
+    model_config = SettingsConfigDict(
+        env_file='.env',
+        env_file_encoding='utf-8',
+        case_sensitive=False,
+        extra='ignore'
+    )
 
 
 class PathSettings(BaseSettings):
@@ -46,7 +48,8 @@ class PathSettings(BaseSettings):
     output_dir: Path = Field(Path('./output'), env='OUTPUT_DIR')
     terminology_path: Path = Field(Path('./terminology.yaml'), env='TERMINOLOGY_PATH')
     
-    @validator('*', pre=True)
+    @field_validator('prompts_dir', 'shots_dir', 'output_dir', 'terminology_path', mode='before')
+    @classmethod
     def resolve_path(cls, v):
         """Resolve and validate paths."""
         if isinstance(v, str):
@@ -55,12 +58,12 @@ class PathSettings(BaseSettings):
             return v.resolve()
         return v
     
-    model_config = {
-        'env_file': '.env',
-        'env_file_encoding': 'utf-8',
-        'case_sensitive': False,
-        'extra': 'ignore'
-    }
+    model_config = SettingsConfigDict(
+        env_file='.env',
+        env_file_encoding='utf-8',
+        case_sensitive=False,
+        extra='ignore'
+    )
 
 
 class PerformanceSettings(BaseSettings):
@@ -73,12 +76,12 @@ class PerformanceSettings(BaseSettings):
     retry_max_attempts: int = Field(3, env='RETRY_MAX_ATTEMPTS')
     retry_backoff_factor: float = Field(2.0, env='RETRY_BACKOFF_FACTOR')
     
-    model_config = {
-        'env_file': '.env',
-        'env_file_encoding': 'utf-8',
-        'case_sensitive': False,
-        'extra': 'ignore'
-    }
+    model_config = SettingsConfigDict(
+        env_file='.env',
+        env_file_encoding='utf-8',
+        case_sensitive=False,
+        extra='ignore'
+    )
 
 
 class Settings(BaseSettings):

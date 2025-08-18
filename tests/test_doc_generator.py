@@ -52,9 +52,9 @@ class TestDocumentationGenerator:
         shots_dir = temp_dir / "examples"
         shots_dir.mkdir()
         
-        # Create sample YAML files (the class loads YAML, not HTML)
-        (shots_dir / "example1.yaml").write_text("- example: content1")
-        (shots_dir / "example2.yaml").write_text("- example: content2")
+        # Create sample YAML files with dict structure
+        (shots_dir / "example1.yaml").write_text("example: content1")
+        (shots_dir / "example2.yaml").write_text("example: content2")
         
         with open(prompt_file, 'w') as f:
             yaml.dump(sample_yaml_config, f)

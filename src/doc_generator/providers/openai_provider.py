@@ -8,6 +8,7 @@ from typing import List, Optional
 from openai import OpenAI
 
 from .base import LLMProvider, CompletionRequest, CompletionResponse
+from ..exceptions import ProviderError
 
 
 class OpenAIProvider(LLMProvider):
@@ -23,7 +24,7 @@ class OpenAIProvider(LLMProvider):
     def generate_completion(self, request: CompletionRequest) -> CompletionResponse:
         """Generate completion using OpenAI API."""
         if not self.client:
-            raise ValueError("OpenAI API key not configured. Set OPENAI_API_KEY environment variable.")
+            raise ProviderError("OpenAI API key not configured. Set OPENAI_API_KEY environment variable.")
             
         try:
             # GPT-5 models have specific parameter requirements

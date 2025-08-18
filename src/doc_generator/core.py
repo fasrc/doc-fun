@@ -444,14 +444,14 @@ class DocumentationGenerator:
         if model is None:
             model = self.provider_manager.get_default_model()
             if not model:
-                raise ValueError("No default model available. Check provider configuration.")
+                raise ProviderError("No default model available. Check provider configuration.")
         
         # Determine which provider to use
         if provider:
             llm_provider = self.provider_manager.get_provider(provider)
             if not llm_provider:
                 available = self.provider_manager.get_available_providers()
-                raise ValueError(f"Provider '{provider}' not available. Available providers: {available}")
+                raise ProviderError(f"Provider '{provider}' not available. Available providers: {available}")
         else:
             llm_provider = self.provider_manager.get_provider_for_model(model)
             if not llm_provider:
@@ -465,7 +465,7 @@ class DocumentationGenerator:
             model, llm_provider.get_provider_name()
         )
         if not is_valid:
-            raise ValueError(error_msg)
+            raise ProviderError(error_msg)
         
         if topic_filename is None:
             topic_filename = self._extract_topic_from_query(query)

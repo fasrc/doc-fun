@@ -7,6 +7,7 @@ import os
 from unittest.mock import Mock, patch, MagicMock
 from doc_generator.providers.claude_provider import ClaudeProvider
 from doc_generator.providers.base import CompletionRequest, CompletionResponse
+from doc_generator.exceptions import ProviderError
 
 
 class TestClaudeProvider:
@@ -115,7 +116,7 @@ class TestClaudeProvider:
                     temperature=0.7
                 )
                 
-                with pytest.raises(ValueError, match="Anthropic API key not configured"):
+                with pytest.raises(ProviderError, match="Anthropic API key not configured"):
                     provider.generate_completion(request)
     
     @patch('doc_generator.providers.claude_provider.HAS_ANTHROPIC', True)

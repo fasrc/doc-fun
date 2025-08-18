@@ -13,6 +13,7 @@ except ImportError:
     HAS_ANTHROPIC = False
 
 from .base import LLMProvider, CompletionRequest, CompletionResponse
+from ..exceptions import ProviderError
 
 
 class ClaudeProvider(LLMProvider):
@@ -36,7 +37,7 @@ class ClaudeProvider(LLMProvider):
             raise ImportError("anthropic package not installed. Install with: pip install anthropic")
             
         if not self.client:
-            raise ValueError("Anthropic API key not configured. Set ANTHROPIC_API_KEY environment variable.")
+            raise ProviderError("Anthropic API key not configured. Set ANTHROPIC_API_KEY environment variable.")
         
         try:
             # Convert OpenAI message format to Claude format
