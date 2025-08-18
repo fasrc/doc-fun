@@ -9,6 +9,7 @@ from pathlib import Path
 from unittest.mock import Mock, patch, MagicMock
 from doc_generator.core import DocumentationGenerator
 from doc_generator.providers.base import CompletionResponse
+from doc_generator.exceptions import ProviderError
 
 
 class TestProviderIntegration:
@@ -112,7 +113,7 @@ hpc_modules:
         mock_claude.is_available.return_value = False
         mock_claude_provider.return_value = mock_claude
         
-        with pytest.raises(ValueError, match="No LLM providers are available"):
+        with pytest.raises(ProviderError, match="No LLM providers are available"):
             DocumentationGenerator(
                 prompt_yaml_path=str(self.prompt_file),
                 shots_dir=str(self.shots_dir),
@@ -133,7 +134,7 @@ hpc_modules:
         mock_claude.is_available.return_value = False
         mock_claude_provider.return_value = mock_claude
         
-        with pytest.raises(ValueError, match="Provider 'invalid' is not available"):
+        with pytest.raises(ProviderError, match="Provider 'invalid' is not available"):
             DocumentationGenerator(
                 prompt_yaml_path=str(self.prompt_file),
                 shots_dir=str(self.shots_dir),
@@ -316,7 +317,7 @@ hpc_modules:
         )
         
         # Try to generate with invalid model
-        with pytest.raises(ValueError, match="Model.*is not available"):
+        with pytest.raises(ProviderError, match="Model.*is not available"):
             generator.generate_documentation(
                 query="Create documentation",
                 model="invalid-model",

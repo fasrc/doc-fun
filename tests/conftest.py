@@ -18,6 +18,7 @@ def temp_dir():
 def sample_yaml_config():
     """Sample YAML configuration for testing."""
     return {
+        'system_prompt': 'You are a documentation generator.',
         'terms': {
             'FASRC': 'Faculty Arts and Sciences Research Computing'
         },

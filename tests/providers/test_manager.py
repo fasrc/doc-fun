@@ -90,8 +90,11 @@ class TestProviderManager:
         
         manager = ProviderManager()
         
-        assert len(manager.providers) == 0
-        assert len(manager.model_mapping) == 0
+        # OpenAI provider is always registered for model listing
+        assert 'openai' in manager.providers
+        assert not manager.providers['openai'].is_available()
+        # Claude is not registered when unavailable
+        assert 'claude' not in manager.providers
     
     @patch('doc_generator.providers.manager.OpenAIProvider')
     @patch('doc_generator.providers.manager.ClaudeProvider')
@@ -155,7 +158,8 @@ class TestProviderManager:
         manager.providers['provider2'] = MockProvider('provider2')
         
         providers = manager.get_available_providers()
-        assert set(providers) == {'provider1', 'provider2'}
+        # OpenAI is always registered, plus our test providers
+        assert set(providers) == {'openai', 'provider1', 'provider2'}
     
     @patch('doc_generator.providers.manager.OpenAIProvider')
     @patch('doc_generator.providers.manager.ClaudeProvider')
@@ -164,6 +168,7 @@ class TestProviderManager:
         # Mock providers as unavailable to avoid loading real ones
         mock_openai = Mock()
         mock_openai.is_available.return_value = False
+        mock_openai.get_available_models.return_value = []  # Return empty list for models
         mock_openai_provider.return_value = mock_openai
         
         mock_claude = Mock()
@@ -181,6 +186,7 @@ class TestProviderManager:
         models = manager.get_available_models()
         
         assert models == {
+            'openai': [],  # OpenAI is always present but has no models when unavailable
             'provider1': ['model1', 'model2'],
             'provider2': ['model3', 'model4']
         }
@@ -211,15 +217,16 @@ class TestProviderManager:
     
     @patch.dict('os.environ', {}, clear=True)  # Clear environment variables
     def test_get_default_provider_fallback(self):
-        """Test default provider fallback when OpenAI unavailable."""
+        """Test default provider fallback behavior."""
         manager = ProviderManager()
         
-        # Add only Claude provider
+        # Add additional providers
         manager.providers['claude'] = MockProvider('claude')
         manager.providers['other'] = MockProvider('other')
         
         default = manager.get_default_provider()
-        assert default in ['claude', 'other']  # Should return first available
+        # OpenAI is always present and preferred when available
+        assert default == 'openai'
     
     @patch('doc_generator.providers.manager.OpenAIProvider')
     @patch('doc_generator.providers.manager.ClaudeProvider')
