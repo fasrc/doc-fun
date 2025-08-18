@@ -12,12 +12,21 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 from .core import DocumentationGenerator, DocumentAnalyzer, GPTQualityEvaluator, CodeExampleScanner
+from .config import get_settings
+from .exceptions import DocGeneratorError
 from . import __version__
 
 
 def setup_logging(verbose: bool = False) -> logging.Logger:
-    """Set up logging configuration."""
-    level = logging.DEBUG if verbose else logging.INFO
+    """Set up logging configuration using settings."""
+    settings = get_settings()
+    
+    # Override log level if verbose is specified
+    if verbose:
+        level = logging.DEBUG
+    else:
+        level = getattr(logging, settings.log_level.upper())
+    
     logging.basicConfig(
         level=level,
         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -39,11 +48,15 @@ def get_output_directory(output_dir: str, logger: logging.Logger) -> str:
     """
     import time
     
+    settings = get_settings()
+    
     if output_dir == 'output':  # Default value, create timestamped directory
         timestamp = int(time.time())
-        final_output_dir = f"./output/{timestamp}"
-        Path(final_output_dir).mkdir(parents=True, exist_ok=True)
+        base_output = settings.paths.output_dir
+        final_output_dir = base_output / str(timestamp)
+        final_output_dir.mkdir(parents=True, exist_ok=True)
         logger.info(f"Created timestamped output directory: {final_output_dir}")
+        return str(final_output_dir)
     else:
         final_output_dir = output_dir
         Path(final_output_dir).mkdir(parents=True, exist_ok=True)
