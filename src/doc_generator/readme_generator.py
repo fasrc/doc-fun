@@ -8,6 +8,7 @@ import logging
 from pathlib import Path
 from typing import Dict, List, Optional, Set, Tuple
 from collections import defaultdict
+from .command_tracker import CommandTracker
 
 
 class ReadmeGenerator:
@@ -664,6 +665,12 @@ Make the description more informative and technically precise while keeping it b
         try:
             readme_path.write_text(content, encoding='utf-8')
             self.logger.info(f"Generated {readme_path}")
+            
+            # Save command file alongside the generated README
+            command_file = CommandTracker.save_command_file(str(readme_path))
+            if command_file:
+                self.logger.info(f"Command saved: {Path(command_file).name}")
+            
             return readme_path
         except Exception as e:
             self.logger.error(f"Failed to write {readme_path}: {e}")

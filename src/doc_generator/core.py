@@ -27,6 +27,7 @@ from .config import get_settings
 from .exceptions import DocGeneratorError, ConfigurationError, ProviderError, FileOperationError
 from .error_handler import ErrorHandler, retry_on_failure, handle_gracefully
 from .cache import cached
+from .command_tracker import CommandTracker
 
 try:
     import pandas as pd
@@ -527,6 +528,11 @@ class DocumentationGenerator:
                 generated_files.append(str(filepath))
                 self.logger.info(f"Generated: {filename} using {provider_name} ({model})")
                 print(f"✓ Generated: {filepath}")
+                
+                # Save command file alongside the generated document
+                command_file = CommandTracker.save_command_file(str(filepath))
+                if command_file:
+                    print(f"✓ Command saved: {Path(command_file).name}")
                 
                 # Log cost estimate if available
                 if response.usage:
@@ -1425,6 +1431,11 @@ def main():
         best_output_path = Path(args.output_dir) / f'{topic_filename}_best_compilation.html'
         with open(best_output_path, 'w', encoding='utf-8') as f:
             f.write(best_document_html)
+        
+        # Save command file for the best compilation
+        command_file = CommandTracker.save_command_file(str(best_output_path))
+        if command_file:
+            print(f"✓ Command saved: {Path(command_file).name}")
         
         # Generate analysis report
         report_content = generate_analysis_report(
