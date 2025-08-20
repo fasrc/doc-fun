@@ -11,6 +11,7 @@ from collections import defaultdict
 
 from .core import DocumentationGenerator, DocumentAnalyzer
 from .providers import CompletionRequest
+from .command_tracker import CommandTracker
 
 
 class ReadmeDocumentationGenerator(DocumentationGenerator):
@@ -371,6 +372,11 @@ For this leaf-level directory (specific example):
             
             with open(output_path, 'w', encoding='utf-8') as f:
                 f.write(best_content)
+            
+            # Save command file for the best compilation
+            command_file = CommandTracker.save_command_file(str(output_path))
+            if command_file:
+                self.logger.info(f"Command saved: {Path(command_file).name}")
             
             self.logger.info(f"Compiled best README: {output_path}")
             return str(output_path)
