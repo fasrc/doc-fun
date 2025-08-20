@@ -14,6 +14,7 @@ import time
 import yaml
 import hashlib
 import logging
+import argparse
 from pathlib import Path
 from dotenv import load_dotenv
 from openai import OpenAI
@@ -28,6 +29,7 @@ from .exceptions import DocGeneratorError, ConfigurationError, ProviderError, Fi
 from .error_handler import ErrorHandler, retry_on_failure, handle_gracefully
 from .cache import cached
 from .command_tracker import CommandTracker
+from .utils import get_output_directory
 
 try:
     import pandas as pd
@@ -1324,6 +1326,10 @@ def main():
     # Generate topic filename
     topic_filename = args.topic.lower().replace(' ', '_')
     
+    # Get the proper output directory (with timestamp if using default)
+    logger = logging.getLogger(__name__)
+    output_dir = get_output_directory(args.output_dir, logger)
+    
     generated_files = []
     
     if not args.skip_generation:
@@ -1360,7 +1366,7 @@ def main():
             model=args.model,
             temperature=args.temperature,
             topic_filename=topic_filename,
-            output_dir=args.output_dir
+            output_dir=output_dir
         )
         
         # Calculate elapsed time
@@ -1377,7 +1383,7 @@ def main():
     # Run comparison if requested
     if args.compare:
         print(f"\n📊 Running comparison...")
-        compare_versions(topic_filename, args.model, args.temperature, args.runs, args.output_dir)
+        compare_versions(topic_filename, args.model, args.temperature, args.runs, output_dir)
     
     # Run analysis if requested
     if args.analyze:
@@ -1392,7 +1398,7 @@ def main():
             model=model_clean,
             temperature=temp_str,
             num_versions=args.runs,
-            output_dir=args.output_dir
+            output_dir=output_dir
         )
         
         if not all_sections:
@@ -1428,7 +1434,7 @@ def main():
         )
         
         # Save the best compilation
-        best_output_path = Path(args.output_dir) / f'{topic_filename}_best_compilation.html'
+        best_output_path = Path(output_dir) / f'{topic_filename}_best_compilation.html'
         with open(best_output_path, 'w', encoding='utf-8') as f:
             f.write(best_document_html)
         
@@ -1441,7 +1447,7 @@ def main():
         report_content = generate_analysis_report(
             args.topic, args.model, args.temperature, all_sections, scores_data
         )
-        report_path = Path(args.output_dir) / f'{topic_filename}_analysis_report.md'
+        report_path = Path(output_dir) / f'{topic_filename}_analysis_report.md'
         with open(report_path, 'w', encoding='utf-8') as f:
             f.write(report_content)
         
