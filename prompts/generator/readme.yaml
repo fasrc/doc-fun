@@ -18,7 +18,7 @@ system_prompt: |
   - Mid-level: Category-specific focus with relevant examples
   - Leaf-level: Detailed example documentation with usage instructions
   
-  Output pure Markdown without code block wrapping.
+  IMPORTANT: Output ONLY raw Markdown text. Do NOT wrap the output in ```markdown``` code fences or any other code blocks. The output should start directly with the content (e.g., "# Title") and end with the last line of content.
 
 user_prompt: |
   Create a comprehensive README.md for the following directory structure:
@@ -58,6 +58,8 @@ user_prompt: |
   - Support and contact information
   
   Generate pure Markdown appropriate for the directory depth level. Make it informative yet concise.
+  
+  REMINDER: Do NOT wrap the output in ```markdown``` or ``` code fences. Output raw Markdown text only.
   
   Directory Path: {directory_path}
   Depth Level: {depth_level}
