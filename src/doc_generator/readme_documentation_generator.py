@@ -199,6 +199,30 @@ For this leaf-level directory (specific example):
         }
         return requirements.get(depth_level, requirements['mid'])
     
+    def _clean_markdown_fences(self, content: str) -> str:
+        """
+        Remove wrapping markdown code fences if present.
+        
+        Some LLMs wrap the entire output in ```markdown...``` despite instructions not to.
+        This method detects and removes such wrapping while preserving internal code blocks.
+        """
+        if not content:
+            return content
+        
+        lines = content.split('\n')
+        
+        # Check if content is wrapped in markdown fences
+        if (lines and lines[0].strip() in ['```markdown', '```md', '```'] and 
+            lines[-1].strip() == '```'):
+            # Remove first and last lines
+            cleaned_lines = lines[1:-1]
+            # Also handle case where there's an empty line after opening fence
+            if cleaned_lines and not cleaned_lines[0].strip():
+                cleaned_lines = cleaned_lines[1:]
+            return '\n'.join(cleaned_lines)
+        
+        return content
+    
     def generate_readme_documentation(self, directory_path: str, 
                                      runs: int = 3,
                                      model: str = None,
@@ -285,6 +309,9 @@ For this leaf-level directory (specific example):
                 # Generate completion
                 response = llm_provider.generate_completion(request)
                 content = response.content
+                
+                # Clean any wrapping markdown fences
+                content = self._clean_markdown_fences(content)
                 
                 # Save as markdown
                 filename = f"{topic_filename}_v{i+1}.md"
