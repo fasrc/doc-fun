@@ -2,7 +2,7 @@
 
 This page provides practical examples of creating, testing, and using plugins with doc-generator.
 
-## 🔌 Built-in Plugin Usage
+## Built-in Plugin Usage
 
 ### ModuleRecommender in Action
 
@@ -44,7 +44,7 @@ doc-gen --topic "General Topic" --disable-plugins modules
 doc-gen --topic "Data Science" --enable-only modules,datasets
 ```
 
-## 🛠️ Creating Simple Plugins
+## Creating Simple Plugins
 
 ### 1. Basic Resource Recommender
 
@@ -316,7 +316,7 @@ class TestTemplateRecommender:
         assert "```python" in formatted
 ```
 
-## 🌐 External API Plugins
+## External API Plugins
 
 ### GitHub Repository Recommender
 
@@ -499,7 +499,7 @@ class ArxivRecommender(RecommendationEngine):
         return technical_words[:5]  # Limit to avoid overly complex queries
 ```
 
-## 🔧 Plugin Integration Examples
+## Plugin Integration Examples
 
 ### Plugin Package Structure
 
@@ -609,7 +609,7 @@ export ARXIV_PLUGIN_CATEGORIES="cs.LG,cs.AI"
 doc-gen --topic "Machine Learning" --verbose
 ```
 
-## 🧪 Plugin Testing Strategies
+## Plugin Testing Strategies
 
 ### Integration Testing
 

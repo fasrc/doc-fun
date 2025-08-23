@@ -5,7 +5,7 @@ This comprehensive guide shows you how to create powerful plugins for doc-genera
 !!! info "Example Plugins Used in This Guide"
     This guide uses **DatasetRecommender** and **WorkflowRecommender** as detailed examples to illustrate plugin development concepts. These are **conceptual examples (TBD)** and not currently implemented. The only built-in plugin is **ModuleRecommender**.
 
-## 🔌 Plugin Architecture Overview
+## Plugin Architecture Overview
 
 ### What are Plugins?
 
@@ -26,7 +26,7 @@ Plugins can recommend:
 - **Documentation links and references**
 - **Best practices and troubleshooting tips**
 
-## 🏗️ Plugin Architecture
+## Plugin Architecture
 
 ### Base Class: RecommendationEngine
 
@@ -68,7 +68,7 @@ class MyPlugin(RecommendationEngine):
 | `is_enabled()` | Enable/disable plugin | `True` |
 | `get_priority()` | Plugin ordering priority | `50` |
 
-## 🚀 Creating Your First Plugin
+## Creating Your First Plugin
 
 ### Step 1: Simple Dataset Recommender
 
@@ -284,7 +284,7 @@ doc-gen --list-plugins
 doc-gen --topic "Climate Change Research" --output-dir test-output
 ```
 
-## 🎯 Advanced Plugin Examples
+## Advanced Plugin Examples
 
 ### Example 1: Code Template Recommender
 
@@ -418,7 +418,7 @@ class WorkflowRecommender(RecommendationEngine):
         return formatted
 ```
 
-## 🧪 Testing Your Plugin
+## Testing Your Plugin
 
 ### Basic Plugin Tests
 
@@ -557,7 +557,7 @@ def test_plugin_integrates_with_doc_generator(temp_dir):
             # Context should contain plugin contributions (depends on mocking API calls)
 ```
 
-## 🎛️ Plugin Configuration
+## Plugin Configuration
 
 ### Configuration Files
 
@@ -648,7 +648,7 @@ class DatasetRecommender(RecommendationEngine):
         self.enable_caching = os.getenv('DATASET_ENABLE_CACHE', 'true').lower() == 'true'
 ```
 
-## 🚀 Publishing Your Plugin
+## Publishing Your Plugin
 
 ### Step 1: Prepare for Distribution
 
@@ -725,7 +725,7 @@ dataset_sources:
 - Custom APIs (configurable)
 ```
 
-## 🎯 Best Practices
+## Best Practices
 
 ### Plugin Design Principles
 
@@ -813,7 +813,7 @@ class DatasetRecommender(RecommendationEngine):
         return recommendations
 ```
 
-## 🔧 Advanced Plugin Features
+## Advanced Plugin Features
 
 ### Custom Priority and Ordering
 
@@ -882,7 +882,7 @@ class AdvancedDatasetRecommender(RecommendationEngine):
             self.use_advanced_matching = False
 ```
 
-## 📚 Plugin Examples Repository
+## Plugin Examples Repository
 
 ### Community Plugin Ideas
 
@@ -927,17 +927,17 @@ class PaperRecommender(RecommendationEngine):
         pass
 ```
 
-## ✅ Next Steps
+## Next Steps
 
 After creating your plugin:
 
-1. 📝 **Document Your Plugin**: Write clear README, usage examples, configuration docs
-2. 🧪 **Test Thoroughly**: Unit tests, integration tests, error condition tests
-3. 🚀 **Publish**: Share on PyPI, GitHub, announce to the community
+1. **Document Your Plugin**: Write clear README, usage examples, configuration docs
+2. **Test Thoroughly**: Unit tests, integration tests, error condition tests
+3. **Publish**: Share on PyPI, GitHub, announce to the community
 4. 🤝 **Contribute**: Consider contributing your plugin to the main doc-generator repository
 5. 🔄 **Maintain**: Keep dependencies updated, fix bugs, add features based on user feedback
 
-## 🎉 Plugin Creation Mastery
+## Plugin Creation Mastery
 
 You now have the knowledge to:
 - Create powerful recommendation engine plugins
@@ -947,8 +947,8 @@ You now have the knowledge to:
 - Publish and distribute plugins to the community
 - Follow best practices for maintainable code
 
-**Start building amazing plugins!** 🔌✨
+**Start building amazing plugins!**
 
 The doc-generator ecosystem awaits your contributions. Whether it's dataset recommendations, code templates, workflow suggestions, or entirely new types of assistance, your plugins will help researchers and developers create better documentation faster.
 
-**Happy plugin developing!** 🎯🚀
+**Happy plugin developing!**

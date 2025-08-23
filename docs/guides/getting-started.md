@@ -2,7 +2,7 @@
 
 This guide will walk you through your first steps with doc-generator, from basic usage to advanced features.
 
-## 🎯 Overview
+## Overview
 
 Doc-generator is an AI-powered tool that creates high-quality technical documentation using multiple LLM providers (OpenAI GPT and Anthropic Claude). It supports three main capabilities:
 
@@ -12,7 +12,7 @@ Doc-generator is an AI-powered tool that creates high-quality technical document
 
 The system features an extensible plugin architecture that provides intelligent recommendations for HPC modules, code examples, and more.
 
-## 🚀 Your First Documentation
+## Your First Documentation
 
 ### Step 1: Basic Generation
 
@@ -64,7 +64,7 @@ doc-gen --topic "MPI Programming" --output-dir docs/references
 doc-gen --topic "Python Examples" --output-dir docs/examples
 ```
 
-## 🚀 Exploring Different Operation Modes
+## Exploring Different Operation Modes
 
 ### README Generation Mode
 
@@ -112,27 +112,70 @@ done
 - Preserves original content while improving organization
 - Converts between different document formats
 
-### Provider Selection
+### Provider and Model Selection
 
-Choose your preferred AI provider:
+Choose your preferred AI provider and model for optimal results:
+
+#### Recommended Models (Production-Ready)
 
 ```bash
-# Use OpenAI GPT models (default)
-doc-gen --topic "Python Guide" --provider openai --model gpt-4o-mini
+# OpenAI GPT models - Recommended for most use cases
+doc-gen --topic "Python Guide" --provider openai --model gpt-4o-mini     # Cost-effective, high quality
+doc-gen --topic "Complex Topic" --provider openai --model gpt-4o         # Higher capability
+doc-gen --topic "Technical Docs" --provider openai --model gpt-4         # Most reliable
 
-# Use Anthropic Claude models
-doc-gen --readme /path/to/project --provider claude --model claude-3-5-sonnet-20240620
+# Anthropic Claude models - Excellent for code analysis and README generation
+doc-gen --readme /path/to/project --provider claude --model claude-3-5-sonnet-20241022      # Latest, best overall
+doc-gen --readme /path/to/project --provider claude --model claude-3-5-sonnet-20240620      # Stable alternative
+doc-gen --topic "Advanced Analysis" --provider claude --model claude-opus-4-1-20250805      # Most capable
 
-# Auto-select based on available API keys
+# Auto-selection based on available API keys and task type
 doc-gen --standardize document.html --provider auto
 ```
 
-**Available providers:**
-- **OpenAI**: GPT-3.5, GPT-4, GPT-4o model families
-- **Claude**: Claude 3 Haiku, Sonnet, and Opus models
-- **Auto**: Automatically selects best available provider
+!!! warning "Critical: GPT-5 Model Limitations"
+    **Avoid GPT-5 models for production use:**
+    ```bash
+    # These models have known issues:
+    # gpt-5, gpt-5-mini, gpt-5-nano, gpt-5-chat-latest
+    # - Often return empty content (API bug)
+    # - Only support temperature=1.0 (no customization)
+    # - Inconsistent availability
+    ```
 
-## 🔌 Understanding Plugins
+#### Available Models by Provider
+
+**OpenAI Models:**
+
+| Model | Status | Use Case | Notes |
+|-------|--------|----------|-------|
+| `gpt-4o-mini` | **Recommended** | General documentation, cost-effective | Best value for most tasks |
+| `gpt-4o` | **Recommended** | Complex documentation, analysis | Enhanced capabilities |
+| `gpt-4` | **Recommended** | Production documentation | Most stable and reliable |
+| `gpt-4-turbo` | Supported | Large document processing | Good for complex tasks |
+| `gpt-3.5-turbo` | Supported | Simple documentation, testing | Budget option |
+| `gpt-5*` | **Avoid** | Not suitable for production | Known API bugs, limited customization |
+
+**Anthropic Claude Models:**
+
+| Model | Status | Use Case | Notes |
+|-------|--------|----------|-------|
+| `claude-opus-4-1-20250805` | **Premium** | Most complex tasks | Latest, most capable |
+| `claude-3-5-sonnet-20241022` | **Recommended** | General documentation, code analysis | Latest Sonnet, excellent balance |
+| `claude-3-5-sonnet-20240620` | **Stable** | Production documentation | Well-tested, reliable |
+| `claude-3-5-haiku-20241022` | Supported | Fast, simple tasks | Cost-effective for basic docs |
+| `claude-3-haiku-20240307` | Supported | Legacy compatibility | Older but stable |
+| `claude-3-sonnet-20240229` | Supported | Basic documentation | Previous generation |
+
+#### Provider Selection Strategy
+
+**Auto-Selection Logic:**
+- **Topic Documentation**: Defaults to OpenAI GPT models (most reliable for general topics)
+- **README Generation**: Prefers Claude Sonnet models (excellent code analysis)  
+- **Document Standardization**: Chooses based on content complexity
+- **Fallback**: Uses any available provider if preferred is unavailable
+
+## Understanding Plugins
 
 ### View Available Plugins
 
@@ -168,7 +211,7 @@ doc-gen --topic "Parallel Python with NumPy" --runs 1 --verbose
 # - Relevant descriptions and categories
 ```
 
-## 🎛️ Command Line Options
+## Command Line Options
 
 ### Essential Options
 
@@ -198,7 +241,7 @@ doc-gen --topic "Data Science" --enable-only datasets workflows
 doc-gen --topic "Debug Test" --verbose
 ```
 
-## 🔧 Environment Setup
+## Environment Setup
 
 ### API Key Configuration
 
@@ -237,14 +280,14 @@ doc-gen --list-models
 
 # Expected output shows your configured providers:
 # Available Providers:
-# ✅ OpenAI: gpt-3.5-turbo, gpt-4, gpt-4o-mini
-# ✅ Claude: claude-3-haiku-20240307, claude-3-5-sonnet-20240620
+# OpenAI: gpt-3.5-turbo, gpt-4, gpt-4o-mini
+# Claude: claude-3-haiku-20240307, claude-3-5-sonnet-20240620
 
 # Test with a simple generation
 doc-gen --topic "Test Documentation" --runs 1 --output-dir ./test
 ```
 
-## 📝 Configuration Files
+## Configuration Files
 
 ### Understanding the Structure
 
@@ -364,7 +407,7 @@ while read topic; do
 done < topics.txt
 ```
 
-## 🎨 Output Formats
+## Output Formats
 
 ### HTML (Default)
 
@@ -399,7 +442,7 @@ placeholders:
   format: "reStructuredText"  # or "LaTeX", "AsciiDoc", etc.
 ```
 
-## 📊 Quality Comparison
+## Quality Comparison
 
 Compare your generated documentation with existing references to ensure quality:
 
@@ -540,7 +583,7 @@ doc-gen --topic "Debug Topic" --verbose
 # - Error details
 ```
 
-## 📈 Performance Tips
+## Performance Tips
 
 ### Optimize Generation Speed
 
@@ -608,16 +651,16 @@ git add prompts/ terminology.yaml
 git commit -m "Update documentation templates"
 ```
 
-## ✅ Next Steps
+## Next Steps
 
 Now that you understand the basics:
 
-1. 🧪 **[Learn Testing](testing.md)** - Run and create tests
-2. 🔌 **[Create Plugins](creating-plugins.md)** - Extend functionality  
-3. 📚 **[Advanced Configuration](configuration.md)** - Customize templates
+1. **[Learn Testing](testing.md)** - Run and create tests
+2. **[Create Plugins](creating-plugins.md)** - Extend functionality  
+3. **[Advanced Configuration](configuration.md)** - Customize templates
 4. 🤝 **[Contributing](contributing.md)** - Help improve doc-generator
 
-## 🎉 You're Ready!
+## You're Ready!
 
 You now have the knowledge to:
 - Generate high-quality documentation
@@ -626,4 +669,4 @@ You now have the knowledge to:
 - Optimize for your workflow
 - Debug common issues
 
-**Happy documenting!** 📖✨
+**Happy documenting!**

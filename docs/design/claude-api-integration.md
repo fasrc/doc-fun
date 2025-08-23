@@ -1,17 +1,17 @@
 # Claude API Integration Design
 
-**Status**: 🚧 Draft  
+**Status**: Draft  
 **Author**: Development Team  
 **Date**: 2025-07-31  
 **Version**: 1.0  
 
 ---
 
-## 📋 Overview
+## Overview
 
 This document outlines the design for integrating Anthropic's Claude API alongside the existing OpenAI integration in doc-generator, providing users with choice between multiple LLM providers while maintaining backward compatibility.
 
-## 🎯 Goals
+## Goals
 
 ### **Primary Goals**
 - Add Claude API support alongside existing OpenAI integration
@@ -25,7 +25,7 @@ This document outlines the design for integrating Anthropic's Claude API alongsi
 - Enable cost optimization through provider selection
 - Support provider-specific model capabilities
 
-## 🔍 Current State Analysis
+## Current State Analysis
 
 ### **Existing Architecture**
 ```python
@@ -44,7 +44,7 @@ class DocumentationGenerator:
 - Model selection limited to OpenAI models
 - No fallback mechanism if OpenAI is unavailable
 
-## 🏗️ Proposed Architecture
+## Proposed Architecture
 
 ### **1. Provider Abstraction Layer**
 
@@ -466,7 +466,7 @@ MODEL_CONFIGS = {
 }
 ```
 
-## 🔧 Implementation Plan
+## Implementation Plan
 
 ### **Phase 1: Foundation** (Week 1)
 - [ ] Create provider abstraction layer (`base.py`)
@@ -492,7 +492,7 @@ MODEL_CONFIGS = {
 - [ ] Add provider-specific optimizations
 - [ ] Performance testing and benchmarking
 
-## 📊 Usage Examples
+## Usage Examples
 
 ### **Basic Usage (Backward Compatible)**
 ```bash
@@ -521,7 +521,7 @@ doc-gen --topic "Python Programming" --model claude-3-haiku-20240307
 doc-gen --list-models
 ```
 
-## 🧪 Testing Strategy
+## Testing Strategy
 
 ### **Unit Tests**
 - Provider abstraction layer
@@ -539,7 +539,7 @@ doc-gen --list-models
 - Token usage and cost analysis
 - Concurrent request handling
 
-## 📈 Success Metrics
+## Success Metrics
 
 ### **Functional Metrics**
 - [ ] 100% backward compatibility maintained
@@ -577,7 +577,7 @@ doc-gen --list-models
 
 ---
 
-## 📚 References
+## References
 
 - [Anthropic Claude API Documentation](https://docs.anthropic.com/claude/reference/)
 - [OpenAI API Documentation](https://platform.openai.com/docs/api-reference)
