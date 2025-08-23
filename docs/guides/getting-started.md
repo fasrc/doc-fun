@@ -4,7 +4,13 @@ This guide will walk you through your first steps with doc-generator, from basic
 
 ## 🎯 Overview
 
-Doc-generator is an AI-powered tool that creates high-quality technical documentation using OpenAI's GPT models. It features an extensible plugin architecture that provides intelligent recommendations for HPC modules, code examples, and more.
+Doc-generator is an AI-powered tool that creates high-quality technical documentation using multiple LLM providers (OpenAI GPT and Anthropic Claude). It supports three main capabilities:
+
+1. **Topic Documentation** - Generate comprehensive documentation from simple topic descriptions
+2. **README Generation** - Create README.md files for code projects with automatic structure analysis  
+3. **Document Standardization** - Transform existing documentation to organizational templates
+
+The system features an extensible plugin architecture that provides intelligent recommendations for HPC modules, code examples, and more.
 
 ## 🚀 Your First Documentation
 
@@ -58,6 +64,74 @@ doc-gen --topic "MPI Programming" --output-dir docs/references
 doc-gen --topic "Python Examples" --output-dir docs/examples
 ```
 
+## 🚀 Exploring Different Operation Modes
+
+### README Generation Mode
+
+Generate README files for your code projects:
+
+```bash
+# Generate README for a single project
+doc-gen --readme /path/to/my-project --output-dir ./readmes
+
+# Recursive generation for multiple projects
+doc-gen --readme /path/to/projects --recursive --runs 2
+
+# With analysis and quality evaluation
+doc-gen --readme /path/to/project --analyze --output-dir ./output
+```
+
+**What happens during README generation:**
+- Analyzes project directory structure and file types
+- Discovers code examples and configuration files  
+- Generates installation and usage instructions
+- Creates comprehensive project documentation
+- Applies AI enhancement for better descriptions
+
+### Document Standardization Mode
+
+Transform existing documentation to organizational standards:
+
+```bash
+# Convert HTML to standardized Markdown
+doc-gen --standardize legacy-docs.html --target-format markdown
+
+# Apply organizational template
+doc-gen --standardize api-docs.html --template technical_documentation
+
+# Batch standardization
+for file in docs/*.html; do
+    doc-gen --standardize "$file" --template user_guide --output-dir standardized/
+done
+```
+
+**What happens during standardization:**
+- Extracts content from existing documents (HTML, Markdown)
+- Maps content to standardized organizational templates
+- Applies consistent formatting and structure
+- Preserves original content while improving organization
+- Converts between different document formats
+
+### Provider Selection
+
+Choose your preferred AI provider:
+
+```bash
+# Use OpenAI GPT models (default)
+doc-gen --topic "Python Guide" --provider openai --model gpt-4o-mini
+
+# Use Anthropic Claude models
+doc-gen --readme /path/to/project --provider claude --model claude-3-5-sonnet-20240620
+
+# Auto-select based on available API keys
+doc-gen --standardize document.html --provider auto
+```
+
+**Available providers:**
+- **OpenAI**: GPT-3.5, GPT-4, GPT-4o model families
+- **Claude**: Claude 3 Haiku, Sonnet, and Opus models
+- **Auto**: Automatically selects best available provider
+
 ## 🔌 Understanding Plugins
 
 ### View Available Plugins
@@ -100,11 +174,15 @@ doc-gen --topic "Parallel Python with NumPy" --runs 1 --verbose
 
 | Option | Purpose | Example |
 |--------|---------|---------|
-| `--topic` | What to document | `--topic "CUDA Programming"` |
-| `--output-dir` | Where to save | `--output-dir ./gpu-docs` |
-| `--runs` | Number of variants | `--runs 5` |
-| `--model` | GPT model to use | `--model gpt-4` |
-| `--temperature` | Creativity level | `--temperature 0.3` |
+| `--topic` | Topic documentation | `--topic "CUDA Programming"` |
+| `--readme` | README generation | `--readme /path/to/project` |
+| `--standardize` | Document standardization | `--standardize docs.html` |
+| `--output-dir` | Where to save | `--output-dir ./output` |
+| `--runs` | Number of variants | `--runs 3` |
+| `--provider` | AI provider | `--provider claude` |
+| `--model` | Specific model | `--model gpt-4o-mini` |
+| `--template` | Standardization template | `--template technical_documentation` |
+| `--target-format` | Output format | `--target-format markdown` |
 
 ### Advanced Options
 
@@ -120,6 +198,52 @@ doc-gen --topic "Data Science" --enable-only datasets workflows
 doc-gen --topic "Debug Test" --verbose
 ```
 
+## 🔧 Environment Setup
+
+### API Key Configuration
+
+Doc-generator supports multiple AI providers. Set up API keys for the providers you want to use:
+
+```bash
+# For OpenAI GPT models
+export OPENAI_API_KEY="your-openai-api-key"
+
+# For Anthropic Claude models (optional)
+export ANTHROPIC_API_KEY="your-anthropic-api-key"
+
+# Or create .env file
+cat > .env << 'EOF'
+OPENAI_API_KEY=your-openai-api-key
+ANTHROPIC_API_KEY=your-anthropic-api-key
+EOF
+```
+
+### Provider Auto-Detection
+
+If you have multiple API keys configured, doc-generator will:
+
+1. **Auto-detect** available providers based on environment variables
+2. **Prioritize** based on the specific operation mode:
+   - Topic documentation: OpenAI GPT (default)
+   - README generation: Claude Sonnet (preferred for code analysis)  
+   - Document standardization: Auto-select based on content type
+3. **Fall back** to available providers if the preferred one is unavailable
+
+### Test Your Setup
+
+```bash
+# List available models and providers
+doc-gen --list-models
+
+# Expected output shows your configured providers:
+# Available Providers:
+# ✅ OpenAI: gpt-3.5-turbo, gpt-4, gpt-4o-mini
+# ✅ Claude: claude-3-haiku-20240307, claude-3-5-sonnet-20240620
+
+# Test with a simple generation
+doc-gen --topic "Test Documentation" --runs 1 --output-dir ./test
+```
+
 ## 📝 Configuration Files
 
 ### Understanding the Structure
@@ -130,11 +254,16 @@ doc-fun/
 │   ├── generator/
 │   │   ├── default.yaml      # Main prompt template
 │   │   ├── markdown.yaml     # Markdown format template
+│   │   ├── readme.yaml       # README generation prompts
 │   │   └── custom.yaml       # Your custom templates
+│   ├── standardization/
+│   │   └── default.yaml      # Document standardization prompts
 │   └── analysis/
 │       └── default.yaml      # Quality evaluation prompts
 ├── terminology.yaml          # HPC modules and commands
-├── examples/                 # Few-shot learning examples
+├── shots/                    # Few-shot learning examples
+│   ├── user_docs/           # HTML documentation examples
+│   └── user_codes/          # Code-based examples
 └── .env                     # API keys and secrets
 ```
 

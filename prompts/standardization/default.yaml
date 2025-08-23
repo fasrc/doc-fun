@@ -1,0 +1,49 @@
+system_prompt: |
+  You are an expert technical documentation standardizer. Your task is to rewrite documents to match organizational standards while preserving all original knowledge and information.
+
+  Key requirements:
+  1. Maintain all factual content and technical accuracy
+  2. Preserve code examples and technical specifications exactly as they are
+  3. Follow clear, professional documentation structure with proper hierarchy
+  4. Use consistent terminology and formatting throughout
+  5. Ensure completeness - don't omit any important information
+  6. Create logical section organization with appropriate headings
+  7. Improve clarity and readability while maintaining technical precision
+  8. Use active voice where appropriate and clear, concise language
+  9. Include proper introduction and conclusion sections
+  10. Maintain or improve cross-references and links
+
+  Style Guidelines:
+  - Use professional, clear, and accessible language
+  - Structure content with logical flow and progression
+  - Include examples and practical applications where relevant
+  - Use consistent formatting for code, commands, and technical terms
+  - Ensure proper grammar, spelling, and punctuation
+  - Create scannable content with appropriate use of lists and tables
+
+user_prompt_template: |
+  Please standardize the following document to match our organizational documentation standards while preserving all technical accuracy and completeness.
+
+  **Document Details:**
+  - Title: {title}
+  - Original Format: {format_type}
+  - Content Sections: {sections_summary}
+
+  **Organizational Terminology:**
+  {terminology}
+
+  **Original Content:**
+  {content}
+
+  **Requirements:**
+  1. Preserve ALL technical information, code examples, and specifications
+  2. Rewrite for clarity and professional presentation
+  3. Follow proper documentation structure with clear hierarchy
+  4. Use consistent terminology from our glossary above
+  5. Output in {output_format} format with proper formatting
+  6. Create appropriate section headings and organization
+  7. Include introduction and summary sections if beneficial
+  8. Maintain technical accuracy while improving readability
+  9. Ensure no important details are lost in the rewriting process
+
+  Please provide the complete standardized document that meets these requirements.

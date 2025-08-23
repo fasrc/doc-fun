@@ -89,3 +89,8 @@ class FileOperationError(DocGeneratorError):
         super().__init__(message, **kwargs)
         if file_path:
             self.context['file_path'] = file_path
+
+
+class DocumentStandardizerError(DocGeneratorError):
+    """Raised when document standardization fails."""
+    pass
