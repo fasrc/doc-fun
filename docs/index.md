@@ -10,28 +10,54 @@
 
 ## 🚀 What is doc-generator?
 
-**doc-generator** is a sophisticated Python package that automates the creation of high-quality technical documentation using OpenAI's GPT models. Originally designed for Faculty Arts and Sciences Research Computing (FASRC), it transforms simple topic descriptions into comprehensive, structured documentation with intelligent recommendations.
+**doc-generator** is a sophisticated Python package that automates the creation of high-quality technical documentation using multiple LLM providers (OpenAI GPT and Anthropic Claude). Originally designed for Faculty Arts and Sciences Research Computing (FASRC), it supports three main capabilities: generating documentation from topics, creating README files for code projects, and standardizing existing documentation to organizational templates.
 
-!!! example "Quick Example"
-    ```bash
-    # Generate comprehensive documentation in seconds
-    doc-gen --topic "Python Machine Learning with GPU" --output-dir ./docs
+!!! example "Quick Examples"
+    === "Topic Documentation"
+        ```bash
+        # Generate comprehensive documentation in seconds
+        doc-gen --topic "Python Machine Learning with GPU" --output-dir ./docs
+        
+        # Result: Professional HTML documentation with:
+        # ✅ HPC module recommendations (python/3.12.8, cuda/12.9.1)
+        # ✅ Installation instructions
+        # ✅ Code examples and workflows
+        # ✅ Best practices and troubleshooting
+        ```
     
-    # Result: Professional HTML documentation with:
-    # ✅ HPC module recommendations (python/3.12.8, cuda/12.9.1)
-    # ✅ Installation instructions
-    # ✅ Code examples and workflows
-    # ✅ Best practices and troubleshooting
-    ```
+    === "README Generation"
+        ```bash
+        # Generate README for your project directory
+        doc-gen --readme /path/to/project --recursive --output-dir ./output
+        
+        # Result: README.md files with:
+        # ✅ Project structure analysis
+        # ✅ Code example discovery
+        # ✅ Installation and usage instructions
+        # ✅ AI-enhanced descriptions
+        ```
+    
+    === "Document Standardization"
+        ```bash
+        # Standardize existing documentation
+        doc-gen --standardize legacy-docs.html --template technical_documentation
+        
+        # Result: Standardized markdown with:
+        # ✅ Organizational template structure
+        # ✅ Consistent formatting and sections
+        # ✅ Format conversion (HTML → Markdown)
+        # ✅ Content preservation and enhancement
+        ```
 
 ---
 
 ## ✨ Key Features
 
-### 🧠 **AI-Powered Generation**
-- **OpenAI GPT Integration** with customizable models (GPT-4, GPT-4o-mini) and parameters
+### 🧠 **Multi-Provider AI Integration**
+- **OpenAI GPT Models** (GPT-3.5, GPT-4, GPT-4o) with customizable parameters
+- **Anthropic Claude Models** (Claude 3 Haiku, Sonnet, Opus) for diverse AI capabilities
+- **Auto-Provider Selection** based on available API keys and use cases
 - **Few-shot Prompting** with curated examples for consistent, high-quality output
-- **Parameterized Templates** with runtime customization for different organizations
 - **Multiple Format Support** including HTML, Markdown, and custom formats
 
 ### 🔌 **Extensible Plugin Architecture**
@@ -52,11 +78,19 @@
 - **Intelligent Recommendations** for improving generated documentation
 - **Platform Detection** works with Sphinx, MkDocs, ReadTheDocs, GitHub, and more
 
+### 📄 **Document Standardization System**
+- **Legacy Document Transformation** converts existing documentation to modern standards
+- **Organizational Templates** for technical documentation, user guides, and API references
+- **Smart Content Mapping** uses AI to organize content into standardized sections
+- **Format Conversion** between HTML, Markdown, and other formats with fidelity preservation
+- **Extensible Extractor Architecture** supports multiple input document formats
+
 ### 🛠️ **Professional Development Tools**
-- **Comprehensive CLI** with 15+ command-line options
-- **Python API** for programmatic integration
-- **Code Scanning** for automatic example discovery
-- **Batch Processing** capabilities for documentation sets
+- **Comprehensive CLI** with 20+ command-line options for all operation modes
+- **Python API** for programmatic integration and custom workflows
+- **Code Scanning** for automatic example discovery in project directories
+- **README Generation** for code projects with recursive directory support
+- **Batch Processing** capabilities for documentation sets and migration workflows
 
 ---
 

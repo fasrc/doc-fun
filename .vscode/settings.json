@@ -1,0 +1,6 @@
+{
+    "markdown.preview.openOnStart": true,
+    "workbench.editorAssociations": {
+        "*.md": "markdown.preview.editor"
+    }
+}

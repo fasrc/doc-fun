@@ -1,8 +1,19 @@
 # Basic Usage Examples
 
-This page demonstrates basic usage patterns for doc-generator with practical examples.
+This page demonstrates basic usage patterns for doc-generator across all operation modes with practical examples.
 
 ## 🚀 Getting Started Examples
+
+### Operation Modes Overview
+
+Doc-generator supports four main operation modes:
+
+1. **Topic Mode** (`--topic`): Generate documentation for specific topics
+2. **README Mode** (`--readme`): Generate README files for code projects
+3. **Standardization Mode** (`--standardize`): Transform existing documentation
+4. **Code Scanning Mode** (`--scan-code`): Legacy code discovery
+
+## 📝 Topic Mode Examples
 
 ### Simple Documentation Generation
 
@@ -170,7 +181,181 @@ doc-gen --topic "Critical Guide" \
 # - Detailed logging output
 ```
 
+## 📋 README Mode Examples
+
+### Basic README Generation
+
+```bash
+# Generate README for a single project directory
+doc-gen --readme /path/to/my-project --output-dir ./output
+
+# Result: my_project_readme_v1.md with:
+# ✅ Project structure analysis
+# ✅ Code example discovery
+# ✅ Installation and usage instructions
+```
+
+### Recursive README Generation
+
+```bash
+# Generate READMEs for all subdirectories
+doc-gen --readme /path/to/projects --recursive --output-dir ./readmes
+
+# Processes:
+# /path/to/projects/project1/ → project1_readme_v1.md
+# /path/to/projects/project2/ → project2_readme_v2.md
+# /path/to/projects/project3/ → project3_readme_v1.md
+```
+
+### README with Analysis
+
+```bash
+# Generate multiple variants with quality analysis
+doc-gen --readme /path/to/project --runs 3 --analyze --output-dir ./analyzed
+
+# Creates:
+# - project_readme_v1.md (best quality variant)
+# - project_readme_v2.md
+# - project_readme_v3.md
+# - project_analysis_report.md (quality assessment)
+```
+
+### README with Different Providers
+
+```bash
+# Use Claude for README generation
+doc-gen --readme /path/to/project --provider claude --model claude-3-5-sonnet-20240620
+
+# Use OpenAI GPT-4
+doc-gen --readme /path/to/project --provider openai --model gpt-4
+```
+
+## 📄 Document Standardization Examples
+
+### Basic HTML to Markdown Conversion
+
+```bash
+# Convert HTML documentation to Markdown
+doc-gen --standardize legacy-docs.html --target-format markdown
+
+# Result: legacy-docs_standardized.md
+# ✅ Clean Markdown formatting
+# ✅ Preserved content structure
+# ✅ Consistent section organization
+```
+
+### Template-Based Standardization
+
+```bash
+# Apply technical documentation template
+doc-gen --standardize api-docs.html --template technical_documentation
+
+# Apply user guide template
+doc-gen --standardize user-manual.html --template user_guide
+
+# Apply API documentation template
+doc-gen --standardize reference.html --template api_documentation
+```
+
+### Batch Document Standardization
+
+```bash
+# Standardize all HTML files in a directory
+for file in legacy-docs/*.html; do
+    echo "Processing: $file"
+    doc-gen --standardize "$file" \
+        --template technical_documentation \
+        --target-format markdown \
+        --output-dir standardized/
+    sleep 2  # Rate limiting
+done
+```
+
+### Standardization with Custom Output
+
+```bash
+# Specify output location and format
+doc-gen --standardize complex-doc.html \
+    --template technical_documentation \
+    --target-format markdown \
+    --output-dir ./standardized-docs/
+
+# With verbose output for debugging
+doc-gen --standardize problem-doc.html \
+    --verbose \
+    --temperature 0.1 \
+    --provider claude
+```
+
+## 🔍 Code Scanning Examples (Legacy Mode)
+
+### Basic Code Scanning
+
+```bash
+# Scan current directory for code examples
+doc-gen --scan-code . --max-scan-files 50
+
+# Updates terminology.yaml with discovered code patterns
+# Creates code-examples-report.txt
+```
+
+### Code Scanning with README Generation
+
+```bash
+# Legacy mode: scan and generate READMEs
+doc-gen --scan-code /path/to/project \
+    --generate-readme \
+    --ai-enhance \
+    --overwrite
+
+# Scans code, generates enhanced README with AI descriptions
+```
+
+### Recursive Code Scanning
+
+```bash
+# Scan entire project tree
+doc-gen --scan-code /large/project \
+    --recursive \
+    --max-scan-files 200 \
+    --suffix "_generated"
+```
+
 ## 📊 Common Workflows
+
+### Documentation Migration Workflow
+
+```bash
+# 1. Scan existing codebase
+doc-gen --scan-code ./legacy-project --max-scan-files 100
+
+# 2. Generate new READMEs
+doc-gen --readme ./legacy-project --recursive --runs 2
+
+# 3. Standardize existing HTML docs
+for html in docs/*.html; do
+    doc-gen --standardize "$html" --template technical_documentation
+done
+
+# 4. Generate topic-based documentation for missing areas
+doc-gen --topic "API Migration Guide" --analyze
+```
+
+### Multi-Format Documentation Workflow  
+
+```bash
+# 1. Generate HTML documentation
+doc-gen --topic "User Guide" --format html --output-dir ./html-docs
+
+# 2. Generate Markdown version
+doc-gen --topic "User Guide" --format markdown --output-dir ./md-docs
+
+# 3. Standardize existing docs to match
+doc-gen --standardize existing.html --target-format markdown --template user_guide
+
+# 4. Create project READMEs
+doc-gen --readme . --recursive
+```
 
 ### Research Documentation Workflow
 

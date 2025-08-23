@@ -8,7 +8,10 @@ The doc-generator API is organized into these main modules:
 
 - **[Core](core.md)** - Main documentation generation classes
 - **[Plugins](plugins.md)** - Plugin system and base classes
+- **[Extractors](extractors.md)** - Content extraction from various document formats
+- **[Standardizers](standardizers.md)** - Document standardization and template application
 - **[CLI](cli.md)** - Command-line interface
+- **[Evaluator](evaluator.md)** - Document analysis and quality evaluation
 
 ## 🎯 Quick Reference
 
@@ -17,6 +20,10 @@ The doc-generator API is organized into these main modules:
 | Class | Module | Purpose |
 |-------|--------|---------|
 | `DocumentationGenerator` | `doc_generator.core` | Main API for generating documentation |
+| `ReadmeGenerator` | `doc_generator.readme_generator` | Generate README.md files for directories |
+| `DocumentStandardizer` | `doc_generator.standardizers` | Standardize documents to organizational templates |
+| `HTMLContentExtractor` | `doc_generator.extractors` | Extract content from HTML documents |
+| `SectionMapper` | `doc_generator.standardizers` | Map content to standardized section templates |
 | `DocumentAnalyzer` | `doc_generator.core` | Analyze and score generated documentation |
 | `GPTQualityEvaluator` | `doc_generator.core` | GPT-based quality evaluation |
 | `PluginManager` | `doc_generator.plugin_manager` | Manage and execute plugins |

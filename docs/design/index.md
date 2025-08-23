@@ -8,8 +8,9 @@ The doc-generator project follows these core design principles:
 
 ### **Modularity**
 - Plugin-based architecture for extensibility
-- Provider abstraction for multiple AI services
-- Separation of concerns between generation, analysis, and evaluation
+- Provider abstraction for multiple AI services (OpenAI, Claude)
+- Separation of concerns between generation, extraction, standardization, analysis, and evaluation
+- Content extraction system with extensible format support
 
 ### **Backward Compatibility**
 - New features don't break existing functionality
@@ -32,9 +33,11 @@ The doc-generator project follows these core design principles:
 
 | Document | Status | Description |
 |----------|--------|-------------|
-| [Claude API Integration](claude-api-integration.md) | 🚧 Draft | Adding Anthropic Claude alongside OpenAI |
-| Plugin Architecture v2 | 💭 Planned | Enhanced plugin system with better discovery |
-| Multi-Provider Strategy | 💭 Planned | Framework for supporting multiple LLM providers |
+| [Claude API Integration](claude-api-integration.md) | ✅ Implemented | Adding Anthropic Claude alongside OpenAI |
+| Document Standardization System | ✅ Implemented | Architecture for transforming existing documentation |
+| Content Extraction Framework | ✅ Implemented | Extensible system for parsing various document formats |
+| README Generation Pipeline | ✅ Implemented | Automated README creation for code projects |
+| Multi-Provider Strategy | ✅ Implemented | Framework for supporting multiple LLM providers |
 
 ---
 
@@ -42,25 +45,41 @@ The doc-generator project follows these core design principles:
 
 ```mermaid
 graph TB
-    A[CLI Interface] --> B[DocumentationGenerator]
-    B --> C[Provider Manager]
-    C --> D[OpenAI Provider]
-    C --> E[Claude Provider] 
-    C --> F[Future Providers]
+    A[CLI Interface] --> B[Core Generation]
+    A --> C[README Generation] 
+    A --> D[Document Standardization]
+    A --> E[Legacy Code Scanning]
     
-    B --> G[Plugin Manager]
-    G --> H[ModuleRecommender]
-    G --> I[Future Plugins]
+    B --> F[DocumentationGenerator]
+    C --> G[ReadmeGenerator]
+    D --> H[DocumentStandardizer]
     
-    B --> J[Quality Pipeline]
-    J --> K[DocumentAnalyzer]
-    J --> L[GPTQualityEvaluator]
+    F --> I[Provider Manager]
+    G --> I
+    H --> I
+    I --> J[OpenAI Provider]
+    I --> K[Claude Provider]
     
-    style E fill:#f9f,stroke:#333,stroke-width:2px,stroke-dasharray: 5 5
-    style I fill:#f9f,stroke:#333,stroke-width:2px,stroke-dasharray: 5 5
+    H --> L[Content Extractors]
+    L --> M[HTML Extractor]
+    L --> N[Future Extractors]
+    
+    H --> O[Section Mapper]
+    O --> P[Template Engine]
+    
+    F --> Q[Plugin Manager]
+    Q --> R[ModuleRecommender]
+    Q --> S[Analysis Plugins]
+    
+    F --> T[Quality Pipeline]
+    T --> U[DocumentAnalyzer]
+    T --> V[GPTQualityEvaluator]
+    
+    style N fill:#f9f,stroke:#333,stroke-width:2px,stroke-dasharray: 5 5
+    style S fill:#f9f,stroke:#333,stroke-width:2px,stroke-dasharray: 5 5
 ```
 
-*Dashed components are planned/in development*
+*Dashed components represent extensible plugin points*
 
 ---
 
@@ -72,9 +91,19 @@ graph TB
 - **Rationale**: Standard Python mechanism, automatic discovery, easy packaging
 
 ### **ADR-002: Provider Abstraction**
-- **Status**: Planned
+- **Status**: Implemented
 - **Decision**: Create provider abstraction layer for multiple LLM services
-- **Rationale**: Support multiple AI providers without breaking existing code
+- **Rationale**: Support multiple AI providers (OpenAI, Claude) without breaking existing code
+
+### **ADR-004: Document Standardization Architecture**
+- **Status**: Implemented  
+- **Decision**: Separate content extraction from transformation logic
+- **Rationale**: Enables support for multiple input formats and extensible processing
+
+### **ADR-005: Template-Based Section Mapping**
+- **Status**: Implemented
+- **Decision**: Use organizational templates with AI-powered content mapping
+- **Rationale**: Provides consistent structure while preserving content fidelity
 
 ### **ADR-003: Configuration Management**
 - **Status**: Implemented

@@ -13,7 +13,7 @@ from dotenv import load_dotenv
 
 from .core import DocumentationGenerator, DocumentAnalyzer, GPTQualityEvaluator, CodeExampleScanner
 from .config import get_settings
-from .exceptions import DocGeneratorError
+from .exceptions import DocGeneratorError, DocumentStandardizerError
 from . import __version__
 
 
@@ -82,6 +82,11 @@ Examples:
   doc-gen --readme /path/to/directory --recursive --output-dir ./output
   doc-gen --readme /path/to/directory --model claude-3-5-sonnet
   
+  # Document Standardization (--standardize mode)
+  doc-gen --standardize existing-docs.html --format markdown
+  doc-gen --standardize /path/to/doc.html --template api_documentation
+  doc-gen --standardize legacy.md --output-dir ./standardized
+  
   # Legacy Code Scanning
   doc-gen --scan-code ./directory --generate-readme --recursive
   
@@ -99,6 +104,8 @@ Examples:
                            help='Generate HTML/Markdown documentation for a specific topic')
     mode_group.add_argument('--readme', metavar='DIRECTORY',
                            help='Generate README.md for directory using unified pipeline')
+    mode_group.add_argument('--standardize', metavar='FILE',
+                           help='Standardize existing documentation to organizational standards')
     mode_group.add_argument('--scan-code', nargs='?', const='.', metavar='DIR',
                            help='Scan directory for code examples and update terminology')
     
@@ -137,6 +144,14 @@ Examples:
     readme_group = parser.add_argument_group('README Mode Options', 'Used with --readme')
     readme_group.add_argument('--recursive', action='store_true',
                              help='Generate README files for all subdirectories')
+    
+    # === STANDARDIZATION OPTIONS ===
+    std_group = parser.add_argument_group('Standardization Options', 'Used with --standardize')
+    std_group.add_argument('--template', choices=['technical_documentation', 'user_guide', 'api_documentation'],
+                          default='technical_documentation',
+                          help='Standardization template to use (default: technical_documentation)')
+    std_group.add_argument('--target-format', choices=['html', 'markdown'],
+                          help='Target format for standardized output (overrides --format)')
     
     # === LEGACY CODE SCANNING ===
     legacy_group = parser.add_argument_group('Legacy Code Scanning', 'Used with --scan-code')
@@ -212,6 +227,92 @@ def list_plugins(generator: DocumentationGenerator) -> None:
         print(f"  Supported Types: {', '.join(engine['supported_types'])}")
         print(f"  Priority: {engine['priority']}")
         print(f"  Enabled: {engine['enabled']}")
+
+
+def run_standardization(args, logger: logging.Logger) -> None:
+    """Run document standardization."""
+    from .standardizers import DocumentStandardizer
+    from pathlib import Path
+    
+    logger.info(f"Standardizing document: {args.standardize}")
+    
+    # Load environment variables
+    load_dotenv()
+    
+    try:
+        # Validate input file
+        input_file = Path(args.standardize)
+        if not input_file.exists():
+            logger.error(f"Input file not found: {input_file}")
+            sys.exit(1)
+        
+        # Determine output format
+        target_format = args.target_format or args.format
+        if target_format == 'auto':
+            # Auto-detect based on input file extension
+            if input_file.suffix.lower() in ['.html', '.htm']:
+                target_format = 'markdown'  # Convert HTML to Markdown by default
+            else:
+                target_format = 'html'  # Default to HTML
+        
+        # Initialize standardizer
+        standardizer = DocumentStandardizer(
+            provider=args.provider if args.provider != 'auto' else None,
+            model=args.model,
+            temperature=args.temperature,
+            output_format=target_format
+        )
+        
+        # Determine output directory and file
+        output_dir = get_output_directory(args.output_dir, logger)
+        
+        # Generate output filename
+        stem = input_file.stem
+        if target_format == 'markdown':
+            ext = '.md'
+        elif target_format == 'html':
+            ext = '.html'
+        else:
+            ext = '.txt'
+        
+        output_file = Path(output_dir) / f"{stem}_standardized{ext}"
+        
+        # Standardize document
+        logger.info(f"Using template: {args.template}")
+        logger.info(f"Target format: {target_format}")
+        
+        result = standardizer.standardize_file(
+            file_path=input_file,
+            output_path=output_file,
+            target_format=target_format
+        )
+        
+        # Report results
+        if not args.quiet:
+            print(f"\n📄 Document Standardization Results")
+            print(f"📍 Input File: {input_file}")
+            print(f"📂 Output File: {result.get('output_path', output_file)}")
+            print(f"🔄 Format: {result['original_format']} → {result['target_format']}")
+            print(f"📊 Sections Processed: {len(result['sections_processed'])}")
+            
+            if result['sections_processed']:
+                print(f"📋 Sections: {', '.join(result['sections_processed'])}")
+            
+            metadata = result.get('metadata', {})
+            if metadata.get('provider'):
+                print(f"🤖 Provider: {metadata['provider']}")
+                print(f"🧠 Model: {metadata.get('model', 'Unknown')}")
+                if metadata.get('tokens_used'):
+                    print(f"🎯 Tokens Used: {metadata['tokens_used']}")
+        
+        logger.info("Document standardization completed successfully")
+        
+    except Exception as e:
+        logger.error(f"Error during standardization: {e}")
+        if args.verbose:
+            import traceback
+            traceback.print_exc()
+        sys.exit(1)
 
 
 def run_readme_generation(args, logger: logging.Logger) -> None:
@@ -1114,6 +1215,11 @@ def main():
         # Handle README generation mode
         if args.readme:
             run_readme_generation(args, logger)
+            return
+        
+        # Handle standardization mode
+        if args.standardize:
+            run_standardization(args, logger)
             return
         
         # Handle code scanning mode
