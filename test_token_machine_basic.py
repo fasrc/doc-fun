@@ -101,13 +101,13 @@ def test_token_machine_core():
         print("\n✅ Token machine core functionality test completed!")
         print("📝 Note: Full functionality requires installing dependencies with 'pip install -e .'")
         
-        return True
+        assert True  # Test passed
         
     except Exception as e:
         print(f"❌ Core test error: {e}")
         import traceback
         traceback.print_exc()
-        return False
+        assert False, f"Core test failed: {e}"
 
 if __name__ == "__main__":
     success = test_token_machine_core()

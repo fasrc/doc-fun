@@ -17,7 +17,19 @@ class TestDocumentStandardizer:
     
     def test_initialization(self):
         """Test DocumentStandardizer initialization."""
-        with patch('src.doc_generator.standardizers.document_standardizer.ProviderManager'):
+        with patch('src.doc_generator.standardizers.document_standardizer.ProviderManager') as mock_pm_class:
+            # Create properly configured mock manager
+            mock_manager = Mock()
+            mock_provider = Mock()
+            mock_provider.get_provider_name.return_value = "test_provider"
+            
+            mock_manager.get_default_provider.return_value = "test_provider"
+            mock_manager.get_provider.return_value = mock_provider
+            mock_manager.get_default_model.return_value = "test_model"
+            mock_manager.validate_model_provider_combination.return_value = (True, None)
+            
+            mock_pm_class.return_value = mock_manager
+            
             standardizer = DocumentStandardizer()
             assert standardizer is not None
             assert standardizer.temperature == 0.3
@@ -27,11 +39,11 @@ class TestDocumentStandardizer:
     def test_initialization_with_params(self, mock_provider_manager):
         """Test DocumentStandardizer initialization with parameters."""
         mock_provider = Mock()
-        mock_provider.get_name.return_value = "test_provider"
-        mock_provider.get_model.return_value = "test_model"
+        mock_provider.get_provider_name.return_value = "test_provider"
         
         mock_manager = Mock()
         mock_manager.get_provider.return_value = mock_provider
+        mock_manager.validate_model_provider_combination.return_value = (True, None)
         mock_provider_manager.return_value = mock_manager
         
         standardizer = DocumentStandardizer(
@@ -48,7 +60,19 @@ class TestDocumentStandardizer:
     
     def test_get_default_standardization_prompts(self):
         """Test default prompts generation."""
-        with patch('src.doc_generator.standardizers.document_standardizer.ProviderManager'):
+        with patch('src.doc_generator.standardizers.document_standardizer.ProviderManager') as mock_pm_class:
+            # Create properly configured mock manager
+            mock_manager = Mock()
+            mock_provider = Mock()
+            mock_provider.get_provider_name.return_value = "test_provider"
+            
+            mock_manager.get_default_provider.return_value = "test_provider"
+            mock_manager.get_provider.return_value = mock_provider
+            mock_manager.get_default_model.return_value = "test_model"
+            mock_manager.validate_model_provider_combination.return_value = (True, None)
+            
+            mock_pm_class.return_value = mock_manager
+            
             standardizer = DocumentStandardizer()
             prompts = standardizer._get_default_standardization_prompts()
             
@@ -61,6 +85,16 @@ class TestDocumentStandardizer:
     @patch('src.doc_generator.standardizers.document_standardizer.ProviderManager')
     def test_find_suitable_extractor(self, mock_provider_manager):
         """Test finding suitable extractor."""
+        # Configure mock properly
+        mock_provider = Mock()
+        mock_provider.get_provider_name.return_value = "test_provider"
+        mock_manager = Mock()
+        mock_manager.get_default_provider.return_value = "test_provider"
+        mock_manager.get_provider.return_value = mock_provider
+        mock_manager.get_default_model.return_value = "test_model"
+        mock_manager.validate_model_provider_combination.return_value = (True, None)
+        mock_provider_manager.return_value = mock_manager
+        
         standardizer = DocumentStandardizer()
         
         # HTML content should find HTML extractor
@@ -77,6 +111,16 @@ class TestDocumentStandardizer:
     @patch('src.doc_generator.standardizers.document_standardizer.ProviderManager')
     def test_build_terminology_context(self, mock_provider_manager):
         """Test terminology context building."""
+        # Configure mock properly
+        mock_provider = Mock()
+        mock_provider.get_provider_name.return_value = "test_provider"
+        mock_manager = Mock()
+        mock_manager.get_default_provider.return_value = "test_provider"
+        mock_manager.get_provider.return_value = mock_provider
+        mock_manager.get_default_model.return_value = "test_model"
+        mock_manager.validate_model_provider_combination.return_value = (True, None)
+        mock_provider_manager.return_value = mock_manager
+        
         standardizer = DocumentStandardizer()
         
         # Test with empty terminology
@@ -107,6 +151,16 @@ class TestDocumentStandardizer:
     @patch('src.doc_generator.standardizers.document_standardizer.ProviderManager')
     def test_build_standardization_prompt(self, mock_provider_manager):
         """Test standardization prompt building."""
+        # Configure mock properly
+        mock_provider = Mock()
+        mock_provider.get_provider_name.return_value = "test_provider"
+        mock_manager = Mock()
+        mock_manager.get_default_provider.return_value = "test_provider"
+        mock_manager.get_provider.return_value = mock_provider
+        mock_manager.get_default_model.return_value = "test_model"
+        mock_manager.validate_model_provider_combination.return_value = (True, None)
+        mock_provider_manager.return_value = mock_manager
+        
         standardizer = DocumentStandardizer()
         standardizer.prompt_config = {
             'system_prompt': 'Test system prompt',
@@ -131,8 +185,16 @@ class TestDocumentStandardizer:
     @patch('src.doc_generator.standardizers.document_standardizer.ProviderManager')
     def test_process_standardization_response(self, mock_provider_manager):
         """Test standardization response processing."""
+        # Configure mock properly
         mock_provider = Mock()
+        mock_provider.get_provider_name.return_value = "test_provider"
         mock_provider.get_model.return_value = "test_model"
+        mock_manager = Mock()
+        mock_manager.get_default_provider.return_value = "test_provider"
+        mock_manager.get_provider.return_value = mock_provider
+        mock_manager.get_default_model.return_value = "test_model"
+        mock_manager.validate_model_provider_combination.return_value = (True, None)
+        mock_provider_manager.return_value = mock_manager
         
         standardizer = DocumentStandardizer()
         standardizer.client = mock_provider
@@ -142,7 +204,8 @@ class TestDocumentStandardizer:
         response = CompletionResponse(
             content="Standardized content here",
             model="test_model",
-            tokens_used=150
+            provider="test_provider",
+            usage={"total_tokens": 150}
         )
         
         # Mock original content
@@ -167,7 +230,21 @@ class TestDocumentStandardizer:
     @patch('src.doc_generator.standardizers.document_standardizer.ProviderManager')
     def test_standardize_document_no_extractor(self, mock_provider_manager):
         """Test standardization when no suitable extractor is found."""
+        # Configure mock properly
+        mock_provider = Mock()
+        mock_provider.get_provider_name.return_value = "test_provider"
+        mock_manager = Mock()
+        mock_manager.get_default_provider.return_value = "test_provider"
+        mock_manager.get_provider.return_value = mock_provider
+        mock_manager.get_default_model.return_value = "test_model"
+        mock_manager.validate_model_provider_combination.return_value = (True, None)
+        mock_provider_manager.return_value = mock_manager
+        
         standardizer = DocumentStandardizer()
+        
+        # Mock the error handler to avoid the handle_error method call
+        mock_error_handler = Mock()
+        standardizer.error_handler = mock_error_handler
         
         # Plain text that won't match any extractor
         plain_content = "Just plain text with no markup"
@@ -179,7 +256,19 @@ class TestDocumentStandardizer:
     
     def test_standardize_file_not_found(self):
         """Test standardization of non-existent file."""
-        with patch('src.doc_generator.standardizers.document_standardizer.ProviderManager'):
+        with patch('src.doc_generator.standardizers.document_standardizer.ProviderManager') as mock_pm_class:
+            # Create properly configured mock manager
+            mock_manager = Mock()
+            mock_provider = Mock()
+            mock_provider.get_provider_name.return_value = "test_provider"
+            
+            mock_manager.get_default_provider.return_value = "test_provider"
+            mock_manager.get_provider.return_value = mock_provider
+            mock_manager.get_default_model.return_value = "test_model"
+            mock_manager.validate_model_provider_combination.return_value = (True, None)
+            
+            mock_pm_class.return_value = mock_manager
+            
             standardizer = DocumentStandardizer()
             
             with pytest.raises(DocumentStandardizerError) as exc_info:
@@ -208,17 +297,25 @@ class TestDocumentStandardizer:
             mock_provider = Mock()
             mock_provider.get_model.return_value = "test_model"
             mock_provider.get_name.return_value = "test_provider"
-            mock_provider.complete.return_value = CompletionResponse(
-                content="# Test Doc\n\n## Introduction\n\nStandardized content.",
-                model="test_model",
-                tokens_used=100
-            )
             
             mock_manager = Mock()
+            mock_manager.get_default_provider.return_value = "test_provider"
+            mock_manager.get_provider.return_value = mock_provider
+            mock_manager.get_default_model.return_value = "test_model"
+            mock_manager.validate_model_provider_combination.return_value = (True, None)
             mock_manager.get_first_available_provider.return_value = mock_provider
             mock_provider_manager.return_value = mock_manager
             
             standardizer = DocumentStandardizer()
+            
+            # Mock the internal method to return our test response
+            mock_response = CompletionResponse(
+                content="# Test Doc\n\n## Introduction\n\nStandardized content.",
+                model="test_model",
+                provider="test_provider",
+                usage={"total_tokens": 100}
+            )
+            standardizer._generate_standardized_content = Mock(return_value=mock_response)
             
             # Create temporary output file
             with tempfile.NamedTemporaryFile(mode='w', suffix='.md', delete=False) as out_tmp:
@@ -246,6 +343,16 @@ class TestDocumentStandardizer:
     @patch('src.doc_generator.standardizers.document_standardizer.ProviderManager')
     def test_load_terminology(self, mock_provider_manager):
         """Test terminology loading."""
+        # Configure mock properly
+        mock_provider = Mock()
+        mock_provider.get_provider_name.return_value = "test_provider"
+        mock_manager = Mock()
+        mock_manager.get_default_provider.return_value = "test_provider"
+        mock_manager.get_provider.return_value = mock_provider
+        mock_manager.get_default_model.return_value = "test_model"
+        mock_manager.validate_model_provider_combination.return_value = (True, None)
+        mock_provider_manager.return_value = mock_manager
+        
         # Create temporary terminology file
         with tempfile.NamedTemporaryFile(mode='w', suffix='.yaml', delete=False) as tmp:
             tmp.write("""

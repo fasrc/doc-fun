@@ -40,8 +40,8 @@ class TestSmartSectionMapper:
         similarity = mapper._calculate_section_similarity("quick_installation", ["installation"])
         assert similarity == 0.8
         
-        # Word overlap
-        similarity = mapper._calculate_section_similarity("getting_started", ["quick_start"])
+        # Word overlap - use terms that actually overlap
+        similarity = mapper._calculate_section_similarity("installation_guide", ["guide_installation"])
         assert similarity > 0.0
         
         # No match
