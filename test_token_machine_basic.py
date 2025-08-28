@@ -12,7 +12,16 @@ sys.path.insert(0, str(Path(__file__).parent / "src"))
 
 # Test the token machine without importing external dependencies
 def test_token_machine_core():
+    # Store original modules to restore later
+    original_modules = {}
+    mock_modules = ['openai', 'anthropic', 'doc_generator.config', 'doc_generator.exceptions', 'doc_generator', 'doc_generator.utils']
+    
     try:
+        # Save original modules if they exist
+        for module_name in mock_modules:
+            if module_name in sys.modules:
+                original_modules[module_name] = sys.modules[module_name]
+        
         # Import only the core classes and enums
         import importlib.util
         
@@ -108,6 +117,16 @@ def test_token_machine_core():
         import traceback
         traceback.print_exc()
         assert False, f"Core test failed: {e}"
+    finally:
+        # Clean up mock modules to avoid polluting other tests
+        for module_name in mock_modules:
+            if module_name in sys.modules:
+                if module_name in original_modules:
+                    # Restore original module
+                    sys.modules[module_name] = original_modules[module_name]
+                else:
+                    # Remove mock module
+                    del sys.modules[module_name]
 
 if __name__ == "__main__":
     success = test_token_machine_core()
