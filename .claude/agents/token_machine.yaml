@@ -1,0 +1,270 @@
+# Token Machine Agent - Token Usage Analysis and Optimization Specialist
+# Version: 1.0.0
+# Purpose: Analyze token consumption, provide cost estimates, and recommend optimization strategies
+
+agent:
+  name: token_machine
+  version: "1.0.0"
+  description: "Specialized agent for comprehensive token usage analysis, cost estimation, and optimization recommendations for doc-generator operations"
+  
+capabilities:
+  primary:
+    - Token consumption analysis for any operation or task
+    - Multi-provider cost estimation (OpenAI, Anthropic, etc.)
+    - Optimization strategy recommendations
+    - Token efficiency assessments
+    - Usage pattern identification
+    - Budget impact analysis
+    - ROI calculations for different model selections
+    
+  secondary:
+    - Caching strategy recommendations
+    - Prompt optimization suggestions
+    - Batch processing analysis
+    - Token prediction modeling
+    - Usage anomaly detection
+    - Performance vs. cost trade-off analysis
+    
+  technical:
+    - Real-time token counting
+    - Historical usage analysis
+    - Trend identification and forecasting
+    - Cross-provider comparison
+    - Context window optimization
+    - Streaming vs. batch analysis
+
+configuration:
+  default_settings:
+    analysis_depth: "comprehensive"  # minimal, standard, comprehensive
+    include_cost_analysis: true
+    include_optimization: true
+    compare_providers: true
+    forecast_period: "30d"
+    
+  thresholds:
+    warning_tokens: 10000
+    critical_tokens: 50000
+    budget_warning: 0.75  # 75% of budget
+    efficiency_target: 0.85  # 85% efficiency
+    
+  providers:
+    openai:
+      models:
+        - name: "gpt-3.5-turbo"
+          context: 16385
+          input_cost: 0.0015  # per 1K tokens
+          output_cost: 0.002
+          
+        - name: "gpt-4"
+          context: 8192
+          input_cost: 0.03
+          output_cost: 0.06
+          
+        - name: "gpt-4o"
+          context: 128000
+          input_cost: 0.005
+          output_cost: 0.015
+          
+        - name: "gpt-4o-mini"
+          context: 128000
+          input_cost: 0.00015
+          output_cost: 0.0006
+          
+    anthropic:
+      models:
+        - name: "claude-3-5-haiku"
+          context: 200000
+          input_cost: 0.0008
+          output_cost: 0.004
+          
+        - name: "claude-3-5-sonnet"
+          context: 200000
+          input_cost: 0.003
+          output_cost: 0.015
+          
+        - name: "claude-opus-4-1"
+          context: 200000
+          input_cost: 0.015
+          output_cost: 0.075
+
+prompts:
+  system: |
+    You are Token Machine, a specialized agent for token usage analysis and optimization in the doc-generator system.
+    
+    Your primary responsibilities:
+    1. Analyze token consumption for any given task or operation
+    2. Provide detailed cost estimates across different LLM providers
+    3. Recommend optimization strategies to reduce token usage
+    4. Assess token efficiency and identify waste
+    5. Predict future token consumption based on patterns
+    
+    For each analysis, you should:
+    - Calculate exact or estimated token counts
+    - Provide cost breakdowns for each available model
+    - Identify optimization opportunities
+    - Suggest the most cost-effective approach
+    - Consider quality vs. cost trade-offs
+    
+    Always present your analysis in a clear, structured format with:
+    - Executive summary
+    - Detailed breakdown
+    - Recommendations
+    - Risk assessment
+    
+  analysis_template: |
+    ## Token Usage Analysis
+    
+    ### Operation: {operation_name}
+    
+    #### Token Consumption Estimate
+    - Input tokens: {input_tokens}
+    - Output tokens: {output_tokens}
+    - Total tokens: {total_tokens}
+    
+    #### Cost Analysis by Provider
+    {cost_breakdown}
+    
+    #### Optimization Opportunities
+    {optimization_suggestions}
+    
+    #### Recommendations
+    {recommendations}
+    
+    #### Risk Assessment
+    {risks}
+
+analysis_methods:
+  token_estimation:
+    method: "character_based"
+    formula: "characters / 4"  # Rough approximation
+    adjustments:
+      code: 1.2  # Code uses more tokens
+      markdown: 1.1  # Markdown slightly more
+      plain_text: 1.0  # Base rate
+      
+  cost_calculation:
+    include_retry_overhead: true
+    safety_margin: 1.15  # 15% safety margin
+    batch_discount: 0.9  # 10% discount for batch operations
+    
+  optimization_strategies:
+    - name: "caching"
+      potential_savings: 0.3  # 30%
+      implementation_effort: "low"
+      
+    - name: "prompt_optimization"
+      potential_savings: 0.2  # 20%
+      implementation_effort: "medium"
+      
+    - name: "model_selection"
+      potential_savings: 0.5  # 50% or more
+      implementation_effort: "low"
+      
+    - name: "context_pruning"
+      potential_savings: 0.15  # 15%
+      implementation_effort: "medium"
+      
+    - name: "batch_processing"
+      potential_savings: 0.25  # 25%
+      implementation_effort: "high"
+
+integration:
+  hooks:
+    pre_generation:
+      - estimate_tokens
+      - check_budget
+      - recommend_model
+      
+    post_generation:
+      - record_actual_usage
+      - update_predictions
+      - analyze_efficiency
+      
+    periodic:
+      - generate_usage_report
+      - identify_trends
+      - update_cost_models
+      
+  api_endpoints:
+    - path: "/api/token-analysis/estimate"
+      method: "POST"
+      description: "Estimate tokens for an operation"
+      
+    - path: "/api/token-analysis/optimize"
+      method: "POST"
+      description: "Get optimization recommendations"
+      
+    - path: "/api/token-analysis/report"
+      method: "GET"
+      description: "Generate usage report"
+
+reporting:
+  templates:
+    daily_summary:
+      include:
+        - total_tokens_used
+        - total_cost
+        - top_operations
+        - optimization_opportunities
+        
+    weekly_analysis:
+      include:
+        - usage_trends
+        - cost_trends
+        - provider_comparison
+        - efficiency_metrics
+        
+    monthly_report:
+      include:
+        - comprehensive_analysis
+        - roi_analysis
+        - forecast_next_month
+        - strategic_recommendations
+
+examples:
+  basic_analysis:
+    input: "Analyze token usage for generating Python documentation"
+    output: |
+      ## Token Usage Analysis
+      
+      ### Operation: Python Documentation Generation
+      
+      #### Token Consumption Estimate
+      - Input tokens: ~3,500 (system prompt + examples)
+      - Output tokens: ~2,500 (generated documentation)
+      - Total tokens: ~6,000
+      
+      #### Cost Analysis by Provider
+      - GPT-4o-mini: $0.0015 (most economical)
+      - GPT-4o: $0.07 (balanced)
+      - GPT-4: $0.33 (premium quality)
+      - Claude 3.5 Haiku: $0.013 (good value)
+      - Claude 3.5 Sonnet: $0.056 (high quality)
+      
+      #### Optimization Opportunities
+      1. Cache common documentation patterns (30% savings)
+      2. Use GPT-4o-mini for initial draft (85% cost reduction)
+      3. Implement incremental generation (20% token reduction)
+      
+      #### Recommendations
+      - Use GPT-4o-mini for standard documentation
+      - Reserve GPT-4o for complex technical topics
+      - Implement response caching immediately
+      
+      #### Risk Assessment
+      - Low risk with GPT-4o-mini for standard docs
+      - Quality review recommended for first implementations
+
+metadata:
+  author: "doc-generator team"
+  created: "2024-01-27"
+  last_updated: "2024-01-27"
+  tags:
+    - token-analysis
+    - cost-optimization
+    - llm-efficiency
+    - agent
+  dependencies:
+    - doc-generator-core
+    - provider-apis
+    - analytics-module

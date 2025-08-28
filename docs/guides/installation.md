@@ -2,7 +2,7 @@
 
 This guide covers different ways to install and set up doc-generator for development and production use.
 
-## 📋 Prerequisites
+## Prerequisites
 
 ### System Requirements
 - **Python**: 3.8 or higher
@@ -18,7 +18,7 @@ This guide covers different ways to install and set up doc-generator for develop
 - `pandas>=1.5.0` - Data analysis and reporting
 - `tabulate>=0.9.0` - Table formatting
 
-## 🚀 Quick Installation
+## Quick Installation
 
 ### Option 1: Development Installation (Recommended)
 
@@ -49,7 +49,7 @@ pip install doc-generator
 doc-gen --version
 ```
 
-## 🔧 Environment Setup
+## Environment Setup
 
 ### 1. OpenAI API Configuration
 
@@ -93,7 +93,7 @@ mkdir -p examples output
 - `terminology.yaml` - HPC modules and terminology
 - `examples/` - Few-shot learning examples
 
-## 🐍 Virtual Environment Setup
+## Virtual Environment Setup
 
 ### Using venv (Recommended)
 
@@ -128,7 +128,7 @@ pip install -e .
 conda deactivate
 ```
 
-## 🧪 Verify Installation
+## Verify Installation
 
 ### Basic Verification
 
@@ -166,7 +166,7 @@ python -m pytest -v
 # ========================= 57 passed in X.XXs =========================
 ```
 
-## 🛠️ Development Setup
+## Development Setup
 
 ### Full Development Installation
 
@@ -211,7 +211,7 @@ Create `.vscode/settings.json`:
 3. Configure Black as code formatter
 4. Enable flake8 for linting
 
-## 🚨 Troubleshooting
+## Troubleshooting
 
 ### Common Issues
 
@@ -310,7 +310,7 @@ pip show doc-generator
 - **Documentation**: [Read the guides](https://github.com/fasrc/doc-fun/docs)
 - **FASRC Support**: Contact FASRC Research Computing
 
-## 🔄 Updating
+## Updating
 
 ### Update Development Installation
 
@@ -335,7 +335,7 @@ pip install --upgrade doc-generator
 doc-gen --version
 ```
 
-## 🏗️ Docker Installation (Optional)
+## Docker Installation (Optional)
 
 ### Using Docker
 
@@ -362,15 +362,15 @@ docker run -e OPENAI_API_KEY="your-key" doc-generator \
 
 ---
 
-## ✅ Next Steps
+## Next Steps
 
 After successful installation:
 
-1. 📖 **[Read Getting Started Guide](getting-started.md)** - Learn basic usage
-2. 🧪 **[Run Tests](testing.md)** - Understand the test suite
-3. 🔌 **[Create Plugins](creating-plugins.md)** - Extend functionality
-4. 🛠️ **[Configure Templates](configuration.md)** - Customize prompts and terminology
+1. **[Read Getting Started Guide](getting-started.md)** - Learn basic usage
+2. **[Run Tests](testing.md)** - Understand the test suite
+3. **[Create Plugins](creating-plugins.md)** - Extend functionality
+4. **[Configure Templates](configuration.md)** - Customize prompts and terminology
 
-**Installation Complete!** 🎉
+**Installation Complete!**
 
 Your doc-generator installation is ready. You can now generate AI-powered documentation with intelligent plugin recommendations.

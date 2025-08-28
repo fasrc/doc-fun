@@ -2,7 +2,7 @@
 
 This guide covers how to customize doc-generator's behavior through configuration files, environment variables, and runtime parameters.
 
-## 🎛️ Configuration Overview
+## Configuration Overview
 
 Doc-generator uses multiple configuration layers:
 
@@ -11,7 +11,7 @@ Doc-generator uses multiple configuration layers:
 3. **Environment Variables** (`.env`) - API keys and runtime settings
 4. **Command-line Options** - Override defaults per execution
 
-## 📝 Prompt Templates
+## Prompt Templates
 
 ### Default Template Structure
 
@@ -150,7 +150,7 @@ code_examples:
     description: "Basic SLURM job script header"
 ```
 
-## 🔧 Environment Configuration
+## Environment Configuration
 
 ### API Keys
 
@@ -181,7 +181,7 @@ DOC_GEN_VERBOSE=false
 DOC_GEN_LOG_LEVEL=INFO
 ```
 
-## 🎯 Command-Line Configuration
+## Command-Line Configuration
 
 ### Global Options
 
@@ -212,7 +212,7 @@ doc-gen --terminology-path config/custom-terminology.yaml
 doc-gen --examples-dir examples/specialized/
 ```
 
-## 🔌 Plugin Configuration
+## Plugin Configuration
 
 ### Plugin-Specific Settings
 
@@ -247,7 +247,7 @@ DATASET_RECOMMENDER_CACHE_TTL=3600
 DATASET_RECOMMENDER_SOURCES=zenodo,datahub,nasa
 ```
 
-## 📁 Directory Structure
+## Directory Structure
 
 ### Standard Configuration Layout
 
@@ -283,7 +283,7 @@ export DOC_GEN_PROMPTS_DIR=/path/to/custom/prompts
 export DOC_GEN_TERMINOLOGY_PATH=/path/to/custom/terminology.yaml
 ```
 
-## 🎨 Output Customization
+## Output Customization
 
 ### HTML Styling
 
@@ -373,7 +373,7 @@ doc-gen --profile production --topic "Critical Documentation"
 doc-gen --profile development --model gpt-4 --topic "Test Topic"
 ```
 
-## 🧪 Advanced Configuration
+## Advanced Configuration
 
 ### Conditional Configuration
 
@@ -420,7 +420,7 @@ organizations:
     documentation_url: "https://access-ci.org"
 ```
 
-## 📊 Configuration Validation
+## Configuration Validation
 
 ### Validate Configuration
 
@@ -460,7 +460,7 @@ class TerminologyConfig(BaseModel):
     code_examples: Dict[str, Dict] = {}
 ```
 
-## ✅ Configuration Best Practices
+## Configuration Best Practices
 
 ### Security
 - **Never commit API keys** to version control

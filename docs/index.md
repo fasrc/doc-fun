@@ -8,7 +8,7 @@
 
 ---
 
-## 🚀 What is doc-generator?
+## What is doc-generator?
 
 **doc-generator** is a sophisticated Python package that automates the creation of high-quality technical documentation using multiple LLM providers (OpenAI GPT and Anthropic Claude). Originally designed for Faculty Arts and Sciences Research Computing (FASRC), it supports three main capabilities: generating documentation from topics, creating README files for code projects, and standardizing existing documentation to organizational templates.
 
@@ -19,10 +19,10 @@
         doc-gen --topic "Python Machine Learning with GPU" --output-dir ./docs
         
         # Result: Professional HTML documentation with:
-        # ✅ HPC module recommendations (python/3.12.8, cuda/12.9.1)
-        # ✅ Installation instructions
-        # ✅ Code examples and workflows
-        # ✅ Best practices and troubleshooting
+        # HPC module recommendations (python/3.12.8, cuda/12.9.1)
+        # Installation instructions
+        # Code examples and workflows
+        # Best practices and troubleshooting
         ```
     
     === "README Generation"
@@ -31,10 +31,10 @@
         doc-gen --readme /path/to/project --recursive --output-dir ./output
         
         # Result: README.md files with:
-        # ✅ Project structure analysis
-        # ✅ Code example discovery
-        # ✅ Installation and usage instructions
-        # ✅ AI-enhanced descriptions
+        # Project structure analysis
+        # Code example discovery
+        # Installation and usage instructions
+        # AI-enhanced descriptions
         ```
     
     === "Document Standardization"
@@ -43,49 +43,50 @@
         doc-gen --standardize legacy-docs.html --template technical_documentation
         
         # Result: Standardized markdown with:
-        # ✅ Organizational template structure
-        # ✅ Consistent formatting and sections
-        # ✅ Format conversion (HTML → Markdown)
-        # ✅ Content preservation and enhancement
+        # Organizational template structure
+        # Consistent formatting and sections
+        # Format conversion (HTML → Markdown)
+        # Content preservation and enhancement
         ```
 
 ---
 
-## ✨ Key Features
+## Key Features
 
-### 🧠 **Multi-Provider AI Integration**
-- **OpenAI GPT Models** (GPT-3.5, GPT-4, GPT-4o) with customizable parameters
-- **Anthropic Claude Models** (Claude 3 Haiku, Sonnet, Opus) for diverse AI capabilities
-- **Auto-Provider Selection** based on available API keys and use cases
+### **Multi-Provider AI Integration**
+- **OpenAI GPT Models** (GPT-3.5-Turbo, GPT-4, GPT-4o, GPT-4o-mini) with customizable parameters
+- **Anthropic Claude Models** (Claude 3.5 Sonnet, Claude Opus 4.1, Claude 3.5 Haiku) for advanced AI capabilities
+- **Intelligent Model Selection** with production-ready recommendations and known limitation warnings
+- **Auto-Provider Selection** based on available API keys, task types, and optimal model routing
 - **Few-shot Prompting** with curated examples for consistent, high-quality output
 - **Multiple Format Support** including HTML, Markdown, and custom formats
 
-### 🔌 **Extensible Plugin Architecture**
+### **Extensible Plugin Architecture**
 - **Built-in ModuleRecommender** suggests relevant HPC modules automatically
 - **Third-party Plugin Support** via Python entry points for unlimited extensibility
 - **Priority-based Ordering** and intelligent plugin management
 - **Community Ecosystem** ready for datasets, workflows, code templates, and more
 
-### 📊 **Quality Assurance Pipeline**
+### **Quality Assurance Pipeline**
 - **Multi-run Generation** with temperature variation for optimal results
 - **Algorithmic Analysis** with section scoring and structure validation
 - **GPT-based Quality Evaluation** for technical accuracy assessment
 - **Best-variant Compilation** automatically selects optimal content
 
-### 🎯 **Documentation Comparison**
+### **Documentation Comparison**
 - **Compare with References** to benchmark quality against existing documentation
 - **7 Similarity Metrics** including content, structural, semantic, and code similarity
 - **Intelligent Recommendations** for improving generated documentation
 - **Platform Detection** works with Sphinx, MkDocs, ReadTheDocs, GitHub, and more
 
-### 📄 **Document Standardization System**
+### **Document Standardization System**
 - **Legacy Document Transformation** converts existing documentation to modern standards
 - **Organizational Templates** for technical documentation, user guides, and API references
 - **Smart Content Mapping** uses AI to organize content into standardized sections
 - **Format Conversion** between HTML, Markdown, and other formats with fidelity preservation
 - **Extensible Extractor Architecture** supports multiple input document formats
 
-### 🛠️ **Professional Development Tools**
+### **Professional Development Tools**
 - **Comprehensive CLI** with 20+ command-line options for all operation modes
 - **Python API** for programmatic integration and custom workflows
 - **Code Scanning** for automatic example discovery in project directories
@@ -94,7 +95,7 @@
 
 ---
 
-## 🎯 Perfect For
+## Perfect For
 
 <div class="grid cards" markdown>
 
@@ -126,7 +127,7 @@
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Installation
 
@@ -163,7 +164,7 @@ export OPENAI_API_KEY="your-api-key-here"
 doc-gen --topic "Python Data Analysis with Pandas" --output-dir ./my-docs
 
 # 3. View the results
-open my-docs/python_data_analysis_with_pandas_gpt4omini_temp03.html
+open my-docs/python_data_analysis_with_pandas_gpt-4o-mini_temp03.html
 ```
 
 !!! success "What You Get"
@@ -176,7 +177,7 @@ open my-docs/python_data_analysis_with_pandas_gpt4omini_temp03.html
 
 ---
 
-## 🏗️ Architecture Overview
+## Architecture Overview
 
 ### Plugin System
 
@@ -216,16 +217,16 @@ src/doc_generator/
 
 ---
 
-## 🔌 Plugin Ecosystem
+## Plugin Ecosystem
 
 ### Built-in Plugins
 
 | Plugin | Purpose | Status |
 |--------|---------|--------|
-| **ModuleRecommender** | HPC module suggestions | ✅ Available |
-| **DatasetRecommender (TBD)** | Research dataset discovery | 🚧 Community |
-| **WorkflowRecommender (TBD)** | SLURM job templates | 🚧 Community |
-| **CodeTemplateRecommender (TBD)** | Boilerplate code | 🚧 Community |
+| **ModuleRecommender** | HPC module suggestions | Available |
+| **DatasetRecommender (TBD)** | Research dataset discovery | Community |
+| **WorkflowRecommender (TBD)** | SLURM job templates | Community |
+| **CodeTemplateRecommender (TBD)** | Boilerplate code | Community |
 
 ### Create Your Own Plugin
 
@@ -250,7 +251,7 @@ class MyAwesomePlugin(RecommendationEngine):
 
 ---
 
-## 📊 Quality & Testing
+## Quality & Testing
 
 ### Test Coverage
 - **57 comprehensive tests** covering all functionality
@@ -274,7 +275,7 @@ doc-gen --topic "Critical Documentation" --runs 3 --analyze --quality-eval
 
 ---
 
-## 🎓 Learning Path
+## Learning Path
 
 <div class="grid cards" markdown>
 
@@ -306,7 +307,7 @@ doc-gen --topic "Critical Documentation" --runs 3 --analyze --quality-eval
 
 ---
 
-## 🤝 Community & Support
+## Community & Support
 
 ### Get Involved
 - **[GitHub Repository](https://github.com/fasrc/doc-fun)** - Source code and issue tracking
@@ -321,7 +322,7 @@ doc-gen --topic "Critical Documentation" --runs 3 --analyze --quality-eval
 
 ---
 
-## 📈 Success Stories
+## Success Stories
 
 !!! quote "Research Computing Team"
     "doc-generator transformed how we create user documentation. What used to take hours now takes minutes, and the quality is consistently professional."
@@ -334,7 +335,7 @@ doc-gen --topic "Critical Documentation" --runs 3 --analyze --quality-eval
 
 ---
 
-## 🔮 What's Next?
+## What's Next?
 
 ### Upcoming Features
 - **Caching System** for faster repeated generations
@@ -346,22 +347,22 @@ doc-gen --topic "Critical Documentation" --runs 3 --analyze --quality-eval
 ### Version Roadmap
 
 === "v1.1.0 (Current)"
-    - ✅ Plugin architecture
-    - ✅ CLI interface  
-    - ✅ Enhanced testing (57 tests)
-    - ✅ Professional packaging
+    - Plugin architecture
+    - CLI interface  
+    - Enhanced testing (57 tests)
+    - Professional packaging
 
 === "v1.2.0 (Planned)"
-    - 🚧 Caching system
-    - 🚧 WordPress integration
-    - 🚧 UI improvements
-    - 🚧 Additional plugins
+    - Caching system
+    - WordPress integration
+    - UI improvements
+    - Additional plugins
 
 === "v2.0.0 (Future)"
-    - 🔮 Multi-model support
-    - 🔮 Real-time collaboration
-    - 🔮 Advanced analytics
-    - 🔮 Enterprise features
+    - Multi-model support
+    - Real-time collaboration
+    - Advanced analytics
+    - Enterprise features
 
 ---
 
@@ -371,4 +372,4 @@ doc-gen --topic "Critical Documentation" --runs 3 --analyze --quality-eval
 
 ---
 
-*Built with ❤️ by [FASRC Research Computing](https://www.rc.fas.harvard.edu/)*
+*Built by [FASRC Research Computing](https://www.rc.fas.harvard.edu/)*

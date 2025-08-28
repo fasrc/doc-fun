@@ -2,7 +2,7 @@
 
 This section contains architectural decisions, design specifications, and technical documentation for the doc-generator project.
 
-## 📐 Design Principles
+## Design Principles
 
 The doc-generator project follows these core design principles:
 
@@ -29,19 +29,19 @@ The doc-generator project follows these core design principles:
 
 ---
 
-## 📋 Design Documents
+## Design Documents
 
 | Document | Status | Description |
 |----------|--------|-------------|
-| [Claude API Integration](claude-api-integration.md) | ✅ Implemented | Adding Anthropic Claude alongside OpenAI |
-| Document Standardization System | ✅ Implemented | Architecture for transforming existing documentation |
-| Content Extraction Framework | ✅ Implemented | Extensible system for parsing various document formats |
-| README Generation Pipeline | ✅ Implemented | Automated README creation for code projects |
-| Multi-Provider Strategy | ✅ Implemented | Framework for supporting multiple LLM providers |
+| [Claude API Integration](claude-api-integration.md) | Implemented | Adding Anthropic Claude alongside OpenAI |
+| Document Standardization System | Implemented | Architecture for transforming existing documentation |
+| Content Extraction Framework | Implemented | Extensible system for parsing various document formats |
+| README Generation Pipeline | Implemented | Automated README creation for code projects |
+| Multi-Provider Strategy | Implemented | Framework for supporting multiple LLM providers |
 
 ---
 
-## 🎯 Architecture Overview
+## Architecture Overview
 
 ```mermaid
 graph TB
@@ -83,7 +83,7 @@ graph TB
 
 ---
 
-## 📝 Decision Records
+## Decision Records
 
 ### **ADR-001: Plugin Architecture**
 - **Status**: Implemented
@@ -126,7 +126,7 @@ Our design process follows these steps:
 
 ---
 
-## 📚 References
+## References
 
 - [Architectural Decision Records (ADRs)](https://adr.github.io/)
 - [Design by Contract](https://en.wikipedia.org/wiki/Design_by_contract)

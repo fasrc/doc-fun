@@ -2,7 +2,7 @@
 
 Welcome to the doc-generator project! This guide will help you contribute effectively, whether you're fixing bugs, adding features, or creating new plugins.
 
-## 🤝 Ways to Contribute
+## Ways to Contribute
 
 ### Code Contributions
 - **Bug fixes** - Fix issues and improve stability
@@ -17,7 +17,7 @@ Welcome to the doc-generator project! This guide will help you contribute effect
 - **Community support** - Help other users in discussions
 - **Examples** - Contribute usage examples and tutorials
 
-## 🚀 Getting Started
+## Getting Started
 
 ### 1. Fork and Clone
 
@@ -62,7 +62,7 @@ git checkout -b feature/amazing-new-feature
 git checkout -b fix/important-bug-fix
 ```
 
-## 🔧 Development Workflow
+## Development Workflow
 
 ### Code Standards
 
@@ -195,7 +195,7 @@ python -m flake8 src/ tests/
 python -m mypy src/doc_generator/
 ```
 
-## 🔌 Plugin Development
+## Plugin Development
 
 ### Creating New Plugins
 
@@ -302,7 +302,7 @@ my_plugin = "my_package.plugins:MyRecommender"
 - **Cache results** when appropriate
 - **Document configuration options** clearly
 
-## 📋 Issue Guidelines
+## Issue Guidelines
 
 ### Reporting Bugs
 
@@ -363,7 +363,7 @@ Academic users need LaTeX output for integration with research papers and thesis
 This would complement existing HTML and Markdown formats.
 ```
 
-## 🎯 Pull Request Process
+## Pull Request Process
 
 ### 1. Prepare Your Changes
 
@@ -454,7 +454,7 @@ git commit -m "fix: address review feedback for error handling"
 git push origin feature/amazing-new-feature
 ```
 
-## 🏆 Recognition
+## Recognition
 
 ### Contributors
 - All contributors are recognized in the project README
@@ -466,7 +466,7 @@ git push origin feature/amazing-new-feature
 - Share your plugins and extensions with the community
 - Contribute to documentation and examples
 
-## 📚 Resources
+## Resources
 
 ### Development Resources
 - **[Python Style Guide](https://pep8.org/)** - Official Python style guidelines
@@ -497,4 +497,4 @@ git push origin feature/amazing-new-feature
 
 **Ready to contribute?** Start by exploring the codebase, running the tests, and looking for issues labeled `good first issue` or `help wanted`.
 
-Thank you for contributing to doc-generator! 🎉
+Thank you for contributing to doc-generator!

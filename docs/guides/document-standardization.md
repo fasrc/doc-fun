@@ -525,7 +525,7 @@ git checkout -b docs/standardization-migration
 ## Next Steps
 
 - **[Advanced Examples](../examples/advanced.md)**: Complex standardization workflows
-- **[API Reference](../api/)**: Technical implementation details  
+- **[API Reference](../api/index.md)**: Technical implementation details  
 - **[Contributing](contributing.md)**: Help improve standardization features
 - **[Plugin Development](creating-plugins.md)**: Extend extractor and template capabilities
 

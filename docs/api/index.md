@@ -2,7 +2,7 @@
 
 This section provides comprehensive API documentation for doc-generator, automatically generated from source code docstrings.
 
-## 📋 Overview
+## Overview
 
 The doc-generator API is organized into these main modules:
 
@@ -13,7 +13,7 @@ The doc-generator API is organized into these main modules:
 - **[CLI](cli.md)** - Command-line interface
 - **[Evaluator](evaluator.md)** - Document analysis and quality evaluation
 
-## 🎯 Quick Reference
+## Quick Reference
 
 ### Main Classes
 
@@ -55,7 +55,7 @@ plugin_manager = PluginManager()
 recommendations = plugin_manager.get_recommendations("Machine Learning")
 ```
 
-## 🔗 Navigation
+## Navigation
 
 Choose a section to explore detailed API documentation:
 
@@ -81,7 +81,7 @@ Choose a section to explore detailed API documentation:
 
 </div>
 
-## 💡 Examples
+## Examples
 
 ### Advanced Generation with Analysis
 
@@ -120,7 +120,7 @@ class CustomRecommender(RecommendationEngine):
         return [{"title": "Custom Suggestion", "score": 8.5}]
 ```
 
-## 📖 Related Documentation
+## Related Documentation
 
 - **[Getting Started Guide](../guides/getting-started.md)** - Learn basic usage
 - **[Creating Plugins Guide](../guides/creating-plugins.md)** - Build custom plugins

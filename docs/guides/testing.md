@@ -5,7 +5,7 @@ This comprehensive guide covers how to run tests, understand test results, write
 !!! info "Testing Examples Notice"
     This guide includes examples of testing **DatasetRecommender** and **WorkflowRecommender** plugins. These are **conceptual examples (TBD)** used to demonstrate testing patterns and are not currently implemented plugins.
 
-## 🧪 Running Tests
+## Running Tests
 
 ### Quick Test Commands
 
@@ -73,7 +73,7 @@ E       NameError: name 'MockDatasetRecommender' is not defined
 tests/test_plugin_manager.py:156: NameError
 ```
 
-## 📊 Test Coverage
+## Test Coverage
 
 ### Generate Coverage Reports
 
@@ -114,7 +114,7 @@ src/doc_generator/cli.py              198     45    77%   167-189, 234-267
 TOTAL                                 753     70    91%
 ```
 
-## 🏗️ Test Architecture
+## Test Architecture
 
 ### Test Structure
 
@@ -221,7 +221,7 @@ class FailingPlugin(MockRecommendationEngine):
     """Plugin that fails for error testing"""
 ```
 
-## ✍️ Writing New Tests
+## Writing New Tests
 
 ### Test Writing Guidelines
 
@@ -375,7 +375,7 @@ def test_documentation_generator_handles_missing_config_files(self, temp_dir):
         assert generator.terminology is not None
 ```
 
-## 🔧 Test Utilities and Helpers
+## Test Utilities and Helpers
 
 ### Custom Assertions
 
@@ -431,7 +431,7 @@ def create_sample_terminology(num_modules=5):
     }
 ```
 
-## 📈 Performance Testing
+## Performance Testing
 
 ### Timing Tests
 
@@ -478,7 +478,7 @@ def test_plugin_memory_usage_reasonable(self, sample_terminology, mock_plugin_di
         assert memory_increase < 50 * 1024 * 1024
 ```
 
-## 🚨 Debugging Test Failures
+## Debugging Test Failures
 
 ### Common Test Failure Patterns
 
@@ -565,7 +565,7 @@ def test_debug_plugin_loading(self, sample_terminology, mock_plugin_discovery):
         assert "test" in manager.engines
 ```
 
-## 🎯 Test Quality Guidelines
+## Test Quality Guidelines
 
 ### Test Quality Checklist
 
@@ -586,7 +586,7 @@ def test_debug_plugin_loading(self, sample_terminology, mock_plugin_discovery):
 - **Integration tests:** Cover major workflows
 - **Error handling:** Test all exception paths
 
-## 🔄 Continuous Integration
+## Continuous Integration
 
 ### GitHub Actions Integration
 
@@ -648,15 +648,15 @@ repos:
         always_run: true
 ```
 
-## ✅ Next Steps
+## Next Steps
 
 After mastering testing:
 
-1. 🔌 **[Create Plugins Guide](creating-plugins.md)** - Build your own plugins
-2. 📚 **[Advanced Configuration](configuration.md)** - Customize the system
+1. **[Create Plugins Guide](creating-plugins.md)** - Build your own plugins
+2. **[Advanced Configuration](configuration.md)** - Customize the system
 3. 🤝 **[Contributing Guide](contributing.md)** - Contribute to the project
 
-## 🎉 Testing Mastery
+## Testing Mastery
 
 You now understand:
 - How to run and interpret tests
@@ -666,4 +666,4 @@ You now understand:
 - Maintaining test quality
 - Performance and integration testing
 
-**Keep testing, keep improving!** 🧪✨
+**Keep testing, keep improving!**

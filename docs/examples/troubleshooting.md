@@ -2,7 +2,7 @@
 
 This guide helps you diagnose and resolve common issues with doc-generator.
 
-## 🚨 Common Issues
+## Common Issues
 
 ### Installation Problems
 
@@ -207,10 +207,10 @@ pip install -e /path/to/my-plugin-package
 **Solutions:**
 ```bash
 # 1. Use more specific topics
-# ❌ Poor
+# Poor
 doc-gen --topic "Python"
 
-# ✅ Better  
+# Better  
 doc-gen --topic "Python pandas DataFrame operations for time series analysis"
 
 # 2. Use better model
@@ -349,7 +349,7 @@ doc-gen --topic "Topic" --output-dir /tmp/doc-test
 lsof output/*.html
 ```
 
-## 🔧 Debugging Tools
+## Debugging Tools
 
 ### Verbose Mode
 
@@ -427,7 +427,7 @@ except Exception as e:
     traceback.print_exc()
 ```
 
-## 📊 System Diagnostics
+## System Diagnostics
 
 ### Environment Check Script
 
@@ -449,28 +449,28 @@ echo
 
 echo "3. API Key Status:"
 if [ -z "$OPENAI_API_KEY" ]; then 
-    echo "❌ OPENAI_API_KEY not set"
+    echo "OPENAI_API_KEY not set"
 else 
-    echo "✅ OPENAI_API_KEY is set"
+    echo "OPENAI_API_KEY is set"
 fi
 echo
 
 echo "4. Configuration Files:"
 for file in .env terminology.yaml prompts/generator/default.yaml; do
     if [ -f "$file" ]; then
-        echo "✅ $file exists ($(wc -l < "$file") lines)"
+        echo "$file exists ($(wc -l < "$file") lines)"
     else
-        echo "❌ $file missing"
+        echo "$file missing"
     fi
 done
 echo
 
 echo "5. Output Directory:"
 if [ -d "output" ]; then
-    echo "✅ output/ exists ($(ls output/ | wc -l) files)"
+    echo "output/ exists ($(ls output/ | wc -l) files)"
     ls -la output/ | head -5
 else
-    echo "❌ output/ directory missing"
+    echo "output/ directory missing"
 fi
 echo
 

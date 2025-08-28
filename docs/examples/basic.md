@@ -2,7 +2,7 @@
 
 This page demonstrates basic usage patterns for doc-generator across all operation modes with practical examples.
 
-## 🚀 Getting Started Examples
+## Getting Started Examples
 
 ### Operation Modes Overview
 
@@ -13,7 +13,7 @@ Doc-generator supports four main operation modes:
 3. **Standardization Mode** (`--standardize`): Transform existing documentation
 4. **Code Scanning Mode** (`--scan-code`): Legacy code discovery
 
-## 📝 Topic Mode Examples
+## Topic Mode Examples
 
 ### Simple Documentation Generation
 
@@ -47,14 +47,20 @@ doc-gen --topic "Machine Learning" --runs 3 --output-dir ./ml-docs
 ### Different Models and Temperatures
 
 ```bash
-# Use GPT-4 for higher quality
-doc-gen --topic "Database Design" --model gpt-4 --temperature 0.2
+# Use recommended models for optimal quality
+doc-gen --topic "Database Design" --model gpt-4o-mini --temperature 0.2
 
-# Use higher temperature for more creative output
-doc-gen --topic "Creative Coding" --model gpt-4 --temperature 0.8
+# Use premium model for complex topics
+doc-gen --topic "Advanced Algorithms" --model gpt-4o --temperature 0.3
+
+# Use Claude for code-heavy documentation
+doc-gen --topic "API Development" --model claude-3-5-sonnet-20241022 --temperature 0.3
+
+# Use higher temperature for more creative content
+doc-gen --topic "Creative Coding" --model gpt-4o --temperature 0.8
 ```
 
-## 🔌 Plugin Examples
+## Plugin Examples
 
 ### View Available Plugins
 
@@ -98,7 +104,7 @@ doc-gen --topic "General Topic" --disable-plugins modules
 doc-gen --topic "Data Science" --enable-only modules,datasets
 ```
 
-## 📁 Output Management
+## Output Management
 
 ### Organized Output Structure
 
@@ -127,7 +133,7 @@ The tool automatically generates descriptive filenames:
 # Output: topic_name_model_tempX_v1.html, topic_name_model_tempX_v2.html, etc.
 ```
 
-## 🎛️ Configuration Examples
+## Configuration Examples
 
 ### Custom Prompt Templates
 
@@ -151,7 +157,7 @@ doc-gen --topic "Specialized Computing" \
   --output-dir ./custom-docs
 ```
 
-## 🔍 Quality and Analysis
+## Quality and Analysis
 
 ### Basic Analysis
 
@@ -181,7 +187,7 @@ doc-gen --topic "Critical Guide" \
 # - Detailed logging output
 ```
 
-## 📋 README Mode Examples
+## README Mode Examples
 
 ### Basic README Generation
 
@@ -190,9 +196,9 @@ doc-gen --topic "Critical Guide" \
 doc-gen --readme /path/to/my-project --output-dir ./output
 
 # Result: my_project_readme_v1.md with:
-# ✅ Project structure analysis
-# ✅ Code example discovery
-# ✅ Installation and usage instructions
+# Project structure analysis
+# Code example discovery
+# Installation and usage instructions
 ```
 
 ### Recursive README Generation
@@ -230,7 +236,7 @@ doc-gen --readme /path/to/project --provider claude --model claude-3-5-sonnet-20
 doc-gen --readme /path/to/project --provider openai --model gpt-4
 ```
 
-## 📄 Document Standardization Examples
+## Document Standardization Examples
 
 ### Basic HTML to Markdown Conversion
 
@@ -239,9 +245,9 @@ doc-gen --readme /path/to/project --provider openai --model gpt-4
 doc-gen --standardize legacy-docs.html --target-format markdown
 
 # Result: legacy-docs_standardized.md
-# ✅ Clean Markdown formatting
-# ✅ Preserved content structure
-# ✅ Consistent section organization
+# Clean Markdown formatting
+# Preserved content structure
+# Consistent section organization
 ```
 
 ### Template-Based Standardization
@@ -287,7 +293,7 @@ doc-gen --standardize problem-doc.html \
     --provider claude
 ```
 
-## 🔍 Code Scanning Examples (Legacy Mode)
+## Code Scanning Examples (Legacy Mode)
 
 ### Basic Code Scanning
 
@@ -321,7 +327,7 @@ doc-gen --scan-code /large/project \
     --suffix "_generated"
 ```
 
-## 📊 Common Workflows
+## Common Workflows
 
 ### Documentation Migration Workflow
 
@@ -415,17 +421,17 @@ doc-gen --topic "Common SLURM Issues" \
   --quality-eval
 ```
 
-## 🎯 Topic Formulation Tips
+## Topic Formulation Tips
 
 ### Effective Topics
 
 ```bash
-# ✅ Good: Specific and descriptive
+# Good: Specific and descriptive
 doc-gen --topic "Python pandas DataFrame operations for time series analysis"
 doc-gen --topic "SLURM job arrays for Monte Carlo simulations"
 doc-gen --topic "GPU-accelerated machine learning with PyTorch"
 
-# ❌ Poor: Too vague or generic
+# Poor: Too vague or generic
 doc-gen --topic "Python"
 doc-gen --topic "Help"
 doc-gen --topic "Programming"
@@ -444,7 +450,7 @@ doc-gen --topic "Parallel processing with MPI for computational chemistry simula
 doc-gen --topic "Django web application deployment with PostgreSQL and Redis"
 ```
 
-## 🚨 Common Issues and Solutions
+## Common Issues and Solutions
 
 ### No Module Recommendations
 
@@ -467,23 +473,37 @@ print(rec.get_recommendations('Python'))
 "
 ```
 
-### Low Quality Output
+### Empty or Low Quality Output
 
 ```bash
-# Issue: Generated documentation is too generic or low quality
+# Issue: Generated documentation is empty, incomplete, or low quality
 # Solutions:
 
-# 1. Use more specific topics
-doc-gen --topic "Python scikit-learn model training for image classification"
+# 1. Check for GPT-5 model usage (known issue)
+# Avoid these problematic models:
+# doc-gen --topic "Any Topic" --model gpt-5        # Often returns empty content
+# doc-gen --topic "Any Topic" --model gpt-5-mini   # API bugs
 
-# 2. Use better model
-doc-gen --topic "Same Topic" --model gpt-4
+# Use recommended models instead:
+doc-gen --topic "Same Topic" --model gpt-4o-mini    # Reliable and cost-effective
+doc-gen --topic "Same Topic" --model claude-3-5-sonnet-20241022  # Excellent quality
 
-# 3. Lower temperature for more focused output
-doc-gen --topic "Same Topic" --temperature 0.1
+# 2. Use more specific topics
+doc-gen --topic "Python scikit-learn model training for image classification with GPU acceleration"
 
-# 4. Generate multiple variants and compare
-doc-gen --topic "Same Topic" --runs 5 --analyze
+# 3. Choose optimal model for task complexity
+doc-gen --topic "Simple Guide" --model gpt-4o-mini      # Cost-effective for basic topics
+doc-gen --topic "Complex Analysis" --model gpt-4o       # Higher capability for advanced topics
+doc-gen --topic "Code Documentation" --model claude-3-5-sonnet-20241022  # Excellent for code
+
+# 4. Lower temperature for more focused output
+doc-gen --topic "Technical Documentation" --temperature 0.1
+
+# 5. Generate multiple variants and select best
+doc-gen --topic "Important Documentation" --runs 5 --analyze
+
+# 6. Use quality evaluation to identify issues
+doc-gen --topic "Critical Documentation" --runs 3 --analyze --quality-eval
 ```
 
 ### API Rate Limiting
