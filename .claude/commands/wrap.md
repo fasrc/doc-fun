@@ -1,6 +1,7 @@
 ---
 name: wrap
 description: Complete current work, create branch, commit, push, and create PR
+model: claude-3-5-sonnet-20241022
 ---
 
 # Wrap Up Work Command
@@ -14,7 +15,8 @@ Complete all current work, create an appropriate branch, commit changes, push to
 3. **Stage and commit changes** with detailed commit message
 4. **Push branch** to remote repository
 5. **Create pull request** with comprehensive description
-6. **Return PR URL** for review
+6. **Switch back to main branch** for clean workspace
+7. **Return PR URL** for review
 
 ## Process
 
@@ -86,3 +88,8 @@ Assistant will:
 - Review changes carefully before committing
 - Include relevant context in PR description
 - Tag relevant reviewers if known
+
+## Implementation Requirements
+- **Always push branch**: Use `git push -u origin <branch-name>` to push and track the branch
+- **Switch to main**: Always end with `git checkout main` to return to clean main branch
+- **Clean workspace**: Leave the user on main branch ready for next work
