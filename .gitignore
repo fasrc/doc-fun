@@ -10,3 +10,4 @@ build/
 htmlcov/
 .doc_cache/
 site/
+.serena/

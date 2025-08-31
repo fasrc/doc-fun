@@ -59,6 +59,7 @@ Examples:
   # Document Standardization (--standardize mode)
   doc-gen --standardize existing-docs.html --format markdown
   doc-gen --standardize /path/to/doc.html --template api_documentation
+  doc-gen --standardize https://example.com/docs/api.html --format markdown
   doc-gen --standardize legacy.md --output-dir ./standardized
   
   # Legacy Code Scanning
@@ -78,8 +79,8 @@ Examples:
                            help='Generate HTML/Markdown documentation for a specific topic')
     mode_group.add_argument('--readme', metavar='DIRECTORY',
                            help='Generate README.md for directory using unified pipeline')
-    mode_group.add_argument('--standardize', metavar='FILE',
-                           help='Standardize existing documentation to organizational standards')
+    mode_group.add_argument('--standardize', metavar='FILE_OR_URL',
+                           help='Standardize existing documentation to organizational standards (accepts file path or URL)')
     mode_group.add_argument('--scan-code', nargs='?', const='.', metavar='DIR',
                            help='Scan directory for code examples and update terminology')
     
@@ -207,6 +208,9 @@ def run_standardization(args, logger: logging.Logger) -> None:
     """Run document standardization."""
     from .standardizers import DocumentStandardizer
     from pathlib import Path
+    import urllib.parse
+    import urllib.request
+    from urllib.error import URLError
     
     logger.info(f"Standardizing document: {args.standardize}")
     
@@ -214,20 +218,63 @@ def run_standardization(args, logger: logging.Logger) -> None:
     load_dotenv()
     
     try:
-        # Validate input file
-        input_file = Path(args.standardize)
-        if not input_file.exists():
-            logger.error(f"Input file not found: {input_file}")
-            sys.exit(1)
+        input_value = args.standardize
+        is_url = False
+        content = None
+        input_name = None
+        file_path = None
+        
+        # Check if input is a URL
+        parsed = urllib.parse.urlparse(input_value)
+        if parsed.scheme in ('http', 'https'):
+            is_url = True
+            logger.info(f"Input detected as URL: {input_value}")
+            
+            # Fetch content from URL
+            try:
+                with urllib.request.urlopen(input_value) as response:
+                    content = response.read().decode('utf-8')
+                input_name = parsed.path.split('/')[-1] or 'document'
+                # Remove file extension for naming
+                if '.' in input_name:
+                    input_name = input_name.rsplit('.', 1)[0]
+                file_path = input_value  # Use URL as file_path for format detection
+            except URLError as e:
+                logger.error(f"Failed to fetch URL: {e}")
+                sys.exit(1)
+            except UnicodeDecodeError as e:
+                logger.error(f"Failed to decode content from URL: {e}")
+                sys.exit(1)
+        else:
+            # Treat as file path
+            input_file = Path(input_value)
+            if not input_file.exists():
+                logger.error(f"Input file not found: {input_file}")
+                sys.exit(1)
+            
+            # Read file content
+            with open(input_file, 'r', encoding='utf-8') as f:
+                content = f.read()
+            input_name = input_file.stem
+            file_path = str(input_file)
         
         # Determine output format
         target_format = args.target_format or args.format
         if target_format == 'auto':
-            # Auto-detect based on input file extension
-            if input_file.suffix.lower() in ['.html', '.htm']:
-                target_format = 'markdown'  # Convert HTML to Markdown by default
+            # Auto-detect based on content or input
+            if is_url:
+                # For URLs, default to HTML unless content suggests otherwise
+                if content and content.strip().startswith('#') and '\n#' in content:
+                    target_format = 'markdown'  # Looks like Markdown
+                else:
+                    target_format = 'html'  # Default for URLs
             else:
-                target_format = 'html'  # Default to HTML
+                # For files, use extension
+                input_file = Path(input_value)
+                if input_file.suffix.lower() in ['.html', '.htm']:
+                    target_format = 'markdown'  # Convert HTML to Markdown by default
+                else:
+                    target_format = 'html'  # Default to HTML
         
         # Initialize standardizer
         standardizer = DocumentStandardizer(
@@ -241,7 +288,6 @@ def run_standardization(args, logger: logging.Logger) -> None:
         output_dir = get_output_directory(args.output_dir, logger)
         
         # Generate output filename
-        stem = input_file.stem
         if target_format == 'markdown':
             ext = '.md'
         elif target_format == 'html':
@@ -249,22 +295,32 @@ def run_standardization(args, logger: logging.Logger) -> None:
         else:
             ext = '.txt'
         
-        output_file = Path(output_dir) / f"{stem}_standardized{ext}"
+        output_file = Path(output_dir) / f"{input_name}_standardized{ext}"
         
         # Standardize document
         logger.info(f"Using template: {args.template}")
         logger.info(f"Target format: {target_format}")
         
-        result = standardizer.standardize_file(
-            file_path=input_file,
-            output_path=output_file,
+        result = standardizer.standardize_document(
+            content=content,
+            file_path=file_path,
             target_format=target_format
         )
+        
+        # Write output file
+        with open(output_file, 'w', encoding='utf-8') as f:
+            f.write(result['standardized_content'])
+        
+        # Update result with output path
+        result['output_path'] = str(output_file)
         
         # Report results
         if not args.quiet:
             print(f"\n📄 Document Standardization Results")
-            print(f"📍 Input File: {input_file}")
+            if is_url:
+                print(f"🔗 Input URL: {input_value}")
+            else:
+                print(f"📁 Input File: {input_value}")
             print(f"📂 Output File: {result.get('output_path', output_file)}")
             print(f"🔄 Format: {result['original_format']} → {result['target_format']}")
             print(f"📊 Sections Processed: {len(result['sections_processed'])}")
