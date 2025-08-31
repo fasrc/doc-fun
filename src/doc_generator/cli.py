@@ -16,6 +16,7 @@ from .config import get_settings
 from .exceptions import DocGeneratorError, DocumentStandardizerError
 from . import __version__
 from .utils import get_output_directory
+from .agents.token_machine import TokenMachine, AnalysisDepth, analyze_operation
 
 
 def setup_logging(verbose: bool = False) -> logging.Logger:
@@ -62,6 +63,12 @@ Examples:
   doc-gen --standardize https://example.com/docs/api.html --format markdown
   doc-gen --standardize legacy.md --output-dir ./standardized
   
+  # Token Analysis (--token-* modes)
+  doc-gen --token-analyze "Generate Python documentation" --content ./example.py
+  doc-gen --token-estimate "README generation for React project"
+  doc-gen --token-report --period 7
+  doc-gen --token-optimize "Batch documentation generation"
+  
   # Legacy Code Scanning
   doc-gen --scan-code ./directory --generate-readme --recursive
   
@@ -83,6 +90,38 @@ Examples:
                            help='Standardize existing documentation to organizational standards (accepts file path or URL)')
     mode_group.add_argument('--scan-code', nargs='?', const='.', metavar='DIR',
                            help='Scan directory for code examples and update terminology')
+    
+    # === TOKEN ANALYSIS MODES ===
+    token_group = parser.add_argument_group('Token Analysis Modes', 'Token usage analysis and optimization')
+    token_group.add_argument('--token-analyze', metavar='OPERATION',
+                            help='Analyze token usage for a specific operation')
+    token_group.add_argument('--token-estimate', metavar='OPERATION',
+                            help='Quick token estimation for an operation')
+    token_group.add_argument('--token-report', action='store_true',
+                            help='Generate token usage report')
+    token_group.add_argument('--token-optimize', metavar='OPERATION',
+                            help='Get optimization recommendations for an operation')
+    
+    # === TOKEN ANALYSIS OPTIONS ===
+    token_opts_group = parser.add_argument_group('Token Analysis Options', 'Used with token analysis modes')
+    token_opts_group.add_argument('--content', metavar='FILE_OR_TEXT',
+                                 help='Content to analyze (file path or text)')
+    token_opts_group.add_argument('--content-type', choices=['plain_text', 'code', 'markdown', 'json', 'yaml', 'html'],
+                                 default='plain_text',
+                                 help='Type of content being analyzed (default: plain_text)')
+    token_opts_group.add_argument('--expected-output', type=int, metavar='CHARS',
+                                 help='Expected output size in characters')
+    token_opts_group.add_argument('--context-size', type=int, metavar='CHARS',
+                                 help='Additional context size in characters')
+    token_opts_group.add_argument('--period', type=int, default=7, metavar='DAYS',
+                                 help='Report period in days (default: 7)')
+    token_opts_group.add_argument('--analysis-depth', choices=['minimal', 'standard', 'comprehensive'],
+                                 default='standard',
+                                 help='Depth of token analysis (default: standard)')
+    token_opts_group.add_argument('--max-cost', type=float, metavar='USD',
+                                 help='Maximum cost constraint for model recommendations')
+    token_opts_group.add_argument('--min-quality', type=float, metavar='SCORE',
+                                 help='Minimum quality score (0-1) for model recommendations')
     
     # === SHARED GENERATION OPTIONS ===
     gen_group = parser.add_argument_group('Generation Options', 'Used with --topic or --readme')
@@ -112,7 +151,7 @@ Examples:
                             help='Compare with existing documentation at URL')
     topic_group.add_argument('--compare-file', metavar='FILE',
                             help='Compare with local file')
-    topic_group.add_argument('--comparison-report', metavar='FILE',
+    token_group.add_argument('--comparison-report', metavar='FILE',
                             help='Save comparison report to file')
     
     # === README MODE OPTIONS ===
@@ -1224,6 +1263,298 @@ def run_generation(args, logger: logging.Logger) -> None:
         sys.exit(1)
 
 
+def run_token_analysis(args, logger):
+    """Run token usage analysis for a specific operation."""
+    try:
+        # Load content if provided
+        content = None
+        if args.content:
+            content_path = Path(args.content)
+            if content_path.exists():
+                with open(content_path, 'r', encoding='utf-8') as f:
+                    content = f.read()
+                logger.info(f"Loaded content from {content_path}")
+            else:
+                # Treat as direct text input
+                content = args.content
+                logger.info("Using provided text content")
+        
+        # Initialize token machine
+        config_path = Path('.claude/agents/token_machine.yaml')
+        if config_path.exists():
+            logger.info(f"Loading token machine config from {config_path}")
+        else:
+            logger.info("Using default token machine configuration")
+            config_path = None
+        
+        depth = AnalysisDepth(args.analysis_depth)
+        machine = TokenMachine(config_path=config_path, analysis_depth=depth)
+        
+        # Perform analysis
+        analysis = machine.analyze(
+            operation=args.token_analyze,
+            content=content,
+            content_type=args.content_type,
+            context_size=args.context_size,
+            expected_output_size=args.expected_output
+        )
+        
+        # Display results
+        print(f"\n=== Token Usage Analysis: {analysis.operation} ===")
+        print(f"Timestamp: {analysis.timestamp.strftime('%Y-%m-%d %H:%M:%S')}")
+        print(f"Analysis Depth: {analysis.metadata.get('analysis_depth', 'standard').upper()}")
+        
+        print(f"\n--- Token Breakdown ---")
+        print(f"Input Tokens:  {analysis.token_estimate.input_tokens:,}")
+        print(f"Output Tokens: {analysis.token_estimate.output_tokens:,}")
+        print(f"Total Tokens:  {analysis.token_estimate.total_tokens:,}")
+        print(f"Confidence:    {analysis.token_estimate.confidence:.1%}")
+        
+        if analysis.token_estimate.breakdown:
+            print(f"\n--- Detailed Breakdown ---")
+            for component, tokens in analysis.token_estimate.breakdown.items():
+                print(f"{component.replace('_', ' ').title()}: {tokens:,} tokens")
+        
+        print(f"\n--- Cost Analysis ---")
+        if analysis.cost_estimates:
+            print(f"{'Model':<20} {'Provider':<12} {'Total Cost':<12} {'Quality':<8} {'Speed':<8}")
+            print("-" * 68)
+            for estimate in analysis.cost_estimates[:5]:  # Show top 5
+                print(f"{estimate.model_name:<20} {estimate.provider.value:<12} "
+                      f"${estimate.total_cost:<11.4f} {estimate.quality_score:<7.1%} "
+                      f"{estimate.speed_score:<7.1%}")
+        
+        if analysis.recommended_model:
+            print(f"\nRecommended Model: {analysis.recommended_model}")
+        
+        print(f"\n--- Optimization Strategies ---")
+        for i, strategy in enumerate(analysis.optimization_strategies[:3], 1):
+            print(f"{i}. {strategy.name}")
+            print(f"   {strategy.description}")
+            print(f"   Potential Savings: {strategy.potential_savings:.0%}")
+            print(f"   Implementation: {strategy.implementation_effort}")
+            if strategy.recommended:
+                print(f"   ✓ RECOMMENDED")
+            print()
+        
+        if analysis.warnings:
+            print(f"--- Warnings ---")
+            for warning in analysis.warnings:
+                print(f"⚠️  {warning}")
+        
+        logger.info("Token analysis completed successfully")
+        
+    except Exception as e:
+        logger.error(f"Token analysis failed: {e}")
+        if args.verbose:
+            import traceback
+            traceback.print_exc()
+        sys.exit(1)
+
+
+def run_token_estimate(args, logger):
+    """Run quick token estimation."""
+    try:
+        machine = TokenMachine()
+        
+        # Load content if provided
+        content = None
+        if args.content:
+            content_path = Path(args.content)
+            if content_path.exists():
+                with open(content_path, 'r', encoding='utf-8') as f:
+                    content = f.read()
+            else:
+                content = args.content
+        
+        # Get quick analysis
+        result = analyze_operation(
+            args.token_estimate,
+            content=content,
+            content_type=args.content_type,
+            expected_output_size=args.expected_output,
+            context_size=args.context_size
+        )
+        
+        print(f"\n=== Quick Token Estimate: {args.token_estimate} ===")
+        print(f"Total Tokens: {result['tokens']['total']:,}")
+        print(f"Cost Range: ${result['cost_range']['min']:.4f} - ${result['cost_range']['max']:.4f}")
+        
+        if result['recommended_model']:
+            print(f"Recommended: {result['recommended_model']}")
+        
+        if result['top_optimization']:
+            print(f"Top Optimization: {result['top_optimization']}")
+        
+        if result['warnings']:
+            print("Warnings:")
+            for warning in result['warnings']:
+                print(f"  ⚠️  {warning}")
+        
+        logger.info("Token estimation completed")
+        
+    except Exception as e:
+        logger.error(f"Token estimation failed: {e}")
+        sys.exit(1)
+
+
+def run_token_report(args, logger):
+    """Generate token usage report."""
+    try:
+        machine = TokenMachine()
+        report = machine.generate_report(
+            period_days=args.period,
+            include_predictions=True
+        )
+        
+        if "error" in report:
+            print(f"❌ {report['error']}")
+            return
+        
+        print(f"\n=== Token Usage Report ===")
+        print(f"Period: {report['period']['days']} days")
+        print(f"From: {report['period']['start'][:10]} to {report['period']['end'][:10]}")
+        
+        summary = report['summary']
+        print(f"\n--- Summary ---")
+        print(f"Total Operations: {summary['total_operations']:,}")
+        print(f"Total Tokens: {summary['total_tokens']:,}")
+        print(f"Estimated Cost: ${summary['estimated_cost']:.2f}")
+        print(f"Avg Tokens/Operation: {summary['avg_tokens_per_operation']:,}")
+        
+        if report['model_distribution']:
+            print(f"\n--- Model Usage ---")
+            for model, count in sorted(report['model_distribution'].items(), 
+                                     key=lambda x: x[1], reverse=True):
+                print(f"{model}: {count} operations")
+        
+        if report['top_operations']:
+            print(f"\n--- Top Operations by Token Usage ---")
+            for op_info in report['top_operations']:
+                print(f"{op_info['operation']}: {op_info['total_tokens']:,} tokens "
+                      f"({op_info['count']} runs, avg: {op_info['avg_tokens']:,})")
+        
+        if report['optimization_opportunities']:
+            print(f"\n--- Optimization Opportunities ---")
+            for opp in report['optimization_opportunities']:
+                print(f"• {opp['description']}")
+                print(f"  Potential Savings: {opp['potential_savings']}")
+                print(f"  Priority: {opp['priority'].upper()}")
+        
+        if 'predictions' in report:
+            pred = report['predictions']
+            print(f"\n--- Predictions ---")
+            print(f"Next Week: {pred['next_week']['estimated_tokens']:,} tokens "
+                  f"(${pred['next_week']['estimated_cost']:.2f})")
+            print(f"Next Month: {pred['next_month']['estimated_tokens']:,} tokens "
+                  f"(${pred['next_month']['estimated_cost']:.2f})")
+            print(f"Growth Trend: {pred['growth_trend']}")
+        
+        logger.info("Token report generated successfully")
+        
+    except Exception as e:
+        logger.error(f"Token report generation failed: {e}")
+        sys.exit(1)
+
+
+def run_token_optimize(args, logger):
+    """Run token optimization analysis."""
+    try:
+        machine = TokenMachine()
+        
+        # Load content if provided
+        content = None
+        if args.content:
+            content_path = Path(args.content)
+            if content_path.exists():
+                with open(content_path, 'r', encoding='utf-8') as f:
+                    content = f.read()
+            else:
+                content = args.content
+        
+        # Get comprehensive analysis focused on optimization
+        analysis = machine.analyze(
+            operation=args.token_optimize,
+            content=content,
+            content_type=args.content_type,
+            context_size=args.context_size,
+            expected_output_size=args.expected_output,
+            depth=AnalysisDepth.COMPREHENSIVE
+        )
+        
+        print(f"\n=== Token Optimization: {analysis.operation} ===")
+        print(f"Current Usage: {analysis.token_estimate.total_tokens:,} tokens")
+        
+        if analysis.cost_estimates:
+            current_cost = analysis.cost_estimates[0].total_cost
+            print(f"Current Min Cost: ${current_cost:.4f}")
+        
+        print(f"\n--- Optimization Strategies ---")
+        total_potential_savings = 0
+        
+        for i, strategy in enumerate(analysis.optimization_strategies, 1):
+            savings_pct = strategy.potential_savings
+            total_potential_savings += savings_pct
+            
+            if analysis.cost_estimates:
+                savings_amount = current_cost * savings_pct
+                print(f"{i}. {strategy.name} ({strategy.implementation_effort} effort)")
+                print(f"   {strategy.description}")
+                print(f"   💰 Potential Savings: {savings_pct:.0%} (${savings_amount:.4f})")
+            else:
+                print(f"{i}. {strategy.name} ({strategy.implementation_effort} effort)")
+                print(f"   {strategy.description}")
+                print(f"   💰 Potential Savings: {savings_pct:.0%}")
+            
+            if strategy.recommended:
+                print(f"   ⭐ RECOMMENDED")
+            
+            if strategy.implementation_steps:
+                print(f"   Implementation Steps:")
+                for step in strategy.implementation_steps[:3]:  # Show first 3 steps
+                    print(f"     • {step}")
+                if len(strategy.implementation_steps) > 3:
+                    print(f"     • ... and {len(strategy.implementation_steps) - 3} more")
+            print()
+        
+        # Model recommendations
+        if args.max_cost or args.min_quality:
+            recommended = machine.recommend_model(
+                max_cost=args.max_cost,
+                min_quality=args.min_quality,
+                max_tokens=analysis.token_estimate.total_tokens
+            )
+            
+            if recommended:
+                print(f"--- Model Recommendation ---")
+                print(f"Based on your constraints: {recommended}")
+                
+                # Find the cost estimate for this model
+                for estimate in analysis.cost_estimates:
+                    if estimate.model_name == recommended:
+                        print(f"Cost: ${estimate.total_cost:.4f}")
+                        print(f"Quality: {estimate.quality_score:.1%}")
+                        print(f"Speed: {estimate.speed_score:.1%}")
+                        break
+            else:
+                print(f"--- Model Recommendation ---")
+                print(f"❌ No model meets your constraints")
+        
+        if analysis.cost_estimates and total_potential_savings > 0:
+            max_savings = current_cost * min(total_potential_savings, 0.8)  # Cap at 80%
+            print(f"\n--- Summary ---")
+            print(f"Maximum Potential Savings: ${max_savings:.4f} ({min(total_potential_savings, 0.8):.0%})")
+            print(f"Optimized Cost Range: ${current_cost - max_savings:.4f} - ${current_cost:.4f}")
+        
+        logger.info("Token optimization analysis completed")
+        
+    except Exception as e:
+        logger.error(f"Token optimization failed: {e}")
+        if args.verbose:
+            import traceback
+            traceback.print_exc()
+        sys.exit(1)
+
 def main():
     """Main entry point for the CLI."""
     args = parse_args()
@@ -1240,6 +1571,23 @@ def main():
         # Handle cleanup mode
         if args.cleanup:
             cleanup_output_directory(logger)
+            return
+        
+        # Handle token analysis modes
+        if args.token_analyze:
+            run_token_analysis(args, logger)
+            return
+        
+        if args.token_estimate:
+            run_token_estimate(args, logger)
+            return
+        
+        if args.token_report:
+            run_token_report(args, logger)
+            return
+        
+        if args.token_optimize:
+            run_token_optimize(args, logger)
             return
         
         # Handle README generation mode

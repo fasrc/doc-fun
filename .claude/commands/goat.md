@@ -26,7 +26,7 @@ Always use:
 - **docs-sync-validator** for documentation
 
 ## Process
-1. **Read CLAUDE.md** for project context
+1. **Read CLAUDE.md** for project context before doing anything
 2. **Check current git branch**
 3. **If on main**: Create appropriate feature branch before starting work
 4. **Execute the requested task** using appropriate tools

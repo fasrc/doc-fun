@@ -35,7 +35,10 @@ doc-gen --info
 
 ### Testing
 ```bash
-# Run all tests
+# Run all tests (recommended - uses parallel execution for better isolation)
+pytest -n auto
+
+# Run all tests (sequential - may have isolation issues)
 pytest
 
 # Run with coverage
@@ -44,6 +47,13 @@ pytest --cov=doc_generator tests/
 # Run specific test categories
 pytest -m unit
 pytest -m integration
+
+# Run specific test files
+pytest tests/test_doc_generator.py
+pytest tests/providers/
+
+# Note: Using pytest-xdist (-n auto) is recommended as it runs tests in 
+# isolated processes, preventing mock state leakage between tests.
 ```
 
 ## Architecture
@@ -200,10 +210,13 @@ pip install -e .[test]
 4. Set appropriate environment variable for API key
 
 ### Testing
+- **Recommended**: Use `pytest -n auto` for isolated parallel execution
 - Unit tests: Focus on individual components
 - Integration tests: Test provider and plugin interactions
 - Use pytest fixtures for mock data and configurations
 - Mark slow tests with `@pytest.mark.slow`
+- **Mock Setup**: Provider tests require proper tuple returns from `validate_model_provider_combination()`
+- **Test Isolation**: pytest-xdist prevents mock state leakage between tests
 
 ## CLI Operation Modes
 
