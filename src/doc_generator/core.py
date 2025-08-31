@@ -27,7 +27,7 @@ from .providers import ProviderManager, CompletionRequest
 from .config import get_settings
 from .exceptions import DocGeneratorError, ConfigurationError, ProviderError, FileOperationError
 from .error_handler import ErrorHandler, retry_on_failure, handle_gracefully
-from .cache import cached
+from .cache import cached, get_cache_manager
 from .command_tracker import CommandTracker
 from .utils import get_output_directory
 
@@ -111,19 +111,29 @@ class DocumentationGenerator:
                 )
             self.default_provider = provider
         
-    @cached(ttl=86400)  # Cache for 24 hours
     def _load_prompt_config(self) -> dict:
         """Load prompt configuration with caching and validation."""
+        # Generate cache key that includes the file path to avoid conflicts
+        cache_key = f"prompt_config_{hash(str(self.prompt_yaml_path))}"
+        
+        # Use manual caching to include file path in key
+        cache_manager = get_cache_manager()
+        cached_result = cache_manager.get(cache_key)
+        if cached_result is not None:
+            return cached_result
+        
         if not self.prompt_yaml_path.exists():
             self.logger.warning(
                 f"Prompt config not found at {self.prompt_yaml_path}, using defaults"
             )
-            return {
+            result = {
                 'system_prompt': 'You are a technical documentation expert.',
                 'documentation_structure': [
                     'Description', 'Installation', 'Usage', 'Examples', 'References'
                 ]
             }
+            cache_manager.set(cache_key, result)
+            return result
             
         try:
             with open(self.prompt_yaml_path, 'r', encoding='utf-8') as f:
@@ -136,6 +146,7 @@ class DocumentationGenerator:
                     context={'config_path': str(self.prompt_yaml_path)}
                 )
                 
+            cache_manager.set(cache_key, config)
             return config
             
         except yaml.YAMLError as e:
