@@ -1,7 +1,7 @@
 ---
 name: wrap
 description: Complete current work, create branch, commit, push, and create PR
-model: claude-3-5-sonnet-20241022
+model: claude-3-5-sonnet-latest
 ---
 
 # Wrap Up Work Command
