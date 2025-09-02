@@ -607,3 +607,346 @@ class TestDocumentationGeneratorEnhancements:
                     assert isinstance(context, str)
                     # Basic terminology should be present
                     assert len(context) > 0
+
+
+class TestDocumentationGeneratorExtended:
+    """Extended tests for DocumentationGenerator to improve coverage."""
+    
+    def test_setup_provider_auto_success(self, temp_dir, sample_yaml_config, sample_terminology, mock_plugin_discovery, sample_plugins):
+        """Test provider setup with auto selection - success case."""
+        prompt_file = temp_dir / "prompt.yaml"
+        terminology_file = temp_dir / "terminology.yaml"
+        shots_dir = temp_dir / "examples"
+        shots_dir.mkdir()
+        
+        with open(prompt_file, 'w') as f:
+            yaml.dump(sample_yaml_config, f)
+        with open(terminology_file, 'w') as f:
+            yaml.dump(sample_terminology, f)
+        
+        with mock_plugin_discovery(sample_plugins):
+            with patch.dict(os.environ, {'OPENAI_API_KEY': 'test-key'}):
+                with patch('doc_generator.core.OpenAI'):
+                    generator = DocumentationGenerator(
+                        prompt_yaml_path=str(prompt_file),
+                        shots_dir=str(shots_dir),
+                        terminology_path=str(terminology_file),
+                        provider='auto'
+                    )
+                    # Should have set default provider through auto selection
+                    assert generator.default_provider is not None
+    
+    def test_setup_provider_specific_success(self, temp_dir, sample_yaml_config, sample_terminology, mock_plugin_discovery, sample_plugins):
+        """Test provider setup with specific provider - success case."""
+        prompt_file = temp_dir / "prompt.yaml"
+        terminology_file = temp_dir / "terminology.yaml"
+        shots_dir = temp_dir / "examples"
+        shots_dir.mkdir()
+        
+        with open(prompt_file, 'w') as f:
+            yaml.dump(sample_yaml_config, f)
+        with open(terminology_file, 'w') as f:
+            yaml.dump(sample_terminology, f)
+        
+        with mock_plugin_discovery(sample_plugins):
+            with patch.dict(os.environ, {'OPENAI_API_KEY': 'test-key'}):
+                with patch('doc_generator.core.OpenAI'):
+                    # Mock provider manager to return openai as available
+                    with patch('doc_generator.providers.manager.ProviderManager') as mock_pm:
+                        mock_pm.return_value.get_available_providers.return_value = ['openai']
+                        
+                        generator = DocumentationGenerator(
+                            prompt_yaml_path=str(prompt_file),
+                            shots_dir=str(shots_dir),
+                            terminology_path=str(terminology_file),
+                            provider='openai'
+                        )
+                        assert generator.default_provider == 'openai'
+    
+    def test_setup_provider_unavailable_error(self, temp_dir, sample_yaml_config, sample_terminology, mock_plugin_discovery, sample_plugins):
+        """Test provider setup with unavailable provider - error case."""
+        prompt_file = temp_dir / "prompt.yaml"
+        terminology_file = temp_dir / "terminology.yaml"
+        shots_dir = temp_dir / "examples"
+        shots_dir.mkdir()
+        
+        with open(prompt_file, 'w') as f:
+            yaml.dump(sample_yaml_config, f)
+        with open(terminology_file, 'w') as f:
+            yaml.dump(sample_terminology, f)
+        
+        with mock_plugin_discovery(sample_plugins):
+            with patch('doc_generator.providers.manager.ProviderManager') as mock_pm:
+                mock_pm.return_value.get_available_providers.return_value = []
+                
+                from doc_generator.exceptions import ProviderError
+                with pytest.raises(ProviderError):
+                    DocumentationGenerator(
+                        prompt_yaml_path=str(prompt_file),
+                        shots_dir=str(shots_dir),
+                        terminology_path=str(terminology_file),
+                        provider='nonexistent'
+                    )
+    
+    def test_extract_topic_from_query_patterns(self):
+        """Test topic extraction from various query patterns."""
+        generator = Mock()
+        generator._extract_topic_from_query = DocumentationGenerator._extract_topic_from_query
+        
+        # Test various patterns
+        test_cases = [
+            ("documentation for Python Programming", "python_programming"),
+            ("using Machine Learning", "machine_learning"),
+            ("about Parallel Computing", "parallel_computing"),
+            ("for Deep Learning documentation", "deep_learning"),
+            ("create docs for Data Science", "data_science"),
+            ("generate documentation for Neural Networks on GPUs", "neural_networks"),
+        ]
+        
+        for query, expected in test_cases:
+            result = generator._extract_topic_from_query(generator, query)
+            assert result == expected
+    
+    def test_extract_topic_from_query_fallback(self):
+        """Test topic extraction fallback mechanisms."""
+        generator = Mock()
+        generator._extract_topic_from_query = DocumentationGenerator._extract_topic_from_query
+        
+        # Test fallback with meaningful words
+        result = generator._extract_topic_from_query(generator, "quantum computing algorithms")
+        assert result == "quantum_computing_algorithms"
+        
+        # Test final fallback
+        result = generator._extract_topic_from_query(generator, "create make generate")
+        assert result == "documentation"
+    
+    def test_extract_topic_keywords(self):
+        """Test keyword extraction from topics."""
+        generator = Mock()
+        generator._extract_topic_keywords = DocumentationGenerator._extract_topic_keywords
+        
+        # Test basic keyword extraction
+        result = generator._extract_topic_keywords(generator, "Python Machine Learning")
+        assert isinstance(result, list)
+        assert len(result) > 0
+        assert all(isinstance(keyword, str) for keyword in result)
+        
+        # Test with underscores - should still be treated as one keyword
+        result = generator._extract_topic_keywords(generator, "deep_learning_neural_networks")
+        assert len(result) >= 1  # May be treated as single keyword
+    
+    def test_extract_target_language(self):
+        """Test programming language extraction."""
+        generator = Mock()
+        generator._extract_target_language = DocumentationGenerator._extract_target_language
+        
+        test_cases = [
+            (["python", "programming", "tutorial"], "python"),
+            (["c", "algorithms", "guide"], "c"),
+            (["fortran", "numerical", "computing"], "fortran"),
+            (["mpi", "parallel"], "c"),  # MPI maps to C
+            (["machine", "learning", "concepts"], None),  # No specific language
+        ]
+        
+        for keywords, expected in test_cases:
+            result = generator._extract_target_language(generator, keywords)
+            assert result == expected
+    
+    def test_calculate_example_relevance(self):
+        """Test example relevance calculation."""
+        generator = Mock()
+        generator._calculate_example_relevance = DocumentationGenerator._calculate_example_relevance
+        
+        example = {
+            'file_path': 'machine_learning/python_examples.py',
+            'description': 'python scikit-learn tutorial',
+            'name': 'ml_example.py'
+        }
+        keywords = ['machine', 'learning', 'python']
+        
+        relevance = generator._calculate_example_relevance(generator, example, keywords)
+        assert isinstance(relevance, (int, float))
+        assert relevance >= 0
+    
+    def test_find_relevant_code_examples_with_examples(self):
+        """Test finding relevant code examples when examples exist."""
+        generator = Mock()
+        generator.terminology = {
+            'code_examples': {
+                'python': [
+                    {'file_path': 'ml/example.py', 'description': 'machine learning', 'name': 'ml_example'},
+                    {'file_path': 'web/scraper.py', 'description': 'web scraping', 'name': 'scraper'}
+                ],
+                'java': [
+                    {'file_path': 'spring/app.java', 'description': 'spring boot', 'name': 'app'}
+                ]
+            }
+        }
+        generator._calculate_example_relevance = Mock(side_effect=[0.8, 0.6, 0.2])
+        generator._extract_target_language = Mock(return_value='python')
+        generator._find_relevant_code_examples = DocumentationGenerator._find_relevant_code_examples
+        
+        keywords = ['python', 'programming']
+        result = generator._find_relevant_code_examples(generator, keywords)
+        assert isinstance(result, list)
+        assert len(result) <= 8  # Should be limited to top 8
+    
+    def test_find_relevant_code_examples_empty(self):
+        """Test finding relevant code examples when no examples exist."""
+        generator = Mock()
+        generator.terminology = {}  # No code_examples key
+        generator._find_relevant_code_examples = DocumentationGenerator._find_relevant_code_examples
+        
+        keywords = ['python', 'programming']
+        result = generator._find_relevant_code_examples(generator, keywords)
+        assert result == []
+    
+    def test_find_relevant_modules_with_plugin(self):
+        """Test finding relevant modules with plugin manager."""
+        generator = Mock()
+        generator.terminology = {
+            'hpc_modules': [
+                {'name': 'scipy', 'description': 'scientific computing library', 'category': 'scientific'},
+                {'name': 'numpy', 'description': 'numerical computing library', 'category': 'math'}
+            ]
+        }
+        generator.plugin_manager = Mock()
+        mock_engine = Mock()
+        mock_engine.get_modules_for_topic.return_value = [
+            {'name': 'numpy', 'description': 'numerical computing'}
+        ]
+        generator.plugin_manager.get_recommendation_engines.return_value = [mock_engine]
+        generator._find_relevant_modules = DocumentationGenerator._find_relevant_modules
+        
+        keywords = ['python', 'programming']
+        result = generator._find_relevant_modules(generator, keywords)
+        assert isinstance(result, list)
+    
+    def test_find_relevant_modules_without_plugin(self):
+        """Test finding relevant modules without plugin manager."""
+        generator = Mock()
+        generator.terminology = {}  # No hpc_modules key
+        generator.plugin_manager = None
+        generator._find_relevant_modules = DocumentationGenerator._find_relevant_modules
+        
+        keywords = ['python', 'programming']
+        result = generator._find_relevant_modules(generator, keywords)
+        assert result == []
+    
+    def test_build_terminology_context_comprehensive(self):
+        """Test comprehensive terminology context building."""
+        generator = Mock()
+        generator.terminology = {
+            'terms': {
+                'python': 'A programming language',
+                'machine_learning': 'AI subset'
+            },
+            'cluster_commands': [
+                {'name': 'srun', 'description': 'Run job', 'usage': 'srun -n 1 job'}
+            ]
+        }
+        generator._extract_topic_keywords = Mock(return_value=['python', 'machine', 'learning'])
+        generator.plugin_manager = Mock()
+        generator.plugin_manager.get_formatted_recommendations = Mock(return_value="Recommended modules: scikit-learn")
+        generator._find_relevant_code_examples = Mock(return_value=[])
+        generator._find_relevant_modules = Mock(return_value=[])
+        generator._build_terminology_context = DocumentationGenerator._build_terminology_context
+        
+        result = generator._build_terminology_context(generator, "Python Machine Learning")
+        assert isinstance(result, str)
+        assert 'scikit-learn' in result
+    
+    def test_build_system_prompt_with_context(self):
+        """Test system prompt building with context."""
+        generator = Mock()
+        generator.prompt_config = {
+            'system_prompt': 'You are a documentation expert for {topic}.'
+        }
+        generator._build_terminology_context = Mock(return_value="HPC environment info")
+        generator._build_system_prompt = DocumentationGenerator._build_system_prompt
+        
+        result = generator._build_system_prompt(generator, "Test topic")
+        assert isinstance(result, str)
+        assert 'Test topic' in result
+        assert 'documentation expert' in result
+    
+    def test_load_prompt_config_error_handling(self, temp_dir):
+        """Test prompt config loading with error cases."""
+        # Test with invalid YAML
+        prompt_file = temp_dir / "invalid.yaml"
+        prompt_file.write_text("invalid: yaml: content: [")
+        
+        generator = Mock()
+        generator.prompt_yaml_path = str(prompt_file)
+        generator.logger = Mock()
+        generator._load_prompt_config = DocumentationGenerator._load_prompt_config
+        
+        with pytest.raises(Exception):  # Should raise YAML parsing error
+            generator._load_prompt_config(generator)
+    
+    def test_load_prompt_config_with_cache_key(self, temp_dir):
+        """Test prompt config loading with cache key validation."""
+        config = {
+            'system_prompt': 'test prompt {terminology_context}',
+            'cache_key_template': '{topic}_{provider}_{model}'
+        }
+        prompt_file = temp_dir / "config.yaml"
+        with open(prompt_file, 'w') as f:
+            yaml.dump(config, f)
+        
+        generator = Mock()
+        generator.prompt_yaml_path = prompt_file
+        generator.logger = Mock()
+        generator._load_prompt_config = DocumentationGenerator._load_prompt_config
+        
+        result = generator._load_prompt_config(generator)
+        assert result['system_prompt'] == config['system_prompt']
+        assert result['cache_key_template'] == config['cache_key_template']
+    
+    def test_load_terminology_error_handling(self, temp_dir):
+        """Test terminology loading with error cases."""
+        # Test with missing file
+        terminology_file = temp_dir / "nonexistent.yaml"
+        
+        generator = Mock()
+        generator.terminology_path = terminology_file
+        generator.logger = Mock()
+        generator._load_terminology = DocumentationGenerator._load_terminology
+        
+        result = generator._load_terminology(generator)
+        assert result == {}
+    
+    def test_load_examples_error_handling(self, temp_dir):
+        """Test examples loading with error cases."""
+        # Test with missing directory
+        shots_dir = temp_dir / "nonexistent"
+        
+        generator = Mock()
+        generator.shots_dir = shots_dir
+        generator.logger = Mock()
+        generator._load_examples = DocumentationGenerator._load_examples
+        
+        result = generator._load_examples(generator)
+        assert result == []
+    
+    def test_load_examples_with_mixed_files(self, temp_dir):
+        """Test examples loading with mixed file types."""
+        shots_dir = temp_dir / "examples"
+        shots_dir.mkdir()
+        
+        # Create valid YAML
+        (shots_dir / "valid.yaml").write_text("example: valid content")
+        # Create invalid YAML
+        (shots_dir / "invalid.yaml").write_text("invalid: yaml: [")
+        # Create non-YAML file
+        (shots_dir / "readme.txt").write_text("This is not YAML")
+        
+        generator = Mock()
+        generator.shots_dir = shots_dir
+        generator.logger = Mock()
+        generator._load_examples = DocumentationGenerator._load_examples
+        
+        result = generator._load_examples(generator)
+        # Should only load valid YAML files
+        assert len(result) == 1
+        assert result[0]['example'] == 'valid content'
