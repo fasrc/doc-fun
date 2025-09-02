@@ -3,7 +3,7 @@ name: tfu
 description: Advanced test fixer with rollback, interactive mode, and robust error recovery
 ---
 
-# Test Fix Up (TFU) Command
+# Test Fix Update (TFU) Command
 
 An advanced intelligent test runner that provides automated test fixing with robust safety measures, rollback capabilities, and interactive control.
 
