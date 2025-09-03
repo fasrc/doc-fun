@@ -1,11 +1,11 @@
 """
 Documentation Generator Core Module
-Version 1.1.0
+Version 2.6.0-dev
 
 Advanced documentation generation with plugin-based recommendation system.
 """
 
-__version__ = "1.1.0"
+__version__ = "2.6.0-dev"
 
 import os
 import re
