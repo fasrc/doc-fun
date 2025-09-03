@@ -32,7 +32,7 @@ class TestDocumentationGenerator:
 
         with mock_plugin_discovery(sample_plugins):
             with patch.dict(os.environ, {'OPENAI_API_KEY': 'test-key'}):
-                with patch('doc_generator.core.OpenAI') as mock_openai:
+                with patch('doc_generator.generator.OpenAI') as mock_openai:
                     generator = DocumentationGenerator(
                         prompt_yaml_path=str(prompt_file),
                         shots_dir=str(shots_dir),
