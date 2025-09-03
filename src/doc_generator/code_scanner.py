@@ -7,6 +7,7 @@ Extracted from core.py following single responsibility principle.
 
 import os
 import re
+import time
 import yaml
 import hashlib
 import logging
