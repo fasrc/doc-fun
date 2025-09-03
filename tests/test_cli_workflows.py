@@ -580,19 +580,52 @@ def fibonacci(n):
         with patch('doc_generator.cli.load_dotenv'):
             with patch('doc_generator.cli.get_output_directory', return_value=str(temp_dir)):
                 # Mock token analysis components
-                with patch('doc_generator.agents.token_machine.TokenMachine') as mock_machine:
-                    mock_analysis = Mock()
-                    mock_analysis.analyze_prompt.return_value = {
-                        'token_count': 150,
-                        'estimated_cost': 0.003,
-                        'complexity_score': 0.7
-                    }
-                    mock_machine.return_value = mock_analysis
+                with patch('doc_generator.cli.TokenMachine') as mock_machine:
+                    mock_instance = Mock()
+                    
+                    # Create properly structured mock analysis result
+                    mock_analysis_result = Mock()
+                    mock_analysis_result.operation = "documentation_generation"
+                    mock_analysis_result.timestamp.strftime.return_value = "2025-09-03 10:34:01"
+                    mock_analysis_result.metadata = {'analysis_depth': 'standard'}
+                    
+                    # Mock token estimate
+                    mock_token_estimate = Mock()
+                    mock_token_estimate.input_tokens = 500
+                    mock_token_estimate.output_tokens = 400
+                    mock_token_estimate.total_tokens = 900
+                    mock_token_estimate.confidence = 0.6
+                    mock_token_estimate.breakdown = {"System Prompt": 500, "Output": 400}
+                    mock_analysis_result.token_estimate = mock_token_estimate
+                    
+                    # Mock cost estimates
+                    mock_cost_estimate = Mock()
+                    mock_cost_estimate.model_name = "gpt-4o-mini"
+                    mock_cost_estimate.provider.value = "openai"
+                    mock_cost_estimate.total_cost = 0.0003
+                    mock_cost_estimate.quality_score = 0.75
+                    mock_cost_estimate.speed_score = 0.85
+                    mock_analysis_result.cost_estimates = [mock_cost_estimate]
+                    
+                    # Mock optimization strategies
+                    mock_strategy = Mock()
+                    mock_strategy.name = "Response Caching"
+                    mock_strategy.description = "Cache generated responses for similar requests"
+                    mock_strategy.potential_savings = 0.3
+                    mock_strategy.implementation_effort = "low"
+                    mock_strategy.recommended = True
+                    mock_analysis_result.optimization_strategies = [mock_strategy]
+                    
+                    mock_analysis_result.recommended_model = "gpt-4o-mini"
+                    mock_analysis_result.warnings = []
+                    
+                    mock_instance.analyze.return_value = mock_analysis_result
+                    mock_machine.return_value = mock_instance
                     
                     run_token_analysis(args, mock_logger)
                     
                     mock_machine.assert_called_once()
-                    mock_analysis.analyze_prompt.assert_called_once()
+                    mock_instance.analyze.assert_called_once()
 
     def test_run_token_estimate(self, mock_logger):
         """Test token estimation workflow."""
@@ -607,20 +640,19 @@ def fibonacci(n):
         args.context_size = None
         args.expected_output = None
         
-        with patch('doc_generator.agents.token_machine.TokenMachine') as mock_machine:
-            mock_estimate = Mock()
-            mock_estimate.estimate_generation_cost.return_value = {
-                'input_tokens': 500,
-                'estimated_output_tokens': 2000,
-                'total_cost': 0.05,
-                'cost_per_run': 0.017
-            }
-            mock_machine.return_value = mock_estimate
-            
-            run_token_estimate(args, mock_logger)
-            
-            mock_machine.assert_called_once()
-            mock_estimate.estimate_generation_cost.assert_called_once()
+        with patch('doc_generator.cli.TokenMachine'):
+            with patch('doc_generator.cli.analyze_operation') as mock_analyze:
+                mock_analyze.return_value = {
+                    'tokens': {'total': 900},
+                    'cost_range': {'min': 0.0003, 'max': 0.0390},
+                    'recommended_model': 'gpt-4o-mini',
+                    'top_optimization': 'Response Caching',
+                    'warnings': []
+                }
+                
+                run_token_estimate(args, mock_logger)
+                
+                mock_analyze.assert_called_once()
 
     def test_run_token_report(self, mock_logger, temp_dir):
         """Test token report generation."""
