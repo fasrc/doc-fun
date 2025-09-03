@@ -212,6 +212,7 @@ class TestGPTQualityEvaluator:
     def test_init_with_config(self, temp_dir):
         """Test evaluator initialization with config file."""
         config = {
+            'system_prompt': 'You are a documentation quality evaluator.',
             'analysis_prompts': {
                 'technical_accuracy': 'Test prompt for {section_name} about {topic}: {content}'
             }
