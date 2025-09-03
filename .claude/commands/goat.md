@@ -19,11 +19,18 @@ description: General work orchestration with automatic tool selection and branch
 ## Tool Selection Guidelines
 Always use:
 - **serena** for semantic code retrieval and editing tools
-- **context7** for up to date documentation on third party code
+- **context7 MCP** for programmatically searching and fetching documentation on third party libraries
 - **sequential-thinking** for any decision making
 - **github-workflow-manager** for gh and github flow
 - **system-architect** for system architecture design, patterns, and high-level technical decisions
 - **docs-sync-validator** for documentation
+
+## Context7 MCP Integration
+When working with third-party libraries or frameworks:
+1. **Search for libraries** using `mcp__context7__resolve-library-id` to find Context7-compatible library IDs
+2. **Fetch documentation** using `mcp__context7__get-library-docs` with the resolved library ID
+3. **Use focused queries** with the `topic` parameter to get relevant documentation sections
+4. **Always resolve library IDs first** unless the user provides explicit Context7-compatible library IDs
 
 ## Process
 1. **Read CLAUDE.md** for project context before doing anything
