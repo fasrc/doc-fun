@@ -1556,7 +1556,17 @@ def run_token_optimize(args, logger):
         sys.exit(1)
 
 def main():
-    """Main entry point for the CLI."""
+    """Main entry point for the CLI with backward compatibility."""
+    # Check if we should use the new command-based CLI
+    if len(sys.argv) > 1:
+        # Check if first argument looks like a command (no dashes)
+        first_arg = sys.argv[1]
+        if not first_arg.startswith('-') and first_arg in ['generate', 'readme', 'standardize', 'list-models', 'cleanup', 'info', 'list-plugins', 'test']:
+            # Use new command-based dispatcher
+            from .cli_commands.main import main as new_main
+            sys.exit(new_main())
+    
+    # Fall back to legacy CLI handling for backward compatibility
     args = parse_args()
     
     # Set up logging

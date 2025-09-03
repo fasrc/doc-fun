@@ -9,27 +9,42 @@ doc-generator is an AI-powered documentation generation system that supports mul
 ## Key Commands
 
 ### CLI Interface
+
+**New Command Pattern (Recommended)**
 ```bash
 # Install the package
 pip install -e .
 
 # Basic documentation generation
-doc-gen --topic "Python Programming" --runs 3 --analyze
+doc-gen generate "Python Programming" --runs 3 --analyze
 
-# README generation for directories
-doc-gen --readme /path/to/directory --recursive --output-dir ./output
+# README generation for directories  
+doc-gen readme /path/to/directory --recursive --output-dir ./output
+
+# Document standardization
+doc-gen standardize document.html --target-format markdown
 
 # List available models and providers
-doc-gen --list-models
+doc-gen list-models
 
 # List and manage plugins
-doc-gen --list-plugins
-doc-gen --disable-plugins module_recommender
+doc-gen list-plugins
+doc-gen generate "Topic" --disable-plugins module_recommender
 
 # Clean up output directory
-doc-gen --cleanup
+doc-gen cleanup
 
 # Display detailed help information
+doc-gen info
+```
+
+**Legacy Interface (Still Supported)**
+```bash
+# All original flag-based commands continue to work
+doc-gen --topic "Python Programming" --runs 3 --analyze
+doc-gen --readme /path/to/directory --recursive --output-dir ./output
+doc-gen --list-models
+doc-gen --cleanup
 doc-gen --info
 ```
 
@@ -57,6 +72,24 @@ pytest tests/providers/
 ```
 
 ## Architecture
+
+### CLI Architecture (Phase 2 Refactoring)
+
+**Command Pattern Structure** (`src/doc_generator/cli_commands/`)
+- **BaseCommand**: Abstract base class for all CLI commands with validation and error handling
+- **CommandRegistry**: Registration system supporting command lookup by name and aliases
+- **CommandDispatcher**: Argument parsing, routing, and execution with consistent error handling
+- **Bootstrap System**: Automatic command discovery and registration
+- **Backward Compatibility**: Intelligent detection routes old `--flag` vs new `command` arguments
+
+**Available Commands**:
+- `generate` (aliases: `gen`, `g`) - Technical documentation generation (replaces `--topic`)
+- `readme` (alias: `r`) - README.md generation for directories (replaces `--readme`) 
+- `standardize` (aliases: `std`, `s`) - Document standardization (replaces `--standardize`)
+- `list-models` (aliases: `lm`, `models`) - List available AI models and providers
+- `cleanup` (alias: `clean`) - Clean output directory with confirmation
+- `info` (alias: `help-detailed`) - Display comprehensive help information
+- `list-plugins` (aliases: `lp`, `plugins`) - List available plugins
 
 ### Core Components
 

@@ -10,6 +10,11 @@ import logging
 from typing import Dict, List, Any, Optional
 from dataclasses import dataclass
 
+try:
+    from bs4 import BeautifulSoup
+except ImportError:
+    BeautifulSoup = None
+
 from .config import get_settings
 from .cache import cached
 from .exceptions import DocGeneratorError
@@ -34,26 +39,45 @@ class DocumentAnalyzer:
     content quality metrics, and structural analysis.
     """
     
-    def __init__(self, logger: Optional[logging.Logger] = None):
+    def __init__(self, logger: Optional[logging.Logger] = None, section_headers: Optional[List[str]] = None):
         """
         Initialize document analyzer.
         
         Args:
             logger: Optional logger instance
+            section_headers: Optional list of section headers to analyze
         """
         self.settings = get_settings()
         self.logger = logger or logging.getLogger(__name__)
         
-        # Standard documentation section headers
-        self.section_headers = [
-            'description', 'installation', 'usage', 'examples',
-            'api', 'configuration', 'troubleshooting', 'references'
+        # Use provided section headers or default ones (uppercase for backward compatibility)
+        self.section_headers = section_headers or [
+            'Description', 'Installation', 'Usage', 'Examples', 'References'
         ]
     
     @cached(ttl=1800)  # Cache for 30 minutes
-    def extract_sections(self, content: str) -> List[SectionInfo]:
+    def extract_sections(self, content: str) -> Dict[str, str]:
         """
-        Extract sections from document content.
+        Extract sections from document content (supports both HTML and Markdown).
+        
+        Args:
+            content: Document content to analyze
+            
+        Returns:
+            Dictionary mapping section names to content (for backward compatibility)
+            
+        Raises:
+            DocGeneratorError: If content analysis fails
+        """
+        section_objects = self.extract_section_objects(content)
+        
+        # Convert to dictionary for backward compatibility
+        return {section.name: section.content for section in section_objects}
+    
+    def extract_section_objects(self, content: str) -> List['SectionInfo']:
+        """
+        Extract sections from document content as SectionInfo objects.
+        Supports both HTML and Markdown formats.
         
         Args:
             content: Document content to analyze
@@ -70,6 +94,62 @@ class DocumentAnalyzer:
                 error_code="EMPTY_CONTENT"
             )
         
+        # Detect if content is HTML or Markdown
+        content_lower = content.lower()
+        is_html = '<html>' in content_lower or '<h1>' in content_lower or '<h2>' in content_lower
+        
+        if is_html:
+            return self._extract_sections_from_html(content)
+        else:
+            return self._extract_sections_from_markdown(content)
+    
+    def _extract_sections_from_html(self, html_content: str) -> List['SectionInfo']:
+        """Extract sections from HTML content."""
+        if BeautifulSoup is None:
+            raise DocGeneratorError(
+                "BeautifulSoup is required for HTML parsing. Install with: pip install beautifulsoup4",
+                error_code="MISSING_DEPENDENCY"
+            )
+        
+        sections = []
+        soup = BeautifulSoup(html_content, 'html.parser')
+        
+        # Find all headers (h1, h2, h3, h4)
+        headers = soup.find_all(['h1', 'h2', 'h3', 'h4'])
+        
+        for i, header in enumerate(headers):
+            header_text = header.get_text().strip()
+            
+            # Check if this header matches any of our target sections
+            for section_name in self.section_headers:
+                if section_name.lower() in header_text.lower():
+                    # Extract content between this header and the next header
+                    content_parts = []
+                    
+                    # Get all siblings until the next header
+                    for sibling in header.find_next_siblings():
+                        if sibling.name in ['h1', 'h2', 'h3', 'h4']:
+                            break
+                        content_parts.append(str(sibling))
+                    
+                    section_content = '\n'.join(content_parts)
+                    word_count = len(BeautifulSoup(section_content, 'html.parser').get_text().split())
+                    
+                    sections.append(SectionInfo(
+                        name=section_name,
+                        content=section_content,
+                        start_line=0,  # HTML doesn't have line numbers easily
+                        end_line=0,
+                        word_count=word_count,
+                        score=self.calculate_section_score(section_content, section_name)
+                    ))
+                    break
+        
+        self.logger.info(f"Extracted {len(sections)} sections from HTML document")
+        return sections
+    
+    def _extract_sections_from_markdown(self, content: str) -> List['SectionInfo']:
+        """Extract sections from Markdown content."""
         sections = []
         lines = content.split('\n')
         current_section = None
@@ -120,12 +200,12 @@ class DocumentAnalyzer:
                 
         except Exception as e:
             raise DocGeneratorError(
-                f"Failed to extract sections: {e}",
+                f"Failed to extract sections from Markdown: {e}",
                 error_code="SECTION_EXTRACTION_ERROR",
                 context={'content_length': len(content)}
             )
         
-        self.logger.info(f"Extracted {len(sections)} sections from document")
+        self.logger.info(f"Extracted {len(sections)} sections from Markdown document")
         return sections
     
     def calculate_section_score(self, content: str, section_name: str) -> float:
