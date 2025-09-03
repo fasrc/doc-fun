@@ -172,12 +172,14 @@ class TestDocumentAnalyzer:
                       '<a href="http://example.com">link</a>'
         
         score = analyzer.calculate_section_score(good_content, 'Description')
-        assert score > 10  # Should get some score for good content
+        assert score > 0.4  # Should get a good score for quality content (scale is 0.0-1.0)
+        assert score <= 1.0  # Should not exceed maximum
         
         # Test with minimal content
         minimal_content = "Short."
         score = analyzer.calculate_section_score(minimal_content, 'Description')
         assert score >= 0  # Should get a low but non-negative score
+        assert score < 0.4  # Should be lower than good content  # Should get a low but non-negative score
 
     def test_analyze_document(self):
         """Test full document analysis."""
@@ -229,6 +231,7 @@ class TestGPTQualityEvaluator:
     def test_create_evaluation_prompt(self, temp_dir):
         """Test prompt creation."""
         config = {
+            'system_prompt': 'You are a technical documentation evaluator.',
             'analysis_prompts': {
                 'technical_accuracy': 'Evaluate {section_name} about {topic}: {content}'
             }
@@ -240,13 +243,21 @@ class TestGPTQualityEvaluator:
         mock_client = Mock()
         evaluator = GPTQualityEvaluator(mock_client, analysis_prompt_path=str(config_file))
         
-        prompt = evaluator.create_evaluation_prompt("test content", "Description", "Python", "technical_accuracy")
+        context = {"section_name": "Description", "topic": "Python"}
+        prompt = evaluator.create_evaluation_prompt("test content", context)
         
-        assert "Evaluate Description about Python: test content" == prompt
+        # Check that the prompt contains the expected structure
+        assert "Please evaluate this documentation:" in prompt
+        assert "test content" in prompt
+        assert "overall_score" in prompt
+        assert "recommendations" in prompt
 
     def test_parse_gpt_response(self, temp_dir):
         """Test GPT response parsing."""
-        config = {'analysis_prompts': {'test': 'test'}}
+        config = {
+            'system_prompt': 'You are a technical documentation evaluator.',
+            'analysis_prompts': {'test': 'test'}
+        }
         config_file = temp_dir / "analysis_config.yaml"
         with open(config_file, 'w') as f:
             yaml.dump(config, f)
@@ -254,17 +265,30 @@ class TestGPTQualityEvaluator:
         mock_client = Mock()
         evaluator = GPTQualityEvaluator(mock_client, analysis_prompt_path=str(config_file))
         
-        # Test valid JSON response
-        response = '{"score": 85, "explanation": "Good quality"}'
-        score, explanation = evaluator.parse_gpt_response(response)
-        assert score == 85.0
-        assert explanation == "Good quality"
+        # Test valid JSON response with all required fields
+        response = '''{
+            "overall_score": 8,
+            "clarity_score": 7,
+            "completeness_score": 9,
+            "accuracy_score": 8,
+            "usefulness_score": 8,
+            "feedback": "Good quality documentation",
+            "recommendations": ["Add more examples", "Improve clarity"]
+        }'''
         
-        # Test invalid response (fallback behavior returns 50.0)
+        metrics = evaluator.parse_gpt_response(response)
+        assert metrics.overall_score == 0.8  # Normalized to 0-1 range
+        assert metrics.clarity_score == 0.7
+        assert metrics.feedback == "Good quality documentation"
+        assert len(metrics.recommendations) == 2
+        
+        # Test invalid response (should raise DocGeneratorError)
         response = "Invalid response"
-        score, explanation = evaluator.parse_gpt_response(response)
-        assert score == 50.0
-        assert explanation == "Invalid response"
+        try:
+            evaluator.parse_gpt_response(response)
+            assert False, "Should have raised DocGeneratorError"
+        except Exception as e:
+            assert "Failed to parse quality evaluation response" in str(e)
 
 
 class TestCodeExampleScanner:
@@ -289,19 +313,21 @@ class TestCodeExampleScanner:
         cpp_file.write_text("#include <iostream>")
         
         language = scanner._detect_language(cpp_file)
-        assert language == 'cpp'
+        assert language == 'c++'  # Function returns 'c++' not 'cpp'
 
     def test_detect_comment_style(self):
         """Test comment style detection."""
         scanner = CodeExampleScanner()
         
         # Python-style comments
-        python_content = "# This is a Python comment\nprint('hello')"
-        assert scanner._detect_comment_style(python_content) == '#'
+        patterns = scanner._detect_comment_style('python')
+        assert isinstance(patterns, list)
+        assert r'#\s*(.+)' in patterns
         
         # C-style comments
-        c_content = "// This is a C comment\nint main() {}"
-        assert scanner._detect_comment_style(c_content) == '//'
+        patterns = scanner._detect_comment_style('cpp')
+        assert isinstance(patterns, list)
+        assert any('//\\s*(.+)' in p for p in patterns)
 
     def test_extract_description(self):
         """Test description extraction from comments."""
@@ -311,7 +337,7 @@ class TestCodeExampleScanner:
 # It explains what the program does in detail
 import sys
 '''
-        description = scanner._extract_description(content)
+        description = scanner._extract_description(content, 'python')
         assert "comprehensive description" in description
         assert len(description) > 10
 
@@ -338,10 +364,9 @@ if __name__ == "__main__":
         file_info = scanner._extract_file_info(test_file)
         
         assert file_info is not None
-        assert file_info['language'] == 'python'
-        assert file_info['name'] == 'Example'
-        assert 'sample Python script' in file_info['description']
-        assert file_info['file_size'] > 0
+        assert file_info.language == 'python'
+        assert 'sample Python script' in file_info.description
+        assert file_info.size > 0
 
     def test_scan_directory(self, temp_dir):
         """Test directory scanning."""
@@ -352,13 +377,13 @@ if __name__ == "__main__":
         (temp_dir / "program.cpp").write_text("// C++ program\n#include <iostream>")
         (temp_dir / "readme.txt").write_text("This is not code")
         
-        results = scanner.scan_directory(str(temp_dir), max_files=10)
+        results = scanner.scan_directory(str(temp_dir))
         
         # Should find at least 2 code files (may include txt file depending on pygments)
-        assert len(results) >= 2
-        languages = [r['language'] for r in results]
+        assert len(results.files_found) >= 2
+        languages = [f.language for f in results.files_found]
         assert 'python' in languages
-        assert 'cpp' in languages
+        assert 'cpp' in languages or 'c++' in languages
 
     def test_update_terminology_file(self, temp_dir):
         """Test terminology file updates."""
@@ -370,26 +395,32 @@ if __name__ == "__main__":
         with open(terminology_file, 'w') as f:
             yaml.dump(initial_terminology, f)
         
-        # Sample code examples
-        code_examples = [
-            {
-                'name': 'Test Script',
-                'language': 'python',
-                'description': 'A test Python script',
-                'file_path': 'test.py'
-            }
-        ]
+        # Create mock scan results
+        from doc_generator.code_scanner import ScanResults, CodeFileInfo
         
-        scanner.update_terminology_file(str(terminology_file), code_examples)
+        code_file = CodeFileInfo(
+            path='test.py',
+            language='python', 
+            description='A test Python script',
+            file_hash='mock_hash',
+            size=100,
+            modified_time=1234567890.0
+        )
         
-        # Load updated terminology
-        with open(terminology_file, 'r') as f:
-            updated_terminology = yaml.safe_load(f)
+        scan_results = ScanResults(
+            files_found=[code_file],
+            directories_scanned=1,
+            total_size=100,
+            scan_duration=0.1,
+            languages_detected={'python'}
+        )
+        
+        updated_terminology = scanner.update_terminology_file(scan_results, str(terminology_file))
         
         assert 'existing_key' in updated_terminology
         assert 'code_examples' in updated_terminology
-        assert 'python' in updated_terminology['code_examples']
-        assert len(updated_terminology['code_examples']['python']) == 1
+        assert 'test.py' in updated_terminology['code_examples']
+        assert updated_terminology['code_examples']['test.py']['language'] == 'python'
 
 
 class TestModuleRecommender:

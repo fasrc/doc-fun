@@ -251,6 +251,11 @@ def run_standardization(args, logger: logging.Logger) -> None:
     import urllib.request
     from urllib.error import URLError
     
+    # Validate input
+    if not args.standardize:
+        logger.error("--standardize requires an input file or URL")
+        sys.exit(1)
+    
     logger.info(f"Standardizing document: {args.standardize}")
     
     # Load environment variables
@@ -967,6 +972,12 @@ def cleanup_output_directory(logger: logging.Logger) -> None:
 
 def scan_code_examples(args, logger: logging.Logger) -> None:
     """Scan directory for code examples and optionally generate README files."""
+    
+    # Validate input
+    if not args.scan_code:
+        logger.error("--scan-code requires a directory path")
+        sys.exit(1)
+    
     logger.info(f"Scanning {args.scan_code} for code examples...")
     
     # Check if README generation is requested (legacy mode)
