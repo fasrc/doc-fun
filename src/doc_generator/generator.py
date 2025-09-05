@@ -541,6 +541,10 @@ class DocumentationGenerator:
             if not model:
                 raise ProviderError("No default model available. Check provider configuration.")
         
+        # Store original model and provider for potential fallback
+        original_model = model
+        original_provider = provider
+        
         # Determine which provider to use
         if provider:
             llm_provider = self.provider_manager.get_provider(provider)
@@ -573,7 +577,11 @@ class DocumentationGenerator:
         # Build messages with topic-aware system prompt
         system_prompt = self._build_system_prompt(topic)
         
-        for i in range(runs):
+        # Track if we've tried fallback
+        fallback_to_openai = False
+        
+        i = 0
+        while i < runs:
             try:
                 messages = [
                     {'role': 'system', 'content': system_prompt}
@@ -634,8 +642,51 @@ class DocumentationGenerator:
                     if cost_estimate:
                         self.logger.debug(f"Estimated cost: ${cost_estimate:.4f}")
                 
+                # Successfully generated, move to next iteration
+                i += 1
+                
+            except ProviderError as e:
+                error_msg = str(e)
+                
+                # Check if this is a credit-related error and we haven't tried fallback yet
+                if 'credit balance insufficient' in error_msg and not fallback_to_openai:
+                    self.logger.warning(f"Claude API credits insufficient. Attempting fallback to OpenAI...")
+                    print(f"\n⚠️  Claude API credits insufficient. Switching to OpenAI provider...")
+                    
+                    # Try to fallback to OpenAI
+                    openai_provider = self.provider_manager.get_provider('openai')
+                    if openai_provider and openai_provider.is_available():
+                        llm_provider = openai_provider
+                        # Use a default OpenAI model
+                        openai_models = openai_provider.get_available_models()
+                        # Prefer gpt-4o-mini for cost efficiency
+                        if 'gpt-4o-mini' in openai_models:
+                            model = 'gpt-4o-mini'
+                        elif 'gpt-4o' in openai_models:
+                            model = 'gpt-4o'
+                        elif openai_models:
+                            model = openai_models[0]
+                        else:
+                            model = 'gpt-4o-mini'  # Fallback to a known good model
+                        
+                        fallback_to_openai = True
+                        self.logger.info(f"Switched to OpenAI provider with model: {model}")
+                        print(f"✓ Using OpenAI model: {model}")
+                        # Retry this iteration with the new provider (don't increment i)
+                        continue
+                    else:
+                        self.logger.error("OpenAI provider not available for fallback")
+                        print(f"✗ Error generating documentation (run {i+1}): {error_msg}")
+                        print("💡 Tip: Add OpenAI API key with: export OPENAI_API_KEY='your-key'")
+                        i += 1  # Skip this iteration
+                else:
+                    self.logger.error(f"Error generating documentation (run {i+1}): {e}")
+                    print(f"✗ Error generating documentation (run {i+1}): {error_msg}")
+                    i += 1  # Skip this iteration
+                    
             except Exception as e:
                 self.logger.error(f"Error generating documentation (run {i+1}): {e}")
                 print(f"✗ Error generating documentation (run {i+1}): {e}")
+                i += 1  # Skip this iteration
         
         return generated_files

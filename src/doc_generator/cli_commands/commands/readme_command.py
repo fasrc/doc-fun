@@ -219,12 +219,17 @@ class ReadmeCommand(BaseCommand):
         print(f"📄 Files: {len(results['directory_info']['files'])}")
         
         print("\n📝 Generated Files:")
+        # Prepare file types for better labeling
+        file_types = {}
         for file_path in results['generated_files']:
             file_name = Path(file_path).name
-            if 'best' in file_name:
-                print(f"  ⭐ {file_name} (best compilation)")
+            if 'best' in file_name.lower():
+                file_types[file_path] = "⭐ Best compilation"
             else:
-                print(f"  📄 {file_name}")
+                file_types[file_path] = "📄 Generated"
+        
+        from ...cli import format_output_summary
+        format_output_summary(Path(output_dir), results['generated_files'], file_types)
         
         # Display analysis results if available
         if results.get('analysis_results'):
