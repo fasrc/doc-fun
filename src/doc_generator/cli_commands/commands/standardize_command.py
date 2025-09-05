@@ -228,7 +228,6 @@ class StandardizeCommand(BaseCommand):
             print(f"🔗 Input URL: {input_source}")
         else:
             print(f"📁 Input File: {input_source}")
-        print(f"📂 Output File: {result.get('output_path', output_file)}")
         print(f"🔄 Format: {result['original_format']} → {result['target_format']}")
         print(f"📊 Sections Processed: {len(result['sections_processed'])}")
         
@@ -241,3 +240,8 @@ class StandardizeCommand(BaseCommand):
             print(f"🧠 Model: {metadata.get('model', 'Unknown')}")
             if metadata.get('tokens_used'):
                 print(f"🎯 Tokens Used: {metadata['tokens_used']}")
+        
+        # Display clickable output file path
+        print("\n📝 Standardized Document:")
+        from ...cli import format_output_summary
+        format_output_summary(output_file.parent, [str(output_file)], {str(output_file): "📄 Standardized"})
