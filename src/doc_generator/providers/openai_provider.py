@@ -96,15 +96,31 @@ class OpenAIProvider(LLMProvider):
     def get_available_models(self) -> List[str]:
         """Get available OpenAI models."""
         return [
-            'gpt-5',                # ⚠️ Known issue: Returns empty content (API bug)
-            'gpt-5-mini',           # ⚠️ Known issue: Returns empty content (API bug)
-            'gpt-5-nano',           # ⚠️ Known issue: Returns empty content (API bug)
-            'gpt-5-chat-latest',    # ⚠️ Known issue: Returns empty content (API bug)
-            'gpt-4',                # Recommended: Stable and reliable
+            # GPT-5 Family (Latest - January 2025)
+            'gpt-5',                
+            'gpt-5-mini',           
+            'gpt-5-nano',           
+            'gpt-5-chat-latest',    
+            
+            # GPT-4.1 Family (Latest reasoning model)
+            'gpt-4.1',
+            'gpt-4.1-2025-04-14',
+            
+            # GPT-4o Family (Optimized GPT-4)
             'gpt-4o',               # Recommended: Optimized GPT-4
             'gpt-4o-mini',          # Recommended: Cost-efficient GPT-4
+            'gpt-4o-2024-11-20',
+            'gpt-4o-2024-08-06',
+            'gpt-4o-mini-2024-07-18',
+            
+            # GPT-4 Family
+            'gpt-4',                # Recommended: Stable and reliable
             'gpt-4-turbo',
-            'gpt-3.5-turbo'
+            'gpt-4-turbo-2024-04-09',
+            
+            # GPT-3.5 Family (Legacy)
+            'gpt-3.5-turbo',
+            'gpt-3.5-turbo-0125'
         ]
     
     def is_available(self) -> bool:
@@ -120,24 +136,41 @@ class OpenAIProvider(LLMProvider):
         if not response.usage:
             return None
         
-        # OpenAI pricing (as of 2025, subject to change)
+        # OpenAI pricing per 1M tokens (as of January 2025, subject to change)
         pricing = {
-            'gpt-5': {'input': 0.04, 'output': 0.08},           # Flagship model pricing
-            'gpt-5-mini': {'input': 0.002, 'output': 0.006},    # Cost-efficient version
-            'gpt-5-nano': {'input': 0.0001, 'output': 0.0003},  # Most cost-efficient
-            'gpt-5-chat-latest': {'input': 0.01, 'output': 0.03}, # ChatGPT version
-            'gpt-4': {'input': 0.03, 'output': 0.06},
-            'gpt-4o': {'input': 0.005, 'output': 0.015},
-            'gpt-4o-mini': {'input': 0.00015, 'output': 0.0006},
-            'gpt-4-turbo': {'input': 0.01, 'output': 0.03},
-            'gpt-3.5-turbo': {'input': 0.0005, 'output': 0.0015}
+            # GPT-5 Family
+            'gpt-5': {'input': 40.0, 'output': 80.0},           
+            'gpt-5-mini': {'input': 2.0, 'output': 6.0},        
+            'gpt-5-nano': {'input': 0.1, 'output': 0.3},        
+            'gpt-5-chat-latest': {'input': 10.0, 'output': 30.0}, 
+            
+            # GPT-4.1 Family
+            'gpt-4.1': {'input': 30.0, 'output': 60.0},
+            'gpt-4.1-2025-04-14': {'input': 30.0, 'output': 60.0},
+            
+            # GPT-4o Family
+            'gpt-4o': {'input': 5.0, 'output': 15.0},
+            'gpt-4o-mini': {'input': 0.15, 'output': 0.6},
+            'gpt-4o-2024-11-20': {'input': 5.0, 'output': 15.0},
+            'gpt-4o-2024-08-06': {'input': 5.0, 'output': 15.0},
+            'gpt-4o-mini-2024-07-18': {'input': 0.15, 'output': 0.6},
+            
+            # GPT-4 Family
+            'gpt-4': {'input': 30.0, 'output': 60.0},
+            'gpt-4-turbo': {'input': 10.0, 'output': 30.0},
+            'gpt-4-turbo-2024-04-09': {'input': 10.0, 'output': 30.0},
+            
+            # GPT-3.5 Family
+            'gpt-3.5-turbo': {'input': 0.5, 'output': 1.5},
+            'gpt-3.5-turbo-0125': {'input': 0.5, 'output': 1.5}
         }
         
         model_pricing = pricing.get(response.model)
         if not model_pricing:
             return None
             
-        input_cost = (response.usage['prompt_tokens'] / 1000) * model_pricing['input']
-        output_cost = (response.usage['completion_tokens'] / 1000) * model_pricing['output']
+        # Calculate cost based on per-million-token pricing
+        input_cost = (response.usage['prompt_tokens'] / 1_000_000) * model_pricing['input']
+        output_cost = (response.usage['completion_tokens'] / 1_000_000) * model_pricing['output']
         
         return input_cost + output_cost
