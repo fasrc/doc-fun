@@ -74,19 +74,43 @@ class ClaudeProvider(LLMProvider):
             )
             
         except Exception as e:
+            error_str = str(e)
             self.logger.error(f"Claude API error: {e}")
-            raise
+            
+            # Check for specific error types and provide better messages
+            if 'credit balance is too low' in error_str.lower():
+                raise ProviderError(
+                    f"Anthropic API credit balance insufficient. "
+                    f"Please add credits at https://console.anthropic.com/settings/billing "
+                    f"or switch to OpenAI provider with --provider openai"
+                )
+            elif 'invalid_request_error' in error_str.lower():
+                # Re-raise with the original message for other invalid request errors
+                raise ProviderError(f"Claude API request error: {e}")
+            else:
+                # Re-raise the original exception for other errors
+                raise
     
     def get_available_models(self) -> List[str]:
         """Get available Claude models."""
         return [
-            'claude-opus-4-1-20250805',    # Claude Opus 4.1 - Latest and most capable
+            # Claude 4 Family (Latest - January 2025)
+            'claude-opus-4-20250514',      # Claude Opus 4 - Most advanced
+            'claude-sonnet-4-20250514',    # Claude Sonnet 4 - Balanced performance
+            'claude-4-0-sonnet-20250219',  # Alternative Claude 4 Sonnet identifier
+            
+            # Claude 3.7 Family (Latest reasoning models)
+            'claude-3-7-sonnet-20250219',  # Claude 3.7 Sonnet with hybrid reasoning
+            
+            # Claude 3.5 Family (Current stable models)
             'claude-3-5-sonnet-20241022',  # Latest Sonnet 3.5
             'claude-3-5-sonnet-20240620',  # Previous Sonnet 3.5
             'claude-3-5-haiku-20241022',   # Latest Haiku 3.5
-            'claude-3-haiku-20240307',     # Previous Haiku 3.0
+            
+            # Claude 3 Family (Legacy support)
+            'claude-3-haiku-20240307',     # Haiku 3.0
             'claude-3-sonnet-20240229',    # Sonnet 3.0
-            # 'claude-3-opus-20240229',   # Opus 3.0 deprecated in favor of Opus 4.1
+            'claude-3-opus-20240229',      # Opus 3.0 (legacy)
         ]
     
     def is_available(self) -> bool:
@@ -102,22 +126,32 @@ class ClaudeProvider(LLMProvider):
         if not response.usage:
             return None
         
-        # Claude pricing (as of 2025, subject to change)
+        # Claude pricing (per 1M tokens, as of January 2025)
         pricing = {
-            'claude-opus-4-1-20250805': {'input': 0.015, 'output': 0.075},  # $15/$75 per million tokens
-            'claude-3-5-sonnet-20241022': {'input': 0.003, 'output': 0.015},
-            'claude-3-5-sonnet-20240620': {'input': 0.003, 'output': 0.015},
-            'claude-3-5-haiku-20241022': {'input': 0.0008, 'output': 0.004},
-            'claude-3-haiku-20240307': {'input': 0.00025, 'output': 0.00125},
-            'claude-3-sonnet-20240229': {'input': 0.003, 'output': 0.015},
-            'claude-3-opus-20240229': {'input': 0.015, 'output': 0.075},  # Deprecated but kept for reference
+            # Claude 4 Family
+            'claude-opus-4-20250514': {'input': 15.0, 'output': 75.0},      # $15/$75 per MTok
+            'claude-sonnet-4-20250514': {'input': 3.0, 'output': 15.0},     # $3/$15 per MTok
+            'claude-4-0-sonnet-20250219': {'input': 3.0, 'output': 15.0},   # Alternative identifier
+            
+            # Claude 3.7 Family
+            'claude-3-7-sonnet-20250219': {'input': 3.0, 'output': 15.0},   # Hybrid reasoning model
+            
+            # Claude 3.5 Family
+            'claude-3-5-sonnet-20241022': {'input': 3.0, 'output': 15.0},
+            'claude-3-5-sonnet-20240620': {'input': 3.0, 'output': 15.0},
+            'claude-3-5-haiku-20241022': {'input': 0.8, 'output': 4.0},     # $0.80/$4 per MTok
+            
+            # Claude 3 Family (Legacy)
+            'claude-3-haiku-20240307': {'input': 0.25, 'output': 1.25},
+            'claude-3-sonnet-20240229': {'input': 3.0, 'output': 15.0},
+            'claude-3-opus-20240229': {'input': 15.0, 'output': 75.0},
         }
         
         model_pricing = pricing.get(response.model)
         if not model_pricing:
             return None
             
-        input_cost = (response.usage['prompt_tokens'] / 1000) * model_pricing['input']
-        output_cost = (response.usage['completion_tokens'] / 1000) * model_pricing['output']
+        input_cost = (response.usage['prompt_tokens'] / 1_000_000) * model_pricing['input']
+        output_cost = (response.usage['completion_tokens'] / 1_000_000) * model_pricing['output']
         
         return input_cost + output_cost
