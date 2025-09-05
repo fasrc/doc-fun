@@ -19,6 +19,47 @@ from .utils import get_output_directory
 from .agents.token_machine import TokenMachine, AnalysisDepth, analyze_operation
 
 
+def create_file_url(file_path: Path) -> str:
+    """Create a clickable file:// URL from a file path."""
+    # Convert to absolute path and resolve any relative components
+    abs_path = file_path.resolve()
+    return f"file://{abs_path}"
+
+
+def format_output_summary(output_dir: Path, generated_files: list, file_types: dict = None) -> None:
+    """
+    Format and display output files with clickable URLs.
+    
+    Args:
+        output_dir: The output directory path
+        generated_files: List of generated file paths
+        file_types: Optional dict mapping file paths to type labels
+    """
+    if not generated_files:
+        return
+        
+    output_dir_abs = output_dir.resolve()
+    print(f"📁 Output directory: {create_file_url(output_dir_abs)}")
+    
+    for file_path in generated_files:
+        file_path_obj = Path(file_path)
+        file_url = create_file_url(file_path_obj)
+        
+        # Determine file type label
+        if file_types and str(file_path) in file_types:
+            label = file_types[str(file_path)]
+        elif 'best' in file_path_obj.name.lower():
+            label = "✅ Best compilation"
+        elif 'analysis' in file_path_obj.name.lower():
+            label = "📊 Analysis"
+        elif '_v' in file_path_obj.name:
+            label = "📄 Generated"
+        else:
+            label = "📄 Generated"
+        
+        print(f"   {label}: {file_url}")
+
+
 def setup_logging(verbose: bool = False) -> logging.Logger:
     """Set up logging configuration using settings."""
     settings = get_settings()
@@ -358,14 +399,13 @@ def run_standardization(args, logger: logging.Logger) -> None:
         # Update result with output path
         result['output_path'] = str(output_file)
         
-        # Report results
+        # Report results with clickable URLs
         if not args.quiet:
             print(f"\n📄 Document Standardization Results")
             if is_url:
                 print(f"🔗 Input URL: {input_value}")
             else:
                 print(f"📁 Input File: {input_value}")
-            print(f"📂 Output File: {result.get('output_path', output_file)}")
             print(f"🔄 Format: {result['original_format']} → {result['target_format']}")
             print(f"📊 Sections Processed: {len(result['sections_processed'])}")
             
@@ -378,6 +418,10 @@ def run_standardization(args, logger: logging.Logger) -> None:
                 print(f"🧠 Model: {metadata.get('model', 'Unknown')}")
                 if metadata.get('tokens_used'):
                     print(f"🎯 Tokens Used: {metadata['tokens_used']}")
+            
+            # Display clickable output file path
+            print("\n📝 Standardized Document:")
+            format_output_summary(Path(output_dir), [str(output_file)], {str(output_file): "📄 Standardized"})
         
         logger.info("Document standardization completed successfully")
         
@@ -445,12 +489,16 @@ def run_readme_generation(args, logger: logging.Logger) -> None:
             print(f"📄 Files: {len(results['directory_info']['files'])}")
             
             print("\n📝 Generated Files:")
+            # Prepare file types for better labeling
+            file_types = {}
             for file_path in generated_files:
                 file_name = Path(file_path).name
-                if 'best' in file_name:
-                    print(f"  ⭐ {file_name} (best compilation)")
+                if 'best' in file_name.lower():
+                    file_types[file_path] = "⭐ Best compilation"
                 else:
-                    print(f"  📄 {file_name}")
+                    file_types[file_path] = "📄 Generated"
+            
+            format_output_summary(Path(output_dir), generated_files, file_types)
             
             if results.get('analysis_results'):
                 analysis = results['analysis_results']
@@ -1013,9 +1061,12 @@ def scan_code_examples(args, logger: logging.Logger) -> None:
             logger.info(f"Generated {len(generated_files)} README files")
             
             if not args.quiet:
-                print("\nGenerated README Files (Legacy Mode):")
-                for file_path in generated_files:
-                    print(f"  - {file_path}")
+                print("\n📝 Generated README Files (Legacy Mode):")
+                # Extract directory for clickable paths
+                if generated_files:
+                    first_file_dir = Path(generated_files[0]).parent
+                    file_types = {str(path): "📄 Generated" for path in generated_files}
+                    format_output_summary(first_file_dir, generated_files, file_types)
                     
         except Exception as e:
             logger.error(f"Error generating README files: {e}")
@@ -1168,12 +1219,10 @@ def run_generation(args, logger: logging.Logger) -> None:
         
         logger.info(f"Generated {len(results)} documentation variants")
         
-        # Print output file paths
+        # Print output file paths with clickable URLs
         if not args.quiet:
-            print("\nGenerated Files:")
-            for i, result in enumerate(results, 1):
-                filename = Path(result).name  # result is a file path
-                print(f"  {i}. {filename}")
+            print("\n📝 Documentation Generation Complete")
+            format_output_summary(Path(output_dir), results)
         
         # Run comparison if requested
         if args.compare_url or args.compare_file:

@@ -185,11 +185,11 @@ class GenerateCommand(BaseCommand):
             
             self.logger.info(f"Generated {len(results)} documentation variants")
             
-            # Print output file paths if not quiet
+            # Print output file paths with clickable URLs
             if not getattr(args, 'quiet', False):
-                file_list = "\n".join(f"  {i}. {Path(result).name}" 
-                                     for i, result in enumerate(results, 1))
-                print(f"\nGenerated Files:\n{file_list}")
+                print("\n📝 Documentation Generation Complete")
+                from ...cli import format_output_summary
+                format_output_summary(Path(output_dir), results)
             
             # Run comparison if requested
             if args.compare_url or args.compare_file:
