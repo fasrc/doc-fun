@@ -46,22 +46,66 @@ def parse_args():
         description='Generate technical documentation using AI with plugin-based recommendations',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
+IMPORTANT: doc-gen now supports two CLI modes:
+  1. NEW COMMAND PATTERN (Recommended) - Use subcommands for cleaner syntax
+  2. LEGACY FLAG-BASED PATTERN - All original flags still work
+
+===============================================================================
+NEW COMMAND PATTERN (Recommended):
+===============================================================================
+
+Available Commands:
+  generate (gen, g)        - Generate technical documentation
+  readme (r)               - Generate README.md for directories
+  standardize (std, s)     - Standardize existing documentation
+  test                     - Run GitHub test workflows locally
+  list-models (lm, models) - List available AI models and providers
+  list-plugins (lp, plugins) - List available plugins
+  cleanup (clean)          - Clean output directory
+  info (help-detailed)     - Display detailed help information
+
+Examples:
+  # Documentation Generation
+  doc-gen generate "Python Programming" --runs 3 --analyze
+  doc-gen generate "CUDA Programming" --model gpt-4o --temperature 0.7
+  doc-gen g "Machine Learning" --format markdown  # Using alias
+  
+  # README Generation
+  doc-gen readme /path/to/directory --runs 3 --analyze
+  doc-gen readme ./my-project --recursive --output-dir ./docs
+  doc-gen r ./src --model claude-3-5-sonnet  # Using alias
+  
+  # Document Standardization
+  doc-gen standardize existing-docs.html --target-format markdown
+  doc-gen standardize https://example.com/docs --template api_documentation
+  doc-gen std legacy.md --output-dir ./standardized  # Using alias
+  
+  # GitHub Test Runner
+  doc-gen test --test-path ./tests --output-dir ./test-results
+  doc-gen test --test-path ./tests/unit --generate-report
+  
+  # Utility Commands
+  doc-gen list-models  # or: lm, models
+  doc-gen list-plugins  # or: lp, plugins
+  doc-gen cleanup  # or: clean
+  doc-gen info  # or: help-detailed
+
+===============================================================================
+LEGACY FLAG-BASED PATTERN (Still Supported):
+===============================================================================
+
 Examples:
   # Documentation Generation (--topic mode)
   doc-gen --topic "Python Programming" --runs 3 --analyze
   doc-gen --topic "CUDA Programming" --model gpt-4 --temperature 0.7
-  doc-gen --topic "Machine Learning" --prompt-yaml ./prompts/custom.yaml
   
   # README Generation (--readme mode)
   doc-gen --readme /path/to/directory --runs 2 --analyze
   doc-gen --readme /path/to/directory --recursive --output-dir ./output
-  doc-gen --readme /path/to/directory --model claude-3-5-sonnet
   
   # Document Standardization (--standardize mode)
   doc-gen --standardize existing-docs.html --format markdown
-  doc-gen --standardize /path/to/doc.html --template api_documentation
   doc-gen --standardize https://example.com/docs/api.html --format markdown
-  doc-gen --standardize legacy.md --output-dir ./standardized
   
   # Token Analysis (--token-* modes)
   doc-gen --token-analyze "Generate Python documentation" --content ./example.py
@@ -77,6 +121,10 @@ Examples:
   doc-gen --list-plugins
   doc-gen --cleanup
   doc-gen --info
+
+For more help on specific commands:
+  doc-gen <command> --help    # New pattern
+  doc-gen --help              # Legacy pattern
         """
     )
     
@@ -1572,7 +1620,18 @@ def main():
     if len(sys.argv) > 1:
         # Check if first argument looks like a command (no dashes)
         first_arg = sys.argv[1]
-        if not first_arg.startswith('-') and first_arg in ['generate', 'readme', 'standardize', 'list-models', 'cleanup', 'info', 'list-plugins', 'test']:
+        # List of all commands and their aliases
+        command_patterns = [
+            'generate', 'gen', 'g',  # Generate command aliases
+            'readme', 'r',  # README command aliases
+            'standardize', 'std', 's',  # Standardize command aliases
+            'list-models', 'lm', 'models',  # List models aliases
+            'list-plugins', 'lp', 'plugins',  # List plugins aliases
+            'cleanup', 'clean',  # Cleanup aliases
+            'info', 'help-detailed',  # Info aliases
+            'test'  # Test command (no aliases yet)
+        ]
+        if not first_arg.startswith('-') and first_arg in command_patterns:
             # Use new command-based dispatcher
             from .cli_commands.main import main as new_main
             sys.exit(new_main())
